@@ -1,6 +1,6 @@
 # ComfyUI-Crystools
 
-**_A powerful set of tools for your belt when you work with ComfyUI_**
+**_A powerful set of tools/nodes for your belt when you work with ComfyUI_**
 
 Show metadata, compare between two JSONs, compare between two images, show any value to console/display, pipes, and more!
 
@@ -9,11 +9,7 @@ Show metadata, compare between two JSONs, compare between two images, show any v
 ## Debugger
 ### Show Metadata
 
-> Do you need to see the complete prompt? or even the entire workflow?  
-
-No problem! Just connect the output of the prompt or workflow to the input of this node and you will see the complete JSON.
-
-With this node, you will be able to see the JSON produced from your entire prompt and workflow so that you can really know all the values (and more) of your prompt quickly without the need to open the file (PNG or JSON).
+> With this node, you will be able to see the JSON produced from your entire prompt and workflow so that you can really know all the values (and more) of your prompt quickly without the need to open the file (PNG or JSON).
 
 ![Show metadata](./docs/show-metadata.png)
 
@@ -21,7 +17,7 @@ With this node, you will be able to see the JSON produced from your entire promp
 >  <summary><i>Options</i></summary>
 >
 >  - Active: Enable/disable the node  
->  - Parsed: Show the parsed json or plain text  
+>  - Parsed: Show the parsed JSON or plain text  
 >  - What: Show the prompt or workflow (prompt are values to produce the image, and workflow is the entire workflow of ComfyUI)
 ></details>
 
@@ -70,6 +66,9 @@ buscar con oo
 
 primerp pryecto en python
 
+todo
+test
+persistir imagen
 ## Installation
 
 ### Install from GitHub
