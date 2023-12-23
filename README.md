@@ -37,22 +37,24 @@ Show metadata, compare between two JSONs, compare between two images, show any v
 
 
 ## Primitives
-### Primitive boolean
-### Primitive integer
-### Primitive float
-### Primitive string
-### Primitive string multiline
+> A set of nodes with primitive values (boolean, integer, float, string, string multiline) to use in your prompt.
+
+![Primitives](./docs/primitives.png)
+
 
 ## List
-### List of strings
-### List of any
+> A set of nodes with list of values (any or strings/texts)  
+> With strings you can concatenate them
+
+![Lists](./docs/lists.png)
 
 ## Switch
-### Switch any
-### Switch latent
-### Switch conditioning
-### Switch image
-### Switch string
+> A set of nodes to switch between flows  
+> All switches are boolean, you can switch between flows by simply changing the value of the switch.
+> You have predefined switches (string, latent, image, conditioning) but you can use "Switch any" for any value/type.
+
+![Switches](./docs/switches.png)
+
 
 ## Pipe
 ### Pipe to/edit any
