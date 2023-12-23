@@ -7,7 +7,7 @@ Show metadata, compare between two JSONs, compare between two images, show any v
 ![Show metadata](./docs/jake.gif)
 
 ## Debugger
-### Show Metadata
+### Node: Show Metadata
 
 > With this node, you will be able to see the JSON produced from your entire prompt and workflow so that you can really know all the values (and more) of your prompt quickly without the need to open the file (PNG or JSON).
 
@@ -21,7 +21,7 @@ Show metadata, compare between two JSONs, compare between two images, show any v
 >  - What: Show the prompt or workflow (prompt are values to produce the image, and workflow is the entire workflow of ComfyUI)
 ></details>
 
-### Show any value to console/display
+### Node: Show any value to console/display
 
 > With this node, you can practically see any text or data from the nodes. Connect it to what you want to inspect, and you will see it.
 
@@ -37,18 +37,23 @@ Show metadata, compare between two JSONs, compare between two images, show any v
 
 
 ## Primitives
+### Nodes: Primitive boolean, Primitive integer, Primitive float, Primitive string, Primitive string multiline
+
 > A set of nodes with primitive values (boolean, integer, float, string, string multiline) to use in your prompt.
 
 ![Primitives](./docs/primitives.png)
 
 
 ## List
+### Nodes: List of strings, List of any
+
 > A set of nodes with list of values (any or strings/texts)  
 > With strings you can concatenate them  
 
 ![Lists](./docs/lists.png)
 
-> Important: You can use with others nodes like "Show any" to see the values of the list
+**Important:** You can use with others nodes like "Show any" to see the values of the list
+
 ![Lists](./docs/lists-any.png)
 
 ## Switch
@@ -58,10 +63,29 @@ Show metadata, compare between two JSONs, compare between two images, show any v
 
 ![Switches](./docs/switches.png)
 
-
 ## Pipe
-### Pipe to/edit any
-### Pipe from any
+### Nodes: Pipe to/edit any, Pipe from any
+> This powerful set of nodes is used to better organize your pipes.  
+> The "Pipe to/edit any" node is used to encapsulate multiple links into a single one. It includes support for editing, easily adding the modified content back to the same pipe number.   
+> The "Pipe from any" node is used to extract the content of a pipe.  
+> A maximum of 6 **optional** links is supported.
+
+**Important:**
+- Please note that it supports "any," meaning it does not validate (not yet!) the correspondence of input nodes with the output ones. When creating the link, it is recommended to link consciously number by number.
+- "RecursionError", It's crucial to note that the flow of links **must be in the same direction**, and they cannot be mixed with other flows that use the result of this one. Otherwise, this may lead to recursion and block the server (you need to restart it!)
+ 
+Typical example:
+![Pipes](./docs/pipe-0.png)
+
+With pipes:
+![Pipes](./docs/pipe-1.png)
+
+Editing pipes:
+![Pipes](./docs/pipe-2.png)
+
+Bad example with "RecursionError: maximum recursion depth exceeded":
+![Pipes](./docs/pipe-3.png)
+
 
 ## Image
 ### Load image with metadata
