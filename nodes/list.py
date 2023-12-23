@@ -1,4 +1,4 @@
-from ..core import STRING, TEXTS, KEYS, CATEGORY, any
+from ..core import STRING, TEXTS, KEYS, CATEGORY, any, logger
 from ._names import CLASSES
 
 
@@ -26,6 +26,7 @@ class CListAny:
     CATEGORY = CATEGORY.MAIN.value + CATEGORY.LIST.value
     RETURN_TYPES = (any,),
     RETURN_NAMES = ("any_list",)
+    OUTPUT_IS_LIST = (True,)
 
     FUNCTION = "execute"
 
@@ -41,24 +42,48 @@ class CListAny:
 
         list = []
 
-        if any_1:
-            list.append(any_1)
-        if any_2:
-            list.append(any_2)
-        if any_3:
-            list.append(any_3)
-        if any_4:
-            list.append(any_4)
-        if any_5:
-            list.append(any_5)
-        if any_6:
-            list.append(any_6)
-        if any_7:
-            list.append(any_7)
-        if any_8:
-            list.append(any_8)
+        if any_1 is not None:
+            try:
+                list.append(any_1)
+            except Exception as e:
+                logger.warn(e)
+        if any_2 is not None:
+            try:
+                list.append(any_2)
+            except Exception as e:
+                logger.warn(e)
+        if any_3 is not None:
+            try:
+                list.append(any_3)
+            except Exception as e:
+                logger.warn(e)
+        if any_4 is not None:
+            try:
+                list.append(any_4)
+            except Exception as e:
+                logger.warn(e)
+        if any_5 is not None:
+            try:
+                list.append(any_5)
+            except Exception as e:
+                logger.warn(e)
+        if any_6 is not None:
+            try:
+                list.append(any_6)
+            except Exception as e:
+                logger.warn(e)
+        if any_7 is not None:
+            try:
+                list.append(any_7)
+            except Exception as e:
+                logger.warn(e)
+        if any_8 is not None:
+            try:
+                list.append(any_8)
+            except Exception as e:
+                logger.warn(e)
 
-        return list
+        return [list]
 
 
 class CListString:
@@ -102,21 +127,21 @@ class CListString:
 
         list = []
 
-        if string_1:
+        if string_1 is not None:
             list.append(string_1)
-        if string_2:
+        if string_2 is not None:
             list.append(string_2)
-        if string_3:
+        if string_3 is not None:
             list.append(string_3)
-        if string_4:
+        if string_4 is not None:
             list.append(string_4)
-        if string_5:
+        if string_5 is not None:
             list.append(string_5)
-        if string_6:
+        if string_6 is not None:
             list.append(string_6)
-        if string_7:
+        if string_7 is not None:
             list.append(string_7)
-        if string_8:
+        if string_8 is not None:
             list.append(string_8)
 
         return delimiter.join(list), list

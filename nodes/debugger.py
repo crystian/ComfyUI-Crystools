@@ -24,6 +24,8 @@ class CConsoleAny:
         }
 
     CATEGORY = CATEGORY.MAIN.value + CATEGORY.DEBUGGER.value
+    INPUT_IS_LIST = True
+
     RETURN_TYPES = ()
     OUTPUT_NODE = True
 
@@ -35,7 +37,15 @@ class CConsoleAny:
 
         if any_value is not None:
             try:
-                text = str(any_value)
+                if type(any_value) == list:
+                    for item in any_value:
+                        try:
+                            text += str(item) + "\n"
+                        except Exception as e:
+                            text += "source exists, but could not be serialized.\n"
+                            logger.warn(e)
+                else:
+                    text = str(any_value)
             except Exception:
                 try:
                     text = json.dumps(any_value)[1:-1]
@@ -54,6 +64,6 @@ class CConsoleAny:
             textToDisplay = text
 
         value = [console, display, prefix, textToDisplay]
-        setWidgetValues(value, unique_id, extra_pnginfo)
+        # setWidgetValues(value, unique_id, extra_pnginfo)
 
         return {"ui": {"text": value}}

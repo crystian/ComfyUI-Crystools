@@ -5,7 +5,7 @@ from ..core import CATEGORY, CONFIG, JSON_WIDGET, TEXTS, findJsonStrDiff, findJs
 
 class CMetadataExtractor:
     @classmethod
-    def INPUT_TYPES(s):
+    def INPUT_TYPES(cls):
         return {
             "required": {
                 "metadata_raw": ("METADATA_RAW", {"forceInput": True}),
@@ -65,7 +65,7 @@ class CMetadataExtractor:
 
 class CMetadataCompare:
     @classmethod
-    def INPUT_TYPES(s):
+    def INPUT_TYPES(cls):
         return {
             "required": {
                 "metadata_raw_old": ("METADATA_RAW", {"forceInput": True}),

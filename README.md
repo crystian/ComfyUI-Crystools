@@ -44,9 +44,12 @@ Show metadata, compare between two JSONs, compare between two images, show any v
 
 ## List
 > A set of nodes with list of values (any or strings/texts)  
-> With strings you can concatenate them
+> With strings you can concatenate them  
 
 ![Lists](./docs/lists.png)
+
+> Important: You can use with others nodes like "Show any" to see the values of the list
+![Lists](./docs/lists-any.png)
 
 ## Switch
 > A set of nodes to switch between flows  
