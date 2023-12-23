@@ -21,10 +21,20 @@ Show metadata, compare between two JSONs, compare between two images, show any v
 >  - What: Show the prompt or workflow (prompt are values to produce the image, and workflow is the entire workflow of ComfyUI)
 ></details>
 
-
-
-
 ### Show any value to console/display
+
+> With this node, you can practically see any text or data from the nodes. Connect it to what you want to inspect, and you will see it.
+
+![Show any](./docs/show-any.png)
+
+><details>
+>  <summary><i>Options</i></summary>
+>
+>  - Console: Enable/disable write to console  
+>  - Display: Enable/disable write on this node  
+>  - Prefix: Prefix to console
+></details>
+
 
 ## Primitives
 ### Primitive boolean
@@ -69,7 +79,12 @@ primerp pryecto en python
 todo
 test
 persistir imagen
+
+agregar desde menu o doble click
+
 ## Installation
+
+
 
 ### Install from GitHub
 1. Install [ComfyUi](https://github.com/comfyanonymous/ComfyUI).
