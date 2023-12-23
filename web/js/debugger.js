@@ -37,7 +37,7 @@ app.registerExtension({
 
         const w = ComfyWidgets.STRING(this, '', ['', {default: '', multiline: true}], app).widget;
         w.inputEl.readOnly = true;
-        ComfyWidgets.BOOLEAN(this, 'Mode', ['', {default: true, label_on: 'Active', label_off: 'Inactive'}], app);
+        ComfyWidgets.BOOLEAN(this, 'Active', ['', {default: true}], app);
         ComfyWidgets.BOOLEAN(this, 'Parsed', ['', {default: true}], app);
         ComfyWidgets.COMBO(this, 'What', [['Prompt', 'Workflow'], {default: 'Prompt'}]);
       }
