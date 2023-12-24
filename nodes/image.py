@@ -117,7 +117,7 @@ class CImageShowResolution:
         return {"ui": {"text": text}}
 
 
-# sub folders based on: https://github.com/catscandrive/comfyui-imagesubfolders
+# subfolders based on: https://github.com/catscandrive/comfyui-imagesubfolders
 class CImageLoadWithMetadata:
     def __init__(self):
         pass

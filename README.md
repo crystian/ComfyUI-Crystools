@@ -9,7 +9,7 @@ Show metadata, compare between two JSONs, compare between two images, show any v
 ## Debugger
 ### Node: Show Metadata
 
-> With this node, you will be able to see the JSON produced from your entire prompt and workflow so that you can really know all the values (and more) of your prompt quickly without the need to open the file (PNG or JSON).
+With this node, you will be able to see the JSON produced from your entire prompt and workflow so that you can really know all the values (and more) of your prompt quickly without the need to open the file (PNG or JSON).
 
 ![Show metadata](./docs/show-metadata.png)
 
@@ -23,7 +23,7 @@ Show metadata, compare between two JSONs, compare between two images, show any v
 
 ### Node: Show any value to console/display
 
-> With this node, you can practically see any text or data from the nodes. Connect it to what you want to inspect, and you will see it.
+With this node, you can practically see any text or data from the nodes. Connect it to what you want to inspect, and you will see it.
 
 ![Show any](./docs/show-any.png)
 
@@ -39,7 +39,7 @@ Show metadata, compare between two JSONs, compare between two images, show any v
 ## Primitives
 ### Nodes: Primitive boolean, Primitive integer, Primitive float, Primitive string, Primitive string multiline
 
-> A set of nodes with primitive values (boolean, integer, float, string, string multiline) to use in your prompt.
+A set of nodes with primitive values to use in your prompts.
 
 ![Primitives](./docs/primitives.png)
 
@@ -47,32 +47,32 @@ Show metadata, compare between two JSONs, compare between two images, show any v
 ## List
 ### Nodes: List of strings, List of any
 
-> A set of nodes with list of values (any or strings/texts)  
-> With strings you can concatenate them  
+A set of nodes with list of values (any or strings/texts)  
+With strings you can concatenate them  
 
 ![Lists](./docs/lists.png)
 
-**Important:** You can use with others nodes like "Show any" to see the values of the list
+> **Important:** You can use with others nodes like "Show any" to see the values of the list
 
 ![Lists](./docs/lists-any.png)
 
 ## Switch
-> A set of nodes to switch between flows  
-> All switches are boolean, you can switch between flows by simply changing the value of the switch.
-> You have predefined switches (string, latent, image, conditioning) but you can use "Switch any" for any value/type.
+A set of nodes to switch between flows.  
+All switches are boolean, you can switch between flows by simply changing the value of the switch.  
+You have predefined switches (string, latent, image, conditioning) but you can use "Switch any" for any value/type.
 
 ![Switches](./docs/switches.png)
 
 ## Pipe
 ### Nodes: Pipe to/edit any, Pipe from any
-> This powerful set of nodes is used to better organize your pipes.  
-> The "Pipe to/edit any" node is used to encapsulate multiple links into a single one. It includes support for editing, easily adding the modified content back to the same pipe number.   
-> The "Pipe from any" node is used to extract the content of a pipe.  
-> A maximum of 6 **optional** links is supported.
+This powerful set of nodes is used to better organize your pipes.  
+The "Pipe to/edit any" node is used to encapsulate multiple links into a single one. It includes support for editing, easily adding the modified content back to the same pipe number.   
+The "Pipe from any" node is used to extract the content of a pipe.  
+A maximum of 6 **optional** links is supported.
 
-**Important:**
-- Please note that it supports "any," meaning it does not validate (not yet!) the correspondence of input nodes with the output ones. When creating the link, it is recommended to link consciously number by number.
-- "RecursionError", It's crucial to note that the flow of links **must be in the same direction**, and they cannot be mixed with other flows that use the result of this one. Otherwise, this may lead to recursion and block the server (you need to restart it!)
+>**Important:**
+>- Please note that it supports "any," meaning it does not validate (not yet!) the correspondence of input nodes with the output ones. When creating the link, it is recommended to link consciously number by number.
+>- "RecursionError", It's crucial to note that the flow of links **must be in the same direction**, and they cannot be mixed with other flows that use the result of this one. Otherwise, this may lead to recursion and block the server (you need to restart it!)
  
 Typical example:
 ![Pipes](./docs/pipe-0.png)
@@ -86,12 +86,39 @@ Editing pipes:
 Bad example with "RecursionError: maximum recursion depth exceeded":
 ![Pipes](./docs/pipe-3.png)
 
-
 ## Image
 ### Load image with metadata
-### Show resolution
-### Preview image advanced (prompt)
+This node is the same as the default one, but it adds three options: Prompt, Metadata, and subfolders of the "input" folder.
+![Load image with metadata](./docs/image-load.png)
 
+><details>
+>  <summary><i>Outputs</i></summary>
+>
+>  - Image/Mask: The same as the default node  
+>  - Prompt: The prompt used to produce the image (not the workflow)  
+>  - Metadata RAW: The metadata raw of the image (full workflow) as string
+></details>
+
+The subfolders support is by: [comfyui-imagesubfolders](https://github.com/catscandrive/comfyui-imagesubfolders)
+
+### Show resolution
+This node is used to show the resolution of the image.
+
+> Can be used with any image link.
+
+![Show resolution](./docs/image-resolution.png)
+
+### Preview image advanced (prompt)
+This node is used to preview the image with the prompt used to produce it and other data.  
+
+![Preview image advanced](./docs/image-preview.png)
+
+> Important:
+> - Additional feature: This node has an output as metadata raw, **you can use to compare with others!** (see below)
+> - Additional data: Shows the filename, resolution, datetime and size with **the current prompt**
+> - Remember: If you want to read the metadata of the image, you need to use the "Load image with metadata" node and output "metadata RAW".
+
+ 
 ## Utils
 ### Metadata extractor
 ### Metadata comparator
