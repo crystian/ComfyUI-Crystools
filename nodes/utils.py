@@ -1,6 +1,6 @@
 import json
 import re
-from ..core import CATEGORY, CONFIG, JSON_WIDGET, TEXTS, findJsonStrDiff, findJsonsDiff, get_system_stats, logger
+from ..core import CATEGORY, CONFIG, JSON_WIDGET, METADATA_RAW, TEXTS, findJsonStrDiff, findJsonsDiff, get_system_stats, logger
 
 
 class CMetadataExtractor:
@@ -8,15 +8,15 @@ class CMetadataExtractor:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "metadata_raw": ("METADATA_RAW", {"forceInput": True}),
+                "metadata_raw": METADATA_RAW,
             },
             "optional": {
             }
         }
 
     CATEGORY = CATEGORY.MAIN.value + CATEGORY.UTILS.value
-    RETURN_TYPES = ("JSON", "JSON", "STRING", "STRING")
-    RETURN_NAMES = ("prompt", "workflow", "raw to string", "raw to csv")
+    RETURN_TYPES = ("JSON", "JSON", "JSON", "STRING", "STRING")
+    RETURN_NAMES = ("prompt", "workflow", "file-info", "raw to string", "raw to csv")
     OUTPUT_NODE = True
 
     FUNCTION = "execute"
@@ -24,11 +24,11 @@ class CMetadataExtractor:
     def execute(self, metadata_raw):
         prompt = {}
         workflow = {}
+        fileInfo = {}
         csv = '"key"\t"value"\n'
         text = ""
 
         if type(metadata_raw) == dict:
-
             try:
                 for key, value in metadata_raw.items():
                     value = json.dumps(value)
@@ -57,10 +57,22 @@ class CMetadataExtractor:
             except Exception as e:
                 logger.warn(e)
 
+            try:
+                if "file-info" in metadata_raw:
+                    fileInfo = json.loads(json.dumps(metadata_raw["file-info"]))
+
+                else:
+                    raise Exception("File-info not found in metadata_raw")
+            except Exception as e:
+                logger.warn(e)
+
         else:
             logger.warn("Invalid metadata raw on formatted")
 
-        return json.dumps(prompt, indent=CONFIG["indent"]), json.dumps(workflow, indent=CONFIG["indent"]), text, csv
+        return (json.dumps(prompt, indent=CONFIG["indent"]),
+                json.dumps(workflow, indent=CONFIG["indent"]),
+                json.dumps(fileInfo, indent=CONFIG["indent"]),
+                text, csv)
 
 
 class CMetadataCompare:
@@ -68,8 +80,8 @@ class CMetadataCompare:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "metadata_raw_old": ("METADATA_RAW", {"forceInput": True}),
-                "metadata_raw_new": ("METADATA_RAW", {"forceInput": True}),
+                "metadata_raw_old": METADATA_RAW,
+                "metadata_raw_new": METADATA_RAW,
                 "what": (["Prompt", "Workflow"],),
             },
             "optional": {

@@ -11,7 +11,7 @@ from PIL import Image, ImageOps
 from PIL.PngImagePlugin import PngImageFile
 from nodes import PreviewImage
 
-from ..core import CATEGORY, CONFIG, setWidgetValues, logger, getResolutionByTensor, get_size
+from ..core import CATEGORY, CONFIG, METADATA_RAW, setWidgetValues, logger, getResolutionByTensor, get_size
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "comfy"))
 
@@ -33,6 +33,7 @@ class CImagePreviewAdvance(PreviewImage):
             },
             "optional": {
                 "image": ("IMAGE",),
+                "metadata_raw": METADATA_RAW,
             },
             "hidden": {
                 "prompt": "PROMPT",
@@ -155,11 +156,11 @@ class CImageLoadWithMetadata:
         image_path = folder_paths.get_annotated_filepath(image)
         img = Image.open(image_path)
 
-        metadataFromPng = {}
+        metadata = {}
         prompt = ""
 
         if isinstance(img, PngImageFile):
-            metadataFromPng = img.info
+            metadata = img.info
 
         img = ImageOps.exif_transpose(img)
         image = img.convert("RGB")
@@ -171,12 +172,24 @@ class CImageLoadWithMetadata:
         else:
             mask = torch.zeros((64, 64), dtype=torch.float32, device="cpu")
 
-        if metadataFromPng is not None:
-            if "prompt" in metadataFromPng:
-                prompt = metadataFromPng["prompt"]
+        # extract prompt from metadata
+        if metadata is not None:
+            if "prompt" in metadata:
+                prompt = metadata["prompt"]
                 prompt = json.dumps(json.loads(prompt), indent=CONFIG["indent"])
 
-        return (image, mask.unsqueeze(0), prompt, metadataFromPng)
+        metadata["file-info"] = {
+            "filename": image_path,
+            "resolution": {
+                "x": img.width,
+                "y": img.height,
+            },
+            "resolution_text": f"{img.width}x{img.height}",
+            "date": str(datetime.datetime.fromtimestamp(os.path.getmtime(image_path))),
+            "size": str(get_size(image_path)),
+        }
+
+        return (image, mask.unsqueeze(0), prompt, metadata)
 
     @classmethod
     def IS_CHANGED(s, image):

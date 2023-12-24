@@ -18,8 +18,8 @@ class CConsoleAny:
                 KEYS.PREFIX.value: STRING,
             },
             "hidden": {
-                "unique_id": "UNIQUE_ID",
-                "extra_pnginfo": "EXTRA_PNGINFO",
+                # "unique_id": "UNIQUE_ID",
+                # "extra_pnginfo": "EXTRA_PNGINFO",
             },
         }
 
@@ -31,7 +31,10 @@ class CConsoleAny:
 
     FUNCTION = "execute"
 
-    def execute(self, any_value=None, console=False, display=True, prefix=None, unique_id=None, extra_pnginfo=None):
+    def execute(self, any_value=None, console=False, display=True, prefix=None):
+        console = console[0]
+        display = display[0]
+        prefix = prefix[0]
         text = ""
         textToDisplay = TEXTS.INACTIVE_MSG.value
 
@@ -40,12 +43,13 @@ class CConsoleAny:
                 if type(any_value) == list:
                     for item in any_value:
                         try:
-                            text += str(item) + "\n"
+                            text += str(item)
                         except Exception as e:
                             text += "source exists, but could not be serialized.\n"
                             logger.warn(e)
                 else:
-                    text = str(any_value)
+                    logger.warn("any_value is not a list")
+
             except Exception:
                 try:
                     text = json.dumps(any_value)[1:-1]

@@ -109,14 +109,16 @@ This node is used to show the resolution of the image.
 ![Show resolution](./docs/image-resolution.png)
 
 ### Preview image advanced (prompt)
-This node is used to preview the image with the prompt used to produce it and other data.  
+This node is used to preview the image with the current prompt and additional data.  
+
+- Additional feature: This node has an output as metadata raw, **you can use to compare with others!** (see below)
+- Additional data: Shows the filename, resolution, datetime and size with **the current prompt**
 
 ![Preview image advanced](./docs/image-preview.png)
 
 > Important:
-> - Additional feature: This node has an output as metadata raw, **you can use to compare with others!** (see below)
-> - Additional data: Shows the filename, resolution, datetime and size with **the current prompt**
-> - Remember: If you want to read the metadata of the image, you need to use the "Load image with metadata" node and output "metadata RAW".
+> - If you want to read the metadata of the image, you need to use the "Load image with metadata" node and output "metadata RAW".
+> - To do a preview it is necessary save it first on temporal folder, and the data shown is from the temporal image, not the original one.
 
  
 ## Utils

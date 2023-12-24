@@ -21,6 +21,7 @@ JSON_WIDGET = ("JSON", {"forceInput": True})
 
 STRING_ML = ("STRING", {"multiline": True, "default": ""})
 
+METADATA_RAW = ("METADATA_RAW", {"forceInput": True})
 
 class AnyType(str):
     """A special class that is always equal in not equal comparisons. Credit to pythongosssss"""
