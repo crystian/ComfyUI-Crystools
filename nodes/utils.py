@@ -1,6 +1,7 @@
 import json
 import re
-from ..core import CATEGORY, CONFIG, JSON_WIDGET, METADATA_RAW, TEXTS, findJsonStrDiff, findJsonsDiff, get_system_stats, logger
+from ..core import CATEGORY, CONFIG, JSON_WIDGET, METADATA_RAW, TEXTS, findJsonStrDiff, findJsonsDiff, get_system_stats, \
+    logger
 
 
 class CMetadataExtractor:
@@ -16,7 +17,7 @@ class CMetadataExtractor:
 
     CATEGORY = CATEGORY.MAIN.value + CATEGORY.UTILS.value
     RETURN_TYPES = ("JSON", "JSON", "JSON", "STRING", "STRING")
-    RETURN_NAMES = ("prompt", "workflow", "file-info", "raw to string", "raw to csv")
+    RETURN_NAMES = ("prompt", "workflow", "file info", "raw to property", "raw to csv")
     OUTPUT_NODE = True
 
     FUNCTION = "execute"
@@ -24,26 +25,35 @@ class CMetadataExtractor:
     def execute(self, metadata_raw):
         prompt = {}
         workflow = {}
-        fileInfo = {}
-        csv = '"key"\t"value"\n'
+        fileinfo = {}
         text = ""
+        csv = ""
 
-        if type(metadata_raw) == dict:
+        if metadata_raw is not None and isinstance(metadata_raw, dict):
             try:
                 for key, value in metadata_raw.items():
-                    value = json.dumps(value)
-                    text += f"{key}: {value}\n"
+
+                    if isinstance(value, dict):
+                        # yes, double json.dumps is needed for jsons
+                        value = json.dumps(json.dumps(value))
+                    else:
+                        value = json.dumps(value)
+
+                    text += f"\"{key}\"={value}\n"
                     # remove spaces
                     # value = re.sub(' +', ' ', value)
                     value = re.sub('\n', ' ', value)
                     csv += f'"{key}"\t{value}\n'
+
+                if csv != "":
+                    csv = '"key"\t"value"\n' + csv
 
             except Exception as e:
                 logger.warn(e)
 
             try:
                 if "prompt" in metadata_raw:
-                    prompt = json.loads(metadata_raw["prompt"])
+                    prompt = metadata_raw["prompt"]
                 else:
                     raise Exception("Prompt not found in metadata_raw")
             except Exception as e:
@@ -51,27 +61,28 @@ class CMetadataExtractor:
 
             try:
                 if "workflow" in metadata_raw:
-                    workflow = json.loads(metadata_raw["workflow"])
+                    workflow = metadata_raw["workflow"]
                 else:
                     raise Exception("Workflow not found in metadata_raw")
             except Exception as e:
                 logger.warn(e)
 
             try:
-                if "file-info" in metadata_raw:
-                    fileInfo = json.loads(json.dumps(metadata_raw["file-info"]))
-
+                if "fileinfo" in metadata_raw:
+                    fileinfo = metadata_raw["fileinfo"]
                 else:
-                    raise Exception("File-info not found in metadata_raw")
+                    raise Exception("Fileinfo not found in metadata_raw")
             except Exception as e:
                 logger.warn(e)
 
+        elif metadata_raw is None:
+            logger.info("metadata_raw is None")
         else:
-            logger.warn("Invalid metadata raw on formatted")
+            logger.warn(TEXTS.INVALID_METADATA_MSG.value)
 
         return (json.dumps(prompt, indent=CONFIG["indent"]),
                 json.dumps(workflow, indent=CONFIG["indent"]),
-                json.dumps(fileInfo, indent=CONFIG["indent"]),
+                json.dumps(fileinfo, indent=CONFIG["indent"]),
                 text, csv)
 
 

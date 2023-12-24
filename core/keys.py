@@ -7,6 +7,7 @@ class TEXTS(Enum):
     CONCAT = "Concatenated"
     INACTIVE_MSG = "inactive"
     INVALID_METADATA_MSG = "Invalid metadata raw"
+    FILE_NOT_FOUND = "File not found!"
 
 
 class CATEGORY(Enum):
