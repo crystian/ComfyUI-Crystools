@@ -137,7 +137,7 @@ primerp pryecto en python
 todo
 test
 persistir imagen
-
+no sobrevive al f5 por mas que se vea la data
 agregar desde menu o doble click
 
 ## Installation

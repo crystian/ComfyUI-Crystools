@@ -17,15 +17,14 @@ from ..core import CATEGORY, CONFIG, METADATA_RAW,TEXTS, setWidgetValues, logger
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "comfy"))
 
 
-class CImagePreviewAdvance(PreviewImage):
+class CImagePreviewFromImage(PreviewImage):
     def __init__(self):
-        # self.output_dir = folder_paths.get_temp_directory()
-        # self.type = "temp"
-        # self.prefix_append = "_temp_" + ''.join(random.choice("abcdefghijklmnopqrstupvxyz") for x in range(5))
-        # self.compress_level = 1
+        self.output_dir = folder_paths.get_temp_directory()
+        self.type = "temp"
+        self.prefix_append = "_" + ''.join(random.choice("abcdefghijklmnopqrstupvxyz") for x in range(5))
+        self.compress_level = 1
         self.data_cached = None
-        # self.old_data = None
-        # self.old_text = None
+        self.data_cached_text = None
 
     @classmethod
     def INPUT_TYPES(cls):
@@ -35,7 +34,6 @@ class CImagePreviewAdvance(PreviewImage):
             },
             "optional": {
                 "image": ("IMAGE",),
-                "metadata_raw": METADATA_RAW,
             },
             "hidden": {
                 "prompt": "PROMPT",
@@ -48,81 +46,115 @@ class CImagePreviewAdvance(PreviewImage):
     RETURN_NAMES = ("Metadata RAW",)
     OUTPUT_NODE = True
 
-    FUNCTION = "preview"
+    FUNCTION = "execute"
 
-    def preview(self, image=None, metadata_raw=None, prompt=None, extra_pnginfo=None):
-        result = []
+    def execute(self, image=None, prompt=None, extra_pnginfo=None):
         text = ""
-        images = []
+        title = ""
         data = {
-            "result": [],
+            "result": [''],
             "ui": {
-                "text": [],
+                "text": [''],
                 "images": [],
             }
         }
-        # TODO Refactor with unit tests
+
+        if image is not None:
+            saved = self.save_images(image, "crystools/i", prompt, extra_pnginfo)
+            image = saved["ui"]["images"][0]
+            image_path = Path(self.output_dir).joinpath(image["subfolder"], image["filename"])
+
+            img, promptFromImage, metadata = buildMetadata(image_path)
+
+            images = [image]
+            result = metadata
+
+            data["result"] = [result]
+            data["ui"]["images"] = images
+
+            title = "Source: Image link \n"
+            text += buildPreviewText(metadata, promptFromImage)
+            text += f"Current prompt (NO FROM IMAGE!):\n"
+            text += json.dumps(json.loads(json.loads(promptFromImage)), indent=CONFIG["indent"])
+
+            self.data_cached_text = text
+            self.data_cached = data
+
+        elif image is None and self.data_cached is not None:
+            title = "Source: Image link - CACHED\n"
+            data = self.data_cached
+            text = self.data_cached_text
+
+        else:
+            logger.debug("Source: Empty on CImagePreviewFromImage")
+            text = "Source: Empty"
+
+        data['ui']['text'] = [title + text]
+        return data
+
+
+class CImagePreviewFromMetadata(PreviewImage):
+    def __init__(self):
+        self.data_cached = None
+        self.data_cached_text = None
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                # if it is required, in next node does not receive any value even the cache!
+            },
+            "optional": {
+                "metadata_raw": METADATA_RAW,
+            },
+        }
+
+    CATEGORY = CATEGORY.MAIN.value + CATEGORY.IMAGE.value
+    RETURN_TYPES = ("METADATA_RAW",)
+    RETURN_NAMES = ("Metadata RAW",)
+    OUTPUT_NODE = True
+
+    FUNCTION = "execute"
+
+    def execute(self, metadata_raw=None):
+        text = ""
+        title = ""
+        data = {
+            "result": [''],
+            "ui": {
+                "text": [''],
+                "images": [],
+            }
+        }
+
+        # TODO define snakecase?
         if metadata_raw is not None:
-            text += "Source: Metadata RAW\n"
-            text += json.dumps(metadata_raw, indent=CONFIG["indent"])
+            promptFromImage = metadata_raw["prompt"]
+            title = "Source: Metadata RAW\n"
+            text += buildPreviewText(metadata_raw, promptFromImage)
+            text += f"Prompt from image:\n"
+            text += json.dumps(promptFromImage, indent=CONFIG["indent"])
 
             images = self.resolveImage(metadata_raw["fileinfo"]["filename"])
             result = metadata_raw
 
-        elif self.data_cached is not None:
-            text += "Source: Metadata RAW - CACHED\n"
-            text += json.dumps(self.data_cached, indent=CONFIG["indent"])
+            data["result"] = [result]
+            data["ui"]["images"] = images
 
-            images = self.resolveImage(self.data_cached["fileinfo"]["filename"])
-            result = self.data_cached
+            self.data_cached_text = text
+            self.data_cached = data
+
+        elif metadata_raw is None and self.data_cached is not None:
+            title = "Source: Metadata RAW - CACHED\n"
+            data = self.data_cached
+            text = self.data_cached_text
+
         else:
-            text += "Source: Empty"
+            logger.debug("Source: Empty on CImagePreviewFromMetadata")
+            text = "Source: Empty"
 
-        data["result"] = [result]
-        data["ui"]["text"] = [text]
-        data["ui"]["images"] = images
-
-        self.data_cached = metadata_raw
-
+        data["ui"]["text"] = [title + text]
         return data
-
-        # source = ""
-        # saved["ui"]["text"] = [source + text + json.dumps(prompt, indent=CONFIG["indent"])]
-        # saved["result"] = [metadataFromPng]
-
-        # if image is None and self.old_data is None:
-        #     text = "No image linked"
-        #     return {"ui": {"text": [text]}, "result": [None]}
-        #
-        # if image is None and self.old_data is not None:
-        #     prompt_to_return = self.old_data["prompt"]
-        #
-        #     source = f"Source: Cache\n"
-        #     return {"ui": {"text": [source + self.old_text + json.dumps(json.loads(prompt_to_return), indent=CONFIG["indent"])]}, "result": [self.old_data]}
-
-        # saved = self.save_images(image, "crystools", prompt, extra_pnginfo)
-        # filename = saved["ui"]["images"][0]["filename"]
-        # image_path = os.path.join(self.output_dir, filename)
-        # img = Image.open(image_path)
-        # time = os.path.getmtime(image_path)
-        # time_human = datetime.datetime.fromtimestamp(time)
-        # text += f"File: {image_path}\n"
-        # text += f"Resolution: {img.width}x{img.height}\n"
-        # text += f"Date: {time_human}\n"
-        # text += f"Size: {get_size(image_path)}\n"
-        # text += f"Current prompt (NO FROM IMAGE!):\n"
-
-        # metadataFromPng = {}
-        #
-        # if isinstance(img, PngImageFile):
-        #     metadataFromPng = img.info
-        #
-        # source = f"Source: {source}\n"
-        # saved["ui"]["text"] = [source + text + json.dumps(prompt, indent=CONFIG["indent"])]
-        # saved["result"] = [metadataFromPng]
-        #
-        # self.old_data = metadataFromPng
-        # self.old_text = text
 
     def resolveImage(self, filename=None):
         images = []
@@ -224,50 +256,8 @@ class CImageLoadWithMetadata:
 
     def execute(self, image):
         image_path = folder_paths.get_annotated_filepath(image)
-        if Path(image_path).is_file() is False:
-            raise Exception(TEXTS.FILE_NOT_FOUND.value)
 
-        img = Image.open(image_path)
-
-        metadata = {}
-        prompt = {}
-
-        metadata["fileinfo"] = {
-            "filename": Path(image_path).as_posix(),
-            "resolution": {
-                "x": img.width,
-                "y": img.height,
-            },
-            "resolution_text": f"{img.width}x{img.height}",
-            "date": str(datetime.datetime.fromtimestamp(os.path.getmtime(image_path))),
-            "size": str(get_size(image_path)),
-        }
-
-        # only for png files
-        if isinstance(img, PngImageFile):
-            metadataFromImg = img.info
-
-            # for all metadataFromImg convert to string (but not for workflow and prompt!)
-            for k, v in metadataFromImg.items():
-                # from ComfyUI
-                if k == "workflow":
-                    try:
-                        metadata["workflow"] = json.loads(metadataFromImg["workflow"])
-                    except Exception as e:
-                        logger.warn(f"Error parsing metadataFromImg 'workflow': {e}")
-
-                # from ComfyUI
-                elif k == "prompt":
-                    try:
-                        metadata["prompt"] = json.loads(metadataFromImg["prompt"])
-
-                        # extract prompt from metadataFromImg
-                        prompt = json.dumps(metadataFromImg["prompt"], indent=CONFIG["indent"])
-                    except Exception as e:
-                        logger.warn(f"Error parsing metadataFromImg 'prompt': {e}")
-
-                else:
-                    metadata[str(k)] = str(v)
+        img, prompt, metadata = buildMetadata(image_path)
 
         img = ImageOps.exif_transpose(img)
         image = img.convert("RGB")
@@ -295,3 +285,56 @@ class CImageLoadWithMetadata:
             return "Invalid image file: {}".format(image)
 
         return True
+
+
+def buildMetadata(image_path):
+    if Path(image_path).is_file() is False:
+        raise Exception(TEXTS.FILE_NOT_FOUND.value)
+
+    img = Image.open(image_path)
+
+    metadata = {}
+    prompt = {}
+
+    metadata["fileinfo"] = {
+        "filename": Path(image_path).as_posix(),
+        "resolution": f"{img.width}x{img.height}",
+        "date": str(datetime.datetime.fromtimestamp(os.path.getmtime(image_path))),
+        "size": str(get_size(image_path)),
+    }
+
+    # only for png files
+    if isinstance(img, PngImageFile):
+        metadataFromImg = img.info
+
+        # for all metadataFromImg convert to string (but not for workflow and prompt!)
+        for k, v in metadataFromImg.items():
+            # from ComfyUI
+            if k == "workflow":
+                try:
+                    metadata["workflow"] = json.loads(metadataFromImg["workflow"])
+                except Exception as e:
+                    logger.warn(f"Error parsing metadataFromImg 'workflow': {e}")
+
+            # from ComfyUI
+            elif k == "prompt":
+                try:
+                    metadata["prompt"] = json.loads(metadataFromImg["prompt"])
+
+                    # extract prompt from metadataFromImg
+                    prompt = json.dumps(metadataFromImg["prompt"], indent=CONFIG["indent"])
+                except Exception as e:
+                    logger.warn(f"Error parsing metadataFromImg 'prompt': {e}")
+
+            else:
+                metadata[str(k)] = str(v)
+
+    return img, prompt, metadata
+
+
+def buildPreviewText(metadata, prompt):
+    text = f"File: {metadata['fileinfo']['filename']}\n"
+    text += f"Resolution: {metadata['fileinfo']['resolution']}\n"
+    text += f"Date: {metadata['fileinfo']['date']}\n"
+    text += f"Size: {metadata['fileinfo']['size']}\n"
+    return text

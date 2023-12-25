@@ -13,8 +13,8 @@ app.registerExtension({
 app.registerExtension({
   name: 'Crystools.Image.PreviewImageAdvance',
   async beforeRegisterNodeDef(nodeType, nodeData, app) {
-    if (nodeData.name === 'Preview image advanced [Crystools]') {
-      displayContext(nodeType, app, 0, true);
+    if (nodeData.name === 'Preview from image [Crystools]' || nodeData.name === 'Preview from metadata [Crystools]') {
+      displayContext(nodeType, app, 0);
     }
   },
 });

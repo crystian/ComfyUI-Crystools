@@ -9,20 +9,20 @@ class CMetadataExtractor:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "metadata_raw": METADATA_RAW,
             },
             "optional": {
+                "metadata_raw": METADATA_RAW,
             }
         }
 
     CATEGORY = CATEGORY.MAIN.value + CATEGORY.UTILS.value
     RETURN_TYPES = ("JSON", "JSON", "JSON", "STRING", "STRING")
     RETURN_NAMES = ("prompt", "workflow", "file info", "raw to property", "raw to csv")
-    OUTPUT_NODE = True
+    # OUTPUT_NODE = True
 
     FUNCTION = "execute"
 
-    def execute(self, metadata_raw):
+    def execute(self, metadata_raw=None):
         prompt = {}
         workflow = {}
         fileinfo = {}
