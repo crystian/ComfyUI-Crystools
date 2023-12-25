@@ -2,7 +2,7 @@ import { app } from '../../../scripts/app.js';
 import { displayContext } from './common.js';
 
 let crystoolsExtensions = {
-  'Show resolution [Crystools]': 'Crystools.Image.ShowResolution',
+  'Get resolution [Crystools]': 'Crystools.Image.GetResolution',
   'Preview from image [Crystools]': 'Crystools.Image.PreviewFromImage',
   'Preview from metadata [Crystools]': 'Crystools.Image.PreviewFromMetadata',
   'Metadata comparator [Crystools]': 'Crystools.Metadata.MetadataComparator',

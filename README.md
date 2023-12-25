@@ -195,6 +195,16 @@ This node is used to show the resolution of an image.
 
 ![Show resolution](./docs/image-resolution.png)
 
+><details>
+>  <summary><i>Parameters</i></summary>
+>
+> - Input:
+>   - image: Any kind of image link
+> - Output:
+>   - Width: The width of the image  
+>   - Height: The height of the image
+></details>
+
 
 
 ## Pipe
@@ -369,6 +379,8 @@ You have predefined switches (string, latent, image, conditioning) but you can u
     ```
     cd ComfyUI/custom_nodes
     git clone https://github.com/crystian/ComfyUI-Crystools.git
+    cd ComfyUI-Crystools
+    pip install -r requirements.txt
     ```
 3. Start up ComfyUI.
 

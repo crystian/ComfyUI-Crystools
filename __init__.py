@@ -11,7 +11,7 @@ from .nodes.primitive import CBoolean, CText, CTextML, CInteger, CFloat
 from .nodes.switch import CSwitchBooleanAny, CSwitchBooleanLatent, CSwitchBooleanConditioning, CSwitchBooleanImage, \
     CSwitchBooleanString
 from .nodes.debugger import CConsoleAny, CConsoleAnyToJson
-from .nodes.image import CImagePreviewFromImage, CImageLoadWithMetadata, CImageShowResolution, CImagePreviewFromMetadata
+from .nodes.image import CImagePreviewFromImage, CImageLoadWithMetadata, CImageGetResolution, CImagePreviewFromMetadata
 from .nodes.list import CListAny, CListString
 from .nodes.pipe import CPipeToAny, CPipeFromAny
 from .nodes.utils import CUtilsCompareJsons, CUtilsStatSystem
@@ -40,7 +40,7 @@ NODE_CLASS_MAPPINGS = {
     CLASSES.CPIPE_FROM_ANY_NAME.value: CPipeFromAny,
 
     CLASSES.CIMAGE_LOAD_METADATA_NAME.value: CImageLoadWithMetadata,
-    CLASSES.CIMAGE_SHOW_RESOLUTION_NAME.value: CImageShowResolution,
+    CLASSES.CIMAGE_GET_RESOLUTION_NAME.value: CImageGetResolution,
     CLASSES.CIMAGE_PREVIEW_IMAGE_NAME.value: CImagePreviewFromImage,
     CLASSES.CIMAGE_PREVIEW_METADATA_NAME.value: CImagePreviewFromMetadata,
 
@@ -73,7 +73,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     CLASSES.CPIPE_FROM_ANY_NAME.value: CLASSES.CPIPE_FROM_ANY_DESC.value,
 
     CLASSES.CIMAGE_LOAD_METADATA_NAME.value: CLASSES.CIMAGE_LOAD_METADATA_DESC.value,
-    CLASSES.CIMAGE_SHOW_RESOLUTION_NAME.value: CLASSES.CIMAGE_SHOW_RESOLUTION_DESC.value,
+    CLASSES.CIMAGE_GET_RESOLUTION_NAME.value: CLASSES.CIMAGE_GET_RESOLUTION_DESC.value,
     CLASSES.CIMAGE_PREVIEW_IMAGE_NAME.value: CLASSES.CIMAGE_PREVIEW_IMAGE_DESC.value,
     CLASSES.CIMAGE_PREVIEW_METADATA_NAME.value: CLASSES.CIMAGE_PREVIEW_METADATA_DESC.value,
 

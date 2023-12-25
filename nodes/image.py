@@ -190,7 +190,7 @@ class CImagePreviewFromMetadata(PreviewImage):
         return images
 
 
-class CImageShowResolution:
+class CImageGetResolution:
     def __init__(self):
         pass
 
@@ -207,7 +207,8 @@ class CImageShowResolution:
         }
 
     CATEGORY = CATEGORY.MAIN.value + CATEGORY.IMAGE.value
-    RETURN_TYPES = ()
+    RETURN_TYPES = ("INT", "INT",)
+    RETURN_NAMES = ("width", "height",)
     OUTPUT_NODE = True
 
     FUNCTION = "execute"
@@ -217,7 +218,7 @@ class CImageShowResolution:
         text = [f"{res['x']}x{res['y']}"]
         setWidgetValues(text, unique_id, extra_pnginfo)
         logger.info(f"Resolution: {text}")
-        return {"ui": {"text": text}}
+        return {"ui": {"text": text}, "result": (res["x"], res["y"])}
 
 
 # subfolders based on: https://github.com/catscandrive/comfyui-imagesubfolders
