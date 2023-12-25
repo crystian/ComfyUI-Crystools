@@ -15,11 +15,12 @@ With this node, you will be able to see the JSON produced from your entire promp
 ![Show metadata](./docs/debugger-show-metadata.png)
 
 ><details>
->  <summary><i>Options</i></summary>
+>  <summary><i>Parameters</i></summary>
 >
->  - Active: Enable/disable the node  
->  - Parsed: Show the parsed JSON or plain text  
->  - What: Show the prompt or workflow (prompt are values to produce the image, and workflow is the entire workflow of ComfyUI)
+> - Options:
+>   - Active: Enable/disable the node  
+>   - Parsed: Show the parsed JSON or plain text  
+>     - What: Show the prompt or workflow (prompt are values to produce the image, and workflow is the entire workflow of ComfyUI)
 ></details>
 
 ### Node: Show any value to console/display
