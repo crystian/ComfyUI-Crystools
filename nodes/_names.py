@@ -51,10 +51,11 @@ class CLASSES(Enum):
     CIMAGE_PREVIEW_METADATA_NAME = "Preview from metadata [Crystools]"
     CIMAGE_PREVIEW_METADATA_DESC = "Preview from metadata (show prompt) [Crystools]"
 
-    CUTILS_METADATA_EXTRACTOR_NAME = "Metadata extractor [Crystools]"
-    CUTILS_METADATA_EXTRACTOR_DESC = "Metadata extractor [Crystools]"
-    CUTILS_METADATA_COMPARATOR_NAME = "Metadata comparator [Crystools]"
-    CUTILS_METADATA_COMPARATOR_DESC = "Metadata comparator [Crystools]"
+    CMETADATA_EXTRACTOR_NAME = "Metadata extractor [Crystools]"
+    CMETADATA_EXTRACTOR_DESC = "Metadata extractor [Crystools]"
+    CMETADATA_COMPARATOR_NAME = "Metadata comparator [Crystools]"
+    CMETADATA_COMPARATOR_DESC = "Metadata comparator [Crystools]"
+
     CUTILS_JSON_COMPARATOR_NAME = "Json comparator [Crystools]"
     CUTILS_JSON_COMPARATOR_DESC = "Json comparator [Crystools]"
     CUTILS_STAT_SYSTEM_NAME = "Stats system [Crystools]"

@@ -14,7 +14,8 @@ from .nodes.debugger import CConsoleAny
 from .nodes.image import CImagePreviewFromImage, CImageLoadWithMetadata, CImageShowResolution, CImagePreviewFromMetadata
 from .nodes.list import CListAny, CListString
 from .nodes.pipe import CPipeToAny, CPipeFromAny
-from .nodes.utils import CUtilsCompareJsons, CUtilsStatSystem, CMetadataExtractor, CMetadataCompare
+from .nodes.utils import CUtilsCompareJsons, CUtilsStatSystem
+from .nodes.metadata import CMetadataExtractor, CMetadataCompare
 
 NODE_CLASS_MAPPINGS = {
     CLASSES.CBOOLEAN_NAME.value: CBoolean,
@@ -42,8 +43,8 @@ NODE_CLASS_MAPPINGS = {
     CLASSES.CIMAGE_PREVIEW_IMAGE_NAME.value: CImagePreviewFromImage,
     CLASSES.CIMAGE_PREVIEW_METADATA_NAME.value: CImagePreviewFromMetadata,
 
-    CLASSES.CUTILS_METADATA_EXTRACTOR_NAME.value: CMetadataExtractor,
-    CLASSES.CUTILS_METADATA_COMPARATOR_NAME.value: CMetadataCompare,
+    CLASSES.CMETADATA_EXTRACTOR_NAME.value: CMetadataExtractor,
+    CLASSES.CMETADATA_COMPARATOR_NAME.value: CMetadataCompare,
     CLASSES.CUTILS_JSON_COMPARATOR_NAME.value: CUtilsCompareJsons,
     CLASSES.CUTILS_STAT_SYSTEM_NAME.value: CUtilsStatSystem
 }
@@ -74,8 +75,9 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     CLASSES.CIMAGE_PREVIEW_IMAGE_NAME.value: CLASSES.CIMAGE_PREVIEW_IMAGE_DESC.value,
     CLASSES.CIMAGE_PREVIEW_METADATA_NAME.value: CLASSES.CIMAGE_PREVIEW_METADATA_DESC.value,
 
-    CLASSES.CUTILS_METADATA_EXTRACTOR_NAME.value: CLASSES.CUTILS_METADATA_EXTRACTOR_DESC.value,
-    CLASSES.CUTILS_METADATA_COMPARATOR_NAME.value: CLASSES.CUTILS_METADATA_COMPARATOR_DESC.value,
+    CLASSES.CMETADATA_EXTRACTOR_NAME.value: CLASSES.CMETADATA_EXTRACTOR_DESC.value,
+    CLASSES.CMETADATA_COMPARATOR_NAME.value: CLASSES.CMETADATA_COMPARATOR_DESC.value,
+
     CLASSES.CUTILS_JSON_COMPARATOR_NAME.value: CLASSES.CUTILS_JSON_COMPARATOR_DESC.value,
     CLASSES.CUTILS_STAT_SYSTEM_NAME.value: CLASSES.CUTILS_STAT_SYSTEM_DESC.value,
 }

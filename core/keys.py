@@ -20,6 +20,7 @@ class CATEGORY(Enum):
     PIPE = "/Pipe"
     IMAGE = "/Image"
     UTILS = "/Utils"
+    METADATA = "/Metadata"
 
 
 # remember, all keys should be in lowercase!
