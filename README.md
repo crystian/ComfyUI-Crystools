@@ -45,14 +45,17 @@ A set of nodes with primitive values to use in your prompts.
 
 
 ## List
-### Nodes: List of strings, List of any
-
-A set of nodes with list of values (any or strings/texts)  
-With strings you can concatenate them  
-
-![Lists](./docs/lists.png)
+A set of nodes with list of values (any or strings/texts) for any propose (news coming soon!).
 
 > **Important:** You can use with others nodes like "Show any" to see the values of the list
+
+### Node: List of strings
+Even you can concatenate them
+
+![Lists](./docs/lists-string.png)
+
+### Node: List of any
+You can concatenate any value (it will try to convert to string and show the value)
 
 ![Lists](./docs/lists-any.png)
 
@@ -75,20 +78,25 @@ A maximum of 6 **optional** links is supported.
 >- "RecursionError", It's crucial to note that the flow of links **must be in the same direction**, and they cannot be mixed with other flows that use the result of this one. Otherwise, this may lead to recursion and block the server (you need to restart it!)
  
 Typical example:
+
 ![Pipes](./docs/pipe-0.png)
 
 With pipes:
+
 ![Pipes](./docs/pipe-1.png)
 
 Editing pipes:
+
 ![Pipes](./docs/pipe-2.png)
 
 Bad example with "RecursionError: maximum recursion depth exceeded":
+
 ![Pipes](./docs/pipe-3.png)
 
 ## Image
-### Load image with metadata
-This node is the same as the default one, but it adds three options: Prompt, Metadata, and subfolders of the "input" folder.
+### Node: Load image with metadata
+This node is the same as the default one, but it adds three features: Prompt, Metadata, and supports **subfolders** of the "input" folder.
+
 ![Load image with metadata](./docs/image-load.png)
 
 ><details>
@@ -99,33 +107,49 @@ This node is the same as the default one, but it adds three options: Prompt, Met
 >  - Metadata RAW: The metadata raw of the image (full workflow) as string
 ></details>
 
-The subfolders support is by: [comfyui-imagesubfolders](https://github.com/catscandrive/comfyui-imagesubfolders)
+**Note:** The subfolders support is by: [comfyui-imagesubfolders](https://github.com/catscandrive/comfyui-imagesubfolders)
 
-### Show resolution
+### Node: Show resolution
 This node is used to show the resolution of the image.
 
 > Can be used with any image link.
 
 ![Show resolution](./docs/image-resolution.png)
 
-### Preview image advanced (prompt)
-This node is used to preview the image with the current prompt and additional data.  
+### Node: Preview from image
+This node is used to preview the image with the **current prompt** and additional features.  
 
-- Additional feature: This node has an output as metadata raw, **you can use to compare with others!** (see below)
-- Additional data: Shows the filename, resolution, datetime and size with **the current prompt**
+![Preview from image](./docs/image-preview.png)
 
-![Preview image advanced](./docs/image-preview.png)
+**Feature:** It supports cache (shows as "CACHED"), so you can disconnect the node and still see the image and data, so you can use it to compare with others!
 
-> Important:
-> - If you want to read the metadata of the image, you need to use the "Load image with metadata" node and output "metadata RAW".
-> - To do a preview it is necessary save it first on temporal folder, and the data shown is from the temporal image, not the original one.
+![Preview from image](./docs/image-preview-diff.png)  
+You can see the seed, steps, and cfg were changed
 
+**Notes:**  
+- Additional feature: This node has an output as metadata raw, **you can use to compare with others!** (see [Metadata Comparator](#node-metadata-comparator))
+- Additional data: Shows the filename, resolution, datetime and size with **the current prompt, not the original one!** (see detail).
+><details>
+>  <summary><i>Sample of notes</i></summary>
+>
+> All the data even the prompt shown is from the temporal image, **not the original one!**
+![Preview from image from load image](./docs/image-preview-prompt.png)
+></details>
+
+> **Important:**
+> - If you want to read the metadata of the image, you need to use the [Load image with metadata](#node-load-image-with-metadata) and use the output "metadata RAW" not image.
+> - To do a preview it is necessary save it first on temporal folder, and the data shown is from the temporal image, **not the original one**.
+
+### Node: Preview from metadata
+This node is used to preview the image from the metadata and shows additional data (all around this one).  
  
+![Preview from metadata](./docs/image-preview-metadata.png)
+
 ## Utils
-### Metadata extractor
-### Metadata comparator
-### Json comparator
-### Stat system
+### Node: Metadata extractor
+### Node: Metadata comparator
+### Node: Json comparator
+### Node: Stat system
 
 More info and works:
 ig

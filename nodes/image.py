@@ -249,7 +249,7 @@ class CImageLoadWithMetadata:
 
     CATEGORY = CATEGORY.MAIN.value + CATEGORY.IMAGE.value
     RETURN_TYPES = ("IMAGE", "MASK", "JSON", "METADATA_RAW")
-    RETURN_NAMES = ("image", "mask", "prompt", "Metadata RAW (optional)")
+    RETURN_NAMES = ("image", "mask", "prompt", "Metadata RAW")
     OUTPUT_NODE = True
 
     FUNCTION = "execute"
