@@ -1,4 +1,4 @@
-# ComfyUI-Crystools
+# ComfyUI-Crystools [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fcrystian%2FComfyUI-Crystools&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com) [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://paypal.me/crystian77)
 
 **_A powerful set of tools for your belt when you work with ComfyUI_**
 
@@ -6,6 +6,7 @@ Show metadata, compare between two JSONs, compare between two images, show any v
 
 ![Show metadata](./docs/jake.gif)
 
+## Table of contents
 ## Debugger
 
 ### Node: Show Metadata
@@ -45,7 +46,6 @@ You can see on the console or display any text or data from the nodes. Connect i
 As same the previous one, but it formatted the value to JSON (only display).
 
 ![Show any](./docs/debugger-show-json.png)
-
 
 ><details>
 >  <summary><i>Parameters</i></summary>
@@ -281,35 +281,74 @@ There are tree potential "outputs": `values_changed`, `dictionary_item_added`, `
 
 
 ## Utils
+
 Some useful nodes to use in your workflow.
 
 ### Node: JSON comparator
+
 This node is so useful to compare two JSONs and see the differences.
 
-![JSON comparator](./docs/JSON-comparator.png)
+![JSON comparator](./docs/utils-json-comparator.png)
 
-### Node: Stat system
 
-More info and works:
-ig
+><details>
+>  <summary><i>Parameters</i></summary>
+>
+> - input: 
+>   - json_old: The first json to start compare
+>   - json_new: The json to compare
+> - Output:
+>   - diff: A new JSON with the differences
+></details>
 
-buscar con oo
 
-primerp pryecto en python
+**Notes:**  
+As you can see, it is the same as the [metadata comparator](#node-metadata-comparator) but with JSONs.  
+The other is intentionally simple to compare two images metadata, this is more generic.  
+The main difference is that you can compare any JSON, not only metadata.
 
-todo
-test
-persistir imagen
-no sobrevive al f5 por mas que se vea la data
-agregar desde menu o doble click
-log
-persisitr data
+### Node: Stats system
 
-mostrar primioro show any, creo que es por que es js puro
+This node is used to show the stats of the system (RAM, VRAM and Space).  
+It **should** connect as a pipe.
+
+![JSON comparator](./docs/utils-stats.png)
+
+><details>
+>  <summary><i>Parameters</i></summary>
+>
+> - input: 
+>   - latent: The latent to use to measure the stats
+> - Output:
+>   - latent: Return the same latent to continue the pipe
+></details>
+
+**Notes:** The original is in [WAS](https://github.com/WASasquatch/was-node-suite-comfyui), I only show it on the display.
+
+
+## About
+
+**Notes from the author:**
+- This is my first project in python ¯\_(ツ)_/¯ (PR are welcome!)
+- I'm software engineer but in other languages (web technologies)
+- My instagram is: https://www.instagram.com/crystian.ia I'll publish my works on it, consider follow me for news! :)
+- I'm not a native english speaker, so sorry for my english :P
+
+## To do
+- [ ] Several unit tests
+- [ ] Add permanent cache for preview/metadata image (to survive to F5! or restart the server)
+
+
+## Use
+
+You can use it as any other node, just using the menu in the category `crystools` or double click on the canvas (I recommended to use the "oo" to fast filter), all nodes were posfixing with `[Crystools]`.
+
+![Menu](./docs/menu.png)
+![shortcut](./docs/shortcut.png)
+
+If for some reason you need to see the logs, you can define the environment variable `CRYSTOOLS_LOGLEVEL` and set the [value](https://docs.python.org/es/3/howto/logging.html).
 
 ## Installation
-
-
 
 ### Install from GitHub
 1. Install [ComfyUi](https://github.com/comfyanonymous/ComfyUI).
