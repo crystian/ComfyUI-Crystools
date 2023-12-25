@@ -219,36 +219,42 @@ It supports same features as [preview from image](#node-preview-from-image) (cac
  
 ![Preview from metadata](./docs/image-preview-metadata.png)
 
+
 ## Metadata
 
 ### Node: Metadata extractor
-This node is used to extract the metadata from the image and handle it as a JSON as source for other nodes.
-You can see **all information**, even metadata from others sources (like photoshop).
 
-The input can be from the [load image with metadata](#node-load-image-with-metadata) or [preview from image](#node-preview-from-image) nodes.
+This node is used to extract the metadata from the image and handle it as a JSON as source for other nodes.  
+You can see **all information**, even metadata from others sources (like photoshop, see sample).
+
+The input comes from the [load image with metadata](#node-load-image-with-metadata) or [preview from image](#node-preview-from-image) nodes (an others in the future).
 
 ![Metadata extractor](./docs/metadata-extractor.png)
 
 ><details>
->  <summary><i>Other metadata sample</i></summary>
+>  <summary>Other metadata sample (photoshop)</summary>
 > 
 > With metadata from Photoshop
 ![Metadata extractor](./docs/metadata-extractor-photoshop.png)
 ></details>
 
 ><details>
->  <summary><i>Outputs</i></summary>
->  
->  - Prompt: The prompt used to produce the image.
->  - Workflow: The workflow used to produce the image (all information about nodes, values, etc).
->  - file info: The file info of the image/metadata (resolution, size, etc) as human readable.
->  - raw to JSON: The entire metadata raw but formatted/readable.
->  - raw to property: The entire metadata raw as "properties" format.
->  - raw to csv: The entire metadata raw as "csv" format.
+>  <summary><i>Parameters</i></summary>
+>
+> - input: 
+>   - metadata_raw: The metadata raw from the image or preview node
+> - Output:
+>   - prompt: The prompt used to produce the image.
+>   - workflow: The workflow used to produce the image (all information about nodes, values, etc).
+>   - file info: The file info of the image/metadata (resolution, size, etc) as human readable.
+>   - raw to JSON: The entire metadata raw but formatted/readable.
+>   - raw to property: The entire metadata raw as "properties" format.
+>   - raw to csv: The entire metadata raw as "csv" format.
 ></details>
 
 ### Node: Metadata comparator
-This node is so useful to compare two metadata and see the differences (**the reason why I created this extension!**)
+
+This node is so useful to compare two metadata and see the differences (**the main reason why I created this extension!**)
 
 You can compare 3 inputs: "Prompt", "Workflow" and "Fileinfo"
 
@@ -257,14 +263,22 @@ There are tree potential "outputs": `values_changed`, `dictionary_item_added`, `
 ![Metadata extractor](./docs/metadata-comparator.png)
 
 **Notes:**  
-I use [DeepDiff](https://pypi.org/project/deepdiff) for that.  
-If you want to compare two JSONs, you can use the [JSON comparator](#node-JSON-comparator) node.
+- I use [DeepDiff](https://pypi.org/project/deepdiff) for that, for more info check the link.  
+- If you want to compare two JSONs, you can use the [JSON comparator](#node-JSON-comparator) node.
+
 
 ><details>
->  <summary><i>Outputs</i></summary>
->  
->  - Diff: This is the same output you can see in the display of the node, you can use it on others nodes.
+>  <summary><i>Parameters</i></summary>
+>
+> - options:
+>   - what: What to compare, you can choose between "Prompt", "Workflow" and "Fileinfo"  
+> - input: 
+>   - metadata_raw_old: The metadata raw to start compare
+>   - metadata_raw_new: The metadata raw to compare
+> - Output:
+>   - diff: This is the same output you can see in the display of the node, you can use it on others nodes.
 ></details>
+
 
 ## Utils
 Some useful nodes to use in your workflow.
