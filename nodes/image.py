@@ -75,7 +75,7 @@ class CImagePreviewFromImage(PreviewImage):
             title = "Source: Image link \n"
             text += buildPreviewText(metadata, promptFromImage)
             text += f"Current prompt (NO FROM IMAGE!):\n"
-            text += json.dumps(json.loads(json.loads(promptFromImage)), indent=CONFIG["indent"])
+            text += json.dumps(promptFromImage, indent=CONFIG["indent"])
 
             self.data_cached_text = text
             self.data_cached = data

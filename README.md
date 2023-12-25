@@ -68,7 +68,9 @@ A set of nodes with primitive values to use in your prompts.
 ## List
 A set of nodes with list of values (any or strings/texts) for any propose (news nodes to use it coming soon!).
 
+
 > **Important:** You can use with others nodes like "Show any" to see the values of the list
+
 
 ### Node: List of strings
 
@@ -162,60 +164,63 @@ This node is the same as the default one, but it adds three features: Prompt, Me
 ![Load image with metadata](./docs/image-load.png)
 
 ><details>
->  <summary><i>Outputs</i></summary>
+>  <summary><i>Parameters</i></summary>
 >
->  - Image/Mask: The same as the default node  
->  - Prompt: The prompt used to produce the image (not the workflow)  
->  - Metadata RAW: The metadata raw of the image (full workflow) as string
+> - Input:
+>   - image: Read the images from the input folder (and subfolder) (you can drop the image here, or even paste an image from clipboard)
+> - Output:
+>   - Image/Mask: The same as the default node  
+>   - Prompt: The prompt used to produce the image (not the workflow)  
+>   - Metadata RAW: The metadata raw of the image (full workflow) as string
 ></details>
 
-**Note:** The subfolders support is by: [comfyui-imagesubfolders](https://github.com/catscandrive/comfyui-imagesubfolders)
+**Note:** The subfolders support inspired on: [comfyui-imagesubfolders](https://github.com/catscandrive/comfyui-imagesubfolders)
 
 ### Node: Show resolution
-This node is used to show the resolution of the image.
+
+This node is used to show the resolution of an image.
 
 > Can be used with any image link.
 
 ![Show resolution](./docs/image-resolution.png)
 
 ### Node: Preview from image
+
 This node is used to preview the image with the **current prompt** and additional features.  
 
 ![Preview from image](./docs/image-preview.png)
 
-**Feature:** It supports cache (shows as "CACHED"), so you can disconnect the node and still see the image and data, so you can use it to compare with others!
+**Feature:** It supports cache (shows as "CACHED") (not permanent yet!), so you can disconnect the node and still see the image and data, so you can use it to compare with others!
 
-![Preview from image](./docs/image-preview-diff.png)  
-You can see the seed, steps, and cfg were changed
+![Preview from image](./docs/image-preview-diff.png)
 
-**Notes/features:**  
-- Additional feature: This node has an output as metadata raw, **you can use to compare with others!** (see [metadata comparator](#node-metadata-comparator))
-- Additional data: Shows the filename, resolution, datetime and size with **the current prompt, not the original one!** (see detail).
+As you can see the seed, steps, and cfg were changed
+
 ><details>
->  <summary><i>Sample of notes</i></summary>
+>  <summary><i>Parameters</i></summary>
 >
-> All the data even the prompt shown is from the temporal image, **not the original one!**
-![Preview from image from load image](./docs/image-preview-prompt.png)
+> - Input:
+>   - image: Any kind of image link
+> - Output:
+>   - Metadata RAW: The metadata raw of the image and full workflow.  
+>     - You can use it to **compare with others** (see [metadata comparator](#node-metadata-comparator))
+>     - The file info like filename, resolution, datetime and size with **the current prompt, not the original one!** (see important note)
 ></details>
 
 > **Important:**
-> - If you want to read the metadata of the image, you need to use the [load image with metadata](#node-load-image-with-metadata) and use the output "metadata RAW" not image.
-> - To do a preview it is necessary save it first on temporal folder, and the data shown is from the temporal image, **not the original one**.
+> - If you want to read the metadata of the image, you need to use the [load image with metadata](#node-load-image-with-metadata) and use the output "metadata RAW" not image link.
+> - To do a preview it is necessary save it first on temporal folder, and the data shown is from the temporal image, **not the original one** even **the prompt!**
 
-
-><details>
->  <summary><i>Outputs</i></summary>
->  
->  - Metadata RAW: The metadata raw of the image (full workflow) as string
-></details>
 
 ### Node: Preview from metadata
+
 This node is used to preview the image from the metadata and shows additional data (all around this one).  
-It supports same features as [preview from image](#node-preview-from-image) (cache, metadata raw, etc).
+It supports same features as [preview from image](#node-preview-from-image) (cache, metadata raw, etc.). But the important difference is you see **real data from the image** (not the temporal one either current prompt).
  
 ![Preview from metadata](./docs/image-preview-metadata.png)
 
 ## Metadata
+
 ### Node: Metadata extractor
 This node is used to extract the metadata from the image and handle it as a JSON as source for other nodes.
 You can see **all information**, even metadata from others sources (like photoshop).
