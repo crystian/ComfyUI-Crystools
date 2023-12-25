@@ -1,5 +1,5 @@
 import json
-from ..core import CATEGORY, BOOLEAN, BOOLEAN_FALSE, KEYS, TEXTS, STRING, logger, setWidgetValues, any
+from ..core import CONFIG, CATEGORY, BOOLEAN, BOOLEAN_FALSE, KEYS, TEXTS, STRING, logger, setWidgetValues, any
 
 
 class CConsoleAny:
@@ -71,3 +71,54 @@ class CConsoleAny:
         # setWidgetValues(value, unique_id, extra_pnginfo)
 
         return {"ui": {"text": value}}
+
+
+class CConsoleAnyToJson:
+    def __init__(self):
+        pass
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+            },
+            "optional": {
+                "any_value": (any,),
+            },
+        }
+
+    CATEGORY = CATEGORY.MAIN.value + CATEGORY.DEBUGGER.value
+    INPUT_IS_LIST = True
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("string",)
+    OUTPUT_NODE = True
+
+    FUNCTION = "execute"
+
+    def execute(self, any_value=None):
+        text = TEXTS.INACTIVE_MSG.value
+
+        if any_value is not None and isinstance(any_value, list):
+            item = any_value[0]
+
+            if isinstance(item, dict):
+                try:
+                    text = json.dumps(item, indent=CONFIG["indent"])
+                except Exception as e:
+                    text = "The input is a dict, but could not be serialized.\n"
+                    logger.warn(e)
+
+            elif isinstance(item, list):
+                try:
+                    text = json.dumps(item, indent=CONFIG["indent"])
+                except Exception as e:
+                    text = "The input is a list, but could not be serialized.\n"
+                    logger.warn(e)
+
+            else:
+                text = str(item)
+
+        logger.debug(f"Show any-json to console is running...")
+
+        return {"ui": {"text": [text]}, "result": (text,)}

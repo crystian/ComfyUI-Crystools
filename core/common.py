@@ -22,10 +22,11 @@ def findJsonStrDiff(json1, json2):
     msgError = "Could not compare jsons"
     returnJson = {"error": msgError}
     try:
-        dict1 = json.loads(json1)
-        dict2 = json.loads(json2)
+        # TODO review this
+        # dict1 = json.loads(json1)
+        # dict2 = json.loads(json2)
 
-        returnJson = findJsonsDiff(dict1, dict2)
+        returnJson = findJsonsDiff(json1, json2)
 
         returnJson = json.dumps(returnJson, indent=CONFIG["indent"])
     except Exception as e:

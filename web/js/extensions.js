@@ -7,6 +7,7 @@ let crystoolsExtensions = {
   'Preview from metadata [Crystools]': 'Crystools.Image.PreviewFromMetadata',
   'Metadata comparator [Crystools]': 'Crystools.Metadata.MetadataComparator',
   'Stats system [Crystools]': 'Crystools.Utils.StatsSystem',
+  'Show any to JSON [Crystools]': 'Crystools.Debugger.ConsoleAnyToJson',
 };
 
 Object.keys(crystoolsExtensions).forEach(key => {

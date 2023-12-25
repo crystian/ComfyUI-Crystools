@@ -321,8 +321,8 @@ def buildMetadata(image_path):
                 try:
                     metadata["prompt"] = json.loads(metadataFromImg["prompt"])
 
-                    # extract prompt from metadataFromImg
-                    prompt = json.dumps(metadataFromImg["prompt"], indent=CONFIG["indent"])
+                    # extract prompt to use on metadataFromImg
+                    prompt = metadata["prompt"]
                 except Exception as e:
                     logger.warn(f"Error parsing metadataFromImg 'prompt': {e}")
 

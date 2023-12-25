@@ -10,7 +10,7 @@ from .nodes._names import CLASSES
 from .nodes.primitive import CBoolean, CText, CTextML, CInteger, CFloat
 from .nodes.switch import CSwitchBooleanAny, CSwitchBooleanLatent, CSwitchBooleanConditioning, CSwitchBooleanImage, \
     CSwitchBooleanString
-from .nodes.debugger import CConsoleAny
+from .nodes.debugger import CConsoleAny, CConsoleAnyToJson
 from .nodes.image import CImagePreviewFromImage, CImageLoadWithMetadata, CImageShowResolution, CImagePreviewFromMetadata
 from .nodes.list import CListAny, CListString
 from .nodes.pipe import CPipeToAny, CPipeFromAny
@@ -24,7 +24,8 @@ NODE_CLASS_MAPPINGS = {
     CLASSES.CINTEGER_NAME.value: CInteger,
     CLASSES.CFLOAT_NAME.value: CFloat,
 
-    CLASSES.CCONSOLE_ANY_NAME.value: CConsoleAny,
+    CLASSES.CDEBUGGER_CONSOLE_ANY_NAME.value: CConsoleAny,
+    CLASSES.CDEBUGGER_CONSOLE_ANY_TO_JSON_NAME.value: CConsoleAnyToJson,
 
     CLASSES.CLIST_ANY_NAME.value: CListAny,
     CLASSES.CLIST_STRING_NAME.value: CListString,
@@ -56,7 +57,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     CLASSES.CINTEGER_NAME.value: CLASSES.CINTEGER_DESC.value,
     CLASSES.CFLOAT_NAME.value: CLASSES.CFLOAT_DESC.value,
 
-    CLASSES.CCONSOLE_ANY_NAME.value: CLASSES.CCONSOLE_ANY_DESC.value,
+    CLASSES.CDEBUGGER_CONSOLE_ANY_NAME.value: CLASSES.CDEBUGGER_ANY_DESC.value,
+    CLASSES.CDEBUGGER_CONSOLE_ANY_TO_JSON_NAME.value: CLASSES.CDEBUGGER_CONSOLE_ANY_TO_JSON_DESC.value,
 
     CLASSES.CLIST_ANY_NAME.value: CLASSES.CLIST_ANY_DESC.value,
     CLASSES.CLIST_STRING_NAME.value: CLASSES.CLIST_STRING_DESC.value,

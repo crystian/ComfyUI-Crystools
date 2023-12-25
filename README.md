@@ -1,17 +1,18 @@
 # ComfyUI-Crystools
 
-**_A powerful set of tools/nodes for your belt when you work with ComfyUI_**
+**_A powerful set of tools for your belt when you work with ComfyUI_**
 
 Show metadata, compare between two JSONs, compare between two images, show any value to console/display, pipes, and more!
 
 ![Show metadata](./docs/jake.gif)
 
 ## Debugger
+
 ### Node: Show Metadata
 
 With this node, you will be able to see the JSON produced from your entire prompt and workflow so that you can really know all the values (and more) of your prompt quickly without the need to open the file (PNG or JSON).
 
-![Show metadata](./docs/show-metadata.png)
+![Show metadata](./docs/debugger-show-metadata.png)
 
 ><details>
 >  <summary><i>Options</i></summary>
@@ -23,20 +24,39 @@ With this node, you will be able to see the JSON produced from your entire promp
 
 ### Node: Show any value to console/display
 
-With this node, you can practically see any text or data from the nodes. Connect it to what you want to inspect, and you will see it.
+You can practically see any text or data from the nodes. Connect it to what you want to inspect, and you will see it.
 
-![Show any](./docs/show-any.png)
+![Show any](./docs/debugger-show-any.png)
 
 ><details>
->  <summary><i>Options</i></summary>
+>  <summary><i>Parameters</i></summary>
 >
+> - Input:
+>  - any_value: Any value to show, can be a string, number, etc.
+> - Options:
 >  - Console: Enable/disable write to console  
 >  - Display: Enable/disable write on this node  
 >  - Prefix: Prefix to console
 ></details>
 
+### Node: Show any value to JSON
+
+As same the previous one, but it formatted the value to JSON (only display).
+
+![Show any](./docs/debugger-show-JSON.png)
+
+
+><details>
+>  <summary><i>Parameters</i></summary>
+>
+> - Input:
+>  - any_value: Any value to try to convert to JSON
+> - Output:
+>  - string: The same string is shown on display
+></details>
 
 ## Primitives
+
 ### Nodes: Primitive boolean, Primitive integer, Primitive float, Primitive string, Primitive string multiline
 
 A set of nodes with primitive values to use in your prompts.
@@ -45,33 +65,57 @@ A set of nodes with primitive values to use in your prompts.
 
 
 ## List
-A set of nodes with list of values (any or strings/texts) for any propose (news coming soon!).
+A set of nodes with list of values (any or strings/texts) for any propose (news nodes to use it coming soon!).
 
 > **Important:** You can use with others nodes like "Show any" to see the values of the list
 
 ### Node: List of strings
 Even you can concatenate them
 
-![Lists](./docs/lists-string.png)
+![Lists](./docs/list-string.png)
+
+><details>
+>  <summary><i>Parameters</i></summary>
+>
+> - Input:
+>  - string_*: 8 possible inputs to use
+>  - delimiter: Use to concatenate the values on output
+> - Output:
+>  - concatenated: A string with all values concatenated
+>  - list_string: The list of strings (only with values)
+></details>
 
 ### Node: List of any
-You can concatenate any value (it will try to convert to string and show the value)
+You can concatenate any value (it will try to convert to string and show the value), so util to see several values at the same time.
 
-![Lists](./docs/lists-any.png)
+![Lists](./docs/list-any.png)
+
+><details>
+>  <summary><i>Parameters</i></summary>
+>
+> - Input:
+>  - any_*: 8 possible inputs to use
+> - Output:
+>  - list_any: The list of any elements (only with values)
+></details>
 
 ## Switch
 A set of nodes to switch between flows.  
+
 All switches are boolean, you can switch between flows by simply changing the value of the switch.  
 You have predefined switches (string, latent, image, conditioning) but you can use "Switch any" for any value/type.
 
 ![Switches](./docs/switches.png)
 
 ## Pipe
+
 ### Nodes: Pipe to/edit any, Pipe from any
+
 This powerful set of nodes is used to better organize your pipes.  
-The "Pipe to/edit any" node is used to encapsulate multiple links into a single one. It includes support for editing, easily adding the modified content back to the same pipe number.   
+
+The "Pipe to/edit any" node is used to encapsulate multiple links into a single one. It includes support for editing, easily adding the modified content back to the same pipe number.
+
 The "Pipe from any" node is used to extract the content of a pipe.  
-A maximum of 6 **optional** links is supported.
 
 >**Important:**
 >- Please note that it supports "any," meaning it does not validate (not yet!) the correspondence of input nodes with the output ones. When creating the link, it is recommended to link consciously number by number.
@@ -126,8 +170,8 @@ This node is used to preview the image with the **current prompt** and additiona
 ![Preview from image](./docs/image-preview-diff.png)  
 You can see the seed, steps, and cfg were changed
 
-**Notes:**  
-- Additional feature: This node has an output as metadata raw, **you can use to compare with others!** (see [Metadata Comparator](#node-metadata-comparator))
+**Notes/features:**  
+- Additional feature: This node has an output as metadata raw, **you can use to compare with others!** (see [metadata comparator](#node-metadata-comparator))
 - Additional data: Shows the filename, resolution, datetime and size with **the current prompt, not the original one!** (see detail).
 ><details>
 >  <summary><i>Sample of notes</i></summary>
@@ -137,18 +181,76 @@ You can see the seed, steps, and cfg were changed
 ></details>
 
 > **Important:**
-> - If you want to read the metadata of the image, you need to use the [Load image with metadata](#node-load-image-with-metadata) and use the output "metadata RAW" not image.
+> - If you want to read the metadata of the image, you need to use the [load image with metadata](#node-load-image-with-metadata) and use the output "metadata RAW" not image.
 > - To do a preview it is necessary save it first on temporal folder, and the data shown is from the temporal image, **not the original one**.
+
+
+><details>
+>  <summary><i>Outputs</i></summary>
+>  
+>  - Metadata RAW: The metadata raw of the image (full workflow) as string
+></details>
 
 ### Node: Preview from metadata
 This node is used to preview the image from the metadata and shows additional data (all around this one).  
+It supports same features as [preview from image](#node-preview-from-image) (cache, metadata raw, etc).
  
 ![Preview from metadata](./docs/image-preview-metadata.png)
 
-## Utils
+## Metadata
 ### Node: Metadata extractor
+This node is used to extract the metadata from the image and handle it as a JSON as source for other nodes.
+You can see **all information**, even metadata from others sources (like photoshop).
+
+The input can be from the [load image with metadata](#node-load-image-with-metadata) or [preview from image](#node-preview-from-image) nodes.
+
+![Metadata extractor](./docs/metadata-extractor.png)
+
+><details>
+>  <summary><i>Other metadata sample</i></summary>
+> 
+> With metadata from Photoshop
+![Metadata extractor](./docs/metadata-extractor-photoshop.png)
+></details>
+
+><details>
+>  <summary><i>Outputs</i></summary>
+>  
+>  - Prompt: The prompt used to produce the image.
+>  - Workflow: The workflow used to produce the image (all information about nodes, values, etc).
+>  - file info: The file info of the image/metadata (resolution, size, etc) as human readable.
+>  - raw to JSON: The entire metadata raw but formatted/readable.
+>  - raw to property: The entire metadata raw as "properties" format.
+>  - raw to csv: The entire metadata raw as "csv" format.
+></details>
+
 ### Node: Metadata comparator
-### Node: Json comparator
+This node is so useful to compare two metadata and see the differences (**the reason why I created this extension!**)
+
+You can compare 3 inputs: "Prompt", "Workflow" and "Fileinfo"
+
+There are tree potential "outputs": `values_changed`, `dictionary_item_added`, `dictionary_item_removed` (in this order of priority).
+
+![Metadata extractor](./docs/metadata-comparator.png)
+
+**Notes:**  
+I use [DeepDiff](https://pypi.org/project/deepdiff) for that.  
+If you want to compare two JSONs, you can use the [JSON comparator](#node-JSON-comparator) node.
+
+><details>
+>  <summary><i>Outputs</i></summary>
+>  
+>  - Diff: This is the same output you can see in the display of the node, you can use it on others nodes.
+></details>
+
+## Utils
+Some useful nodes to use in your workflow.
+
+### Node: JSON comparator
+This node is so useful to compare two JSONs and see the differences.
+
+![JSON comparator](./docs/JSON-comparator.png)
+
 ### Node: Stat system
 
 More info and works:
@@ -163,6 +265,10 @@ test
 persistir imagen
 no sobrevive al f5 por mas que se vea la data
 agregar desde menu o doble click
+log
+persisitr data
+
+mostrar primioro show any, creo que es por que es js puro
 
 ## Installation
 

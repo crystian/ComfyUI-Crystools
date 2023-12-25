@@ -15,8 +15,10 @@ class CLASSES(Enum):
     CFLOAT_NAME = "Primitive float [Crystools]"
     CFLOAT_DESC = "Primitive float [Crystools]"
 
-    CCONSOLE_ANY_NAME = "Show any [Crystools]"
-    CCONSOLE_ANY_DESC = "Show any value to console/display [Crystools]"
+    CDEBUGGER_CONSOLE_ANY_NAME = "Show any [Crystools]"
+    CDEBUGGER_ANY_DESC = "Show any value to console/display [Crystools]"
+    CDEBUGGER_CONSOLE_ANY_TO_JSON_NAME = "Show any to JSON [Crystools]"
+    CDEBUGGER_CONSOLE_ANY_TO_JSON_DESC = "Show any to JSON [Crystools]"
 
     CLIST_ANY_TYPE = "ListAny"
     CLIST_ANY_NAME = "List of any [Crystools]"

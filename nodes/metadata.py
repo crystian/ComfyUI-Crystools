@@ -9,15 +9,15 @@ class CMetadataExtractor:
     def INPUT_TYPES(cls):
         return {
             "required": {
+                "metadata_raw": METADATA_RAW,
             },
             "optional": {
-                "metadata_raw": METADATA_RAW,
             }
         }
 
     CATEGORY = CATEGORY.MAIN.value + CATEGORY.METADATA.value
-    RETURN_TYPES = ("JSON", "JSON", "JSON", "STRING", "STRING")
-    RETURN_NAMES = ("prompt", "workflow", "file info", "raw to property", "raw to csv")
+    RETURN_TYPES = ("JSON", "JSON", "JSON", "JSON", "STRING", "STRING")
+    RETURN_NAMES = ("prompt", "workflow", "file info", "raw to JSON", "raw to property", "raw to csv")
     # OUTPUT_NODE = True
 
     FUNCTION = "execute"
@@ -83,6 +83,7 @@ class CMetadataExtractor:
         return (json.dumps(prompt, indent=CONFIG["indent"]),
                 json.dumps(workflow, indent=CONFIG["indent"]),
                 json.dumps(fileinfo, indent=CONFIG["indent"]),
+                json.dumps(metadata_raw, indent=CONFIG["indent"]),
                 text, csv)
 
 
@@ -93,7 +94,7 @@ class CMetadataCompare:
             "required": {
                 "metadata_raw_old": METADATA_RAW,
                 "metadata_raw_new": METADATA_RAW,
-                "what": (["Prompt", "Workflow"],),
+                "what": (["Prompt", "Workflow", "Fileinfo"],),
             },
             "optional": {
             }
@@ -109,47 +110,50 @@ class CMetadataCompare:
     def execute(self, what, metadata_raw_old=None, metadata_raw_new=None):
         prompt_old = {}
         workflow_old = {}
+        fileinfo_old = {}
         prompt_new = {}
         workflow_new = {}
+        fileinfo_new = {}
         diff = ""
 
         if type(metadata_raw_old) == dict and type(metadata_raw_new) == dict:
-            try:
-                if "prompt" in metadata_raw_old:
-                    prompt_old = json.loads(metadata_raw_old["prompt"])
-                else:
-                    raise Exception("Prompt not found in metadata_raw_old")
-            except Exception as e:
-                logger.warn(e)
 
-            try:
-                if "workflow" in metadata_raw_old:
-                    workflow_old = json.loads(metadata_raw_old["workflow"])
-                else:
-                    raise Exception("Workflow not found in metadata_raw_old")
-            except Exception as e:
-                logger.warn(e)
+            if "prompt" in metadata_raw_old:
+                prompt_old = metadata_raw_old["prompt"]
+            else:
+                logger.warn("Prompt not found in metadata_raw_old")
 
-            try:
-                if "prompt" in metadata_raw_new:
-                    prompt_new = json.loads(metadata_raw_new["prompt"])
-                else:
-                    raise Exception("Prompt not found in metadata_raw_new")
-            except Exception as e:
-                logger.warn(e)
+            if "workflow" in metadata_raw_old:
+                workflow_old = metadata_raw_old["workflow"]
+            else:
+                logger.warn("Workflow not found in metadata_raw_old")
 
-            try:
-                if "workflow" in metadata_raw_new:
-                    workflow_new = json.loads(metadata_raw_new["workflow"])
-                else:
-                    raise Exception("Workflow not found in metadata_raw_new")
-            except Exception as e:
-                logger.warn(e)
+            if "fileinfo" in metadata_raw_old:
+                fileinfo_old = metadata_raw_old["fileinfo"]
+            else:
+                logger.warn("Fileinfo not found in metadata_raw_old")
+
+            if "prompt" in metadata_raw_new:
+                prompt_new = metadata_raw_new["prompt"]
+            else:
+                logger.warn("Prompt not found in metadata_raw_new")
+
+            if "workflow" in metadata_raw_new:
+                workflow_new = metadata_raw_new["workflow"]
+            else:
+                logger.warn("Workflow not found in metadata_raw_new")
+
+            if "fileinfo" in metadata_raw_new:
+                fileinfo_new = metadata_raw_new["fileinfo"]
+            else:
+                logger.warn("Fileinfo not found in metadata_raw_new")
 
             if what == "Prompt":
                 diff = findJsonsDiff(prompt_old, prompt_new)
-            else:
+            elif what == "Workflow":
                 diff = findJsonsDiff(workflow_old, workflow_new)
+            else:
+                diff = findJsonsDiff(fileinfo_old, fileinfo_new)
 
             diff = json.dumps(diff, indent=CONFIG["indent"])
 
