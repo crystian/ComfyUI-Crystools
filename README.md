@@ -17,15 +17,15 @@ With this node, you will be able to see the JSON produced from your entire promp
 ><details>
 >  <summary><i>Parameters</i></summary>
 >
->- Options:
->  - Active: Enable/disable the node  
->  - Parsed: Show the parsed JSON or plain text  
->  - What: Show the prompt or workflow (prompt are values to produce the image, and workflow is the entire workflow of ComfyUI)
+> - Options:
+>   - Active: Enable/disable the node  
+>   - Parsed: Show the parsed JSON or plain text  
+>   - What: Show the prompt or workflow (prompt are values to produce the image, and workflow is the entire workflow of ComfyUI)
 ></details>
 
-### Node: Show any value to console/display
+### Node: Show any
 
-You can practically see any text or data from the nodes. Connect it to what you want to inspect, and you will see it.
+You can see on the console or display any text or data from the nodes. Connect it to what you want to inspect, and you will see it.
 
 ![Show any](./docs/debugger-show-any.png)
 
@@ -40,20 +40,20 @@ You can practically see any text or data from the nodes. Connect it to what you 
 >   - Prefix: Prefix to console
 ></details>
 
-### Node: Show any value to JSON
+### Node: Show any to JSON
 
 As same the previous one, but it formatted the value to JSON (only display).
 
-![Show any](./docs/debugger-show-JSON.png)
+![Show any](./docs/debugger-show-json.png)
 
 
 ><details>
 >  <summary><i>Parameters</i></summary>
 >
 > - Input:
->  - any_value: Any value to try to convert to JSON
+>   - any_value: Any value to try to convert to JSON
 > - Output:
->  - string: The same string is shown on display
+>   - string: The same string is shown on display
 ></details>
 
 ## Primitives
@@ -71,7 +71,8 @@ A set of nodes with list of values (any or strings/texts) for any propose (news 
 > **Important:** You can use with others nodes like "Show any" to see the values of the list
 
 ### Node: List of strings
-Even you can concatenate them
+
+**Feature:** You can concatenate them.
 
 ![Lists](./docs/list-string.png)
 
@@ -79,14 +80,15 @@ Even you can concatenate them
 >  <summary><i>Parameters</i></summary>
 >
 > - Input:
->  - string_*: 8 possible inputs to use
->  - delimiter: Use to concatenate the values on output
+>   - string_*: 8 possible inputs to use
+>   - delimiter: Use to concatenate the values on output
 > - Output:
->  - concatenated: A string with all values concatenated
->  - list_string: The list of strings (only with values)
+>   - concatenated: A string with all values concatenated
+>   - list_string: The list of strings (only with values)
 ></details>
 
 ### Node: List of any
+
 You can concatenate any value (it will try to convert to string and show the value), so util to see several values at the same time.
 
 ![Lists](./docs/list-any.png)
@@ -95,9 +97,9 @@ You can concatenate any value (it will try to convert to string and show the val
 >  <summary><i>Parameters</i></summary>
 >
 > - Input:
->  - any_*: 8 possible inputs to use
+>   - any_*: 8 possible inputs to use
 > - Output:
->  - list_any: The list of any elements (only with values)
+>   - list_any: The list of any elements (only with values)
 ></details>
 
 ## Switch
@@ -117,10 +119,6 @@ This powerful set of nodes is used to better organize your pipes.
 The "Pipe to/edit any" node is used to encapsulate multiple links into a single one. It includes support for editing, easily adding the modified content back to the same pipe number.
 
 The "Pipe from any" node is used to extract the content of a pipe.  
-
->**Important:**
->- Please note that it supports "any," meaning it does not validate (not yet!) the correspondence of input nodes with the output ones. When creating the link, it is recommended to link consciously number by number.
->- "RecursionError", It's crucial to note that the flow of links **must be in the same direction**, and they cannot be mixed with other flows that use the result of this one. Otherwise, this may lead to recursion and block the server (you need to restart it!)
  
 Typical example:
 
@@ -134,9 +132,28 @@ Editing pipes:
 
 ![Pipes](./docs/pipe-2.png)
 
-Bad example with "RecursionError: maximum recursion depth exceeded":
+><details>
+>  <summary><i>Parameters</i></summary>
+>
+> - Input:
+>   - CPipeAny: This is the type of this pipe you can use it to edit (see the sample)
+>   - any_*: 6 possible inputs to use
+> - Output:
+>   - CPipeAny: You can continue the pipe with this output, you can use it to bifurcate the pipe (see the sample)
+></details>
 
+>**Important:**
+> - Please note that it supports "any," meaning it does not validate (not yet!) the correspondence of input nodes with the output ones. When creating the link, it is recommended to link consciously number by number.
+> - "RecursionError", It's crucial to note that the flow of links **must be in the same direction**, and they cannot be mixed with other flows that use the result of this one. Otherwise, this may lead to recursion and block the server (you need to restart it!)
+
+
+><details>
+>  <summary><i>Bad example with "RecursionError: maximum recursion depth exceeded"</i></summary>
+>
+> If you see on your console something like this, you need to check your pipes. That is bad sample of pipes, you can't mix the flows.
 ![Pipes](./docs/pipe-3.png)
+></details>
+
 
 ## Image
 ### Node: Load image with metadata
