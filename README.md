@@ -17,10 +17,10 @@ With this node, you will be able to see the JSON produced from your entire promp
 ><details>
 >  <summary><i>Parameters</i></summary>
 >
-> - Options:
->   - Active: Enable/disable the node  
->   - Parsed: Show the parsed JSON or plain text  
->     - What: Show the prompt or workflow (prompt are values to produce the image, and workflow is the entire workflow of ComfyUI)
+>- Options:
+>  - Active: Enable/disable the node  
+>  - Parsed: Show the parsed JSON or plain text  
+>  - What: Show the prompt or workflow (prompt are values to produce the image, and workflow is the entire workflow of ComfyUI)
 ></details>
 
 ### Node: Show any value to console/display
@@ -33,11 +33,11 @@ You can practically see any text or data from the nodes. Connect it to what you 
 >  <summary><i>Parameters</i></summary>
 >
 > - Input:
->  - any_value: Any value to show, can be a string, number, etc.
+>   - any_value: Any value to show, can be a string, number, etc.
 > - Options:
->  - Console: Enable/disable write to console  
->  - Display: Enable/disable write on this node  
->  - Prefix: Prefix to console
+>   - Console: Enable/disable write to console  
+>   - Display: Enable/disable write on this node  
+>   - Prefix: Prefix to console
 ></details>
 
 ### Node: Show any value to JSON
