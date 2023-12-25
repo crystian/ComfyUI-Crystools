@@ -40,50 +40,51 @@ class CListAny:
                 any_7=None,
                 any_8=None):
 
-        list = []
+        list_any = []
 
         if any_1 is not None:
             try:
-                list.append(any_1)
+                list_any.append(any_1)
             except Exception as e:
                 logger.warn(e)
         if any_2 is not None:
             try:
-                list.append(any_2)
+                list_any.append(any_2)
             except Exception as e:
                 logger.warn(e)
         if any_3 is not None:
             try:
-                list.append(any_3)
+                list_any.append(any_3)
             except Exception as e:
                 logger.warn(e)
         if any_4 is not None:
             try:
-                list.append(any_4)
+                list_any.append(any_4)
             except Exception as e:
                 logger.warn(e)
         if any_5 is not None:
             try:
-                list.append(any_5)
+                list_any.append(any_5)
             except Exception as e:
                 logger.warn(e)
         if any_6 is not None:
             try:
-                list.append(any_6)
+                list_any.append(any_6)
             except Exception as e:
                 logger.warn(e)
         if any_7 is not None:
             try:
-                list.append(any_7)
+                list_any.append(any_7)
             except Exception as e:
                 logger.warn(e)
         if any_8 is not None:
             try:
-                list.append(any_8)
+                list_any.append(any_8)
             except Exception as e:
                 logger.warn(e)
 
-        return [list]
+        # yes, double brackets are needed because of the OUTPUT_IS_LIST... ¯\_(ツ)_/¯
+        return [[list_any]]
 
 
 class CListString:
@@ -111,6 +112,7 @@ class CListString:
     CATEGORY = CATEGORY.MAIN.value + CATEGORY.LIST.value
     RETURN_TYPES = ("STRING", CLASSES.CLIST_STRING_TYPE.value,)
     RETURN_NAMES = (TEXTS.CONCAT.value, KEYS.LIST.value)
+    OUTPUT_IS_LIST = (False, True, )
 
     FUNCTION = "execute"
 
@@ -125,23 +127,23 @@ class CListString:
                 string_8=None,
                 delimiter=""):
 
-        list = []
+        list_str = []
 
-        if string_1 is not None:
-            list.append(string_1)
-        if string_2 is not None:
-            list.append(string_2)
-        if string_3 is not None:
-            list.append(string_3)
-        if string_4 is not None:
-            list.append(string_4)
-        if string_5 is not None:
-            list.append(string_5)
-        if string_6 is not None:
-            list.append(string_6)
-        if string_7 is not None:
-            list.append(string_7)
-        if string_8 is not None:
-            list.append(string_8)
+        if string_1 is not None and string_1 != "":
+            list_str.append(string_1)
+        if string_2 is not None and string_2 != "":
+            list_str.append(string_2)
+        if string_3 is not None and string_3 != "":
+            list_str.append(string_3)
+        if string_4 is not None and string_4 != "":
+            list_str.append(string_4)
+        if string_5 is not None and string_5 != "":
+            list_str.append(string_5)
+        if string_6 is not None and string_6 != "":
+            list_str.append(string_6)
+        if string_7 is not None and string_7 != "":
+            list_str.append(string_7)
+        if string_8 is not None and string_8 != "":
+            list_str.append(string_8)
 
-        return delimiter.join(list), list
+        return delimiter.join(list_str), [list_str]
