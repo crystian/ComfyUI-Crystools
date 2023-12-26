@@ -366,6 +366,7 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 - I'm not a native english speaker, so sorry for my english :P
 
 ## To do
+- [ ] Add support for others image formats (jpg, gif, etc.)
 - [ ] Several unit tests
 - [ ] Add permanent cache for preview/metadata image (to survive to F5! or restart the server)
 
