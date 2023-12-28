@@ -1,0 +1,375 @@
+{
+  "last_node_id": 15,
+  "last_link_id": 13,
+  "nodes": [
+    {
+      "id": 10,
+      "type": "Primitive integer [Crystools]",
+      "pos": [
+        175,
+        525
+      ],
+      "size": {
+        "0": 315,
+        "1": 58
+      },
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "int",
+          "type": "INT",
+          "links": [
+            9
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Primitive integer [Crystools]"
+      },
+      "widgets_values": [
+        1
+      ]
+    },
+    {
+      "id": 11,
+      "type": "Primitive float [Crystools]",
+      "pos": [
+        175,
+        625
+      ],
+      "size": {
+        "0": 315,
+        "1": 58
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "float",
+          "type": "FLOAT",
+          "links": [
+            10
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Primitive float [Crystools]"
+      },
+      "widgets_values": [
+        1
+      ]
+    },
+    {
+      "id": 9,
+      "type": "Primitive string multiline [Crystools]",
+      "pos": [
+        90,
+        275
+      ],
+      "size": {
+        "0": 400,
+        "1": 200
+      },
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "string",
+          "type": "STRING",
+          "links": [
+            8
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Primitive string multiline [Crystools]"
+      },
+      "widgets_values": [
+        "sample\nmultiline"
+      ]
+    },
+    {
+      "id": 12,
+      "type": "Primitive string [Crystools]",
+      "pos": [
+        240,
+        175
+      ],
+      "size": {
+        "0": 250,
+        "1": 58
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "string",
+          "type": "STRING",
+          "links": [
+            6
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Primitive string [Crystools]"
+      },
+      "widgets_values": [
+        "sample"
+      ]
+    },
+    {
+      "id": 14,
+      "type": "Load image with metadata [Crystools]",
+      "pos": [
+        165,
+        750
+      ],
+      "size": [
+        325,
+        350
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            11
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "prompt",
+          "type": "JSON",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "Metadata RAW",
+          "type": "METADATA_RAW",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Load image with metadata [Crystools]"
+      },
+      "widgets_values": [
+        "tests/ComfyUI_00314_20-8-euler.png",
+        "image"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "List of any [Crystools]",
+      "pos": [
+        600,
+        325
+      ],
+      "size": {
+        "0": 210,
+        "1": 166
+      },
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "any_1",
+          "type": "*",
+          "link": 5
+        },
+        {
+          "name": "any_2",
+          "type": "*",
+          "link": 6
+        },
+        {
+          "name": "any_3",
+          "type": "*",
+          "link": 8
+        },
+        {
+          "name": "any_4",
+          "type": "*",
+          "link": 9
+        },
+        {
+          "name": "any_5",
+          "type": "*",
+          "link": 10
+        },
+        {
+          "name": "any_6",
+          "type": "*",
+          "link": 11
+        },
+        {
+          "name": "any_7",
+          "type": "*",
+          "link": null
+        },
+        {
+          "name": "any_8",
+          "type": "*",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "any_list",
+          "type": "COMBO",
+          "links": [
+            12
+          ],
+          "shape": 6,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "List of any [Crystools]"
+      }
+    },
+    {
+      "id": 15,
+      "type": "Show any [Crystools]",
+      "pos": [
+        850,
+        325
+      ],
+      "size": [
+        575,
+        625
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "any_value",
+          "type": "*",
+          "link": 12
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Show any [Crystools]"
+      }
+    },
+    {
+      "id": 8,
+      "type": "Primitive boolean [Crystools]",
+      "pos": [
+        175,
+        75
+      ],
+      "size": {
+        "0": 315,
+        "1": 58
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "boolean",
+          "type": "BOOLEAN",
+          "links": [
+            5
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Primitive boolean [Crystools]"
+      },
+      "widgets_values": [
+        true
+      ]
+    }
+  ],
+  "links": [
+    [
+      5,
+      8,
+      0,
+      7,
+      0,
+      "*"
+    ],
+    [
+      6,
+      12,
+      0,
+      7,
+      1,
+      "*"
+    ],
+    [
+      8,
+      9,
+      0,
+      7,
+      2,
+      "*"
+    ],
+    [
+      9,
+      10,
+      0,
+      7,
+      3,
+      "*"
+    ],
+    [
+      10,
+      11,
+      0,
+      7,
+      4,
+      "*"
+    ],
+    [
+      11,
+      14,
+      0,
+      7,
+      5,
+      "*"
+    ],
+    [
+      12,
+      7,
+      0,
+      15,
+      0,
+      "*"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

@@ -1,0 +1,849 @@
+{
+  "last_node_id": 19,
+  "last_link_id": 37,
+  "nodes": [
+    {
+      "id": 3,
+      "type": "KSampler",
+      "pos": [
+        1350,
+        125
+      ],
+      "size": [
+        325,
+        475
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 17
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 26
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 25
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 24
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            7
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        156680208700286,
+        "fixed",
+        20,
+        8,
+        "euler",
+        "normal",
+        1
+      ]
+    },
+    {
+      "id": 8,
+      "type": "VAEDecode",
+      "pos": [
+        1400,
+        675
+      ],
+      "size": {
+        "0": 210,
+        "1": 46
+      },
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 7
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 27
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            9
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      }
+    },
+    {
+      "id": 9,
+      "type": "SaveImage",
+      "pos": [
+        1400,
+        800
+      ],
+      "size": [
+        200,
+        275
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 9
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        "ComfyUI"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "CLIPTextEncode",
+      "pos": [
+        75,
+        525
+      ],
+      "size": {
+        "0": 425.27801513671875,
+        "1": 180.6060791015625
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            22
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "text, watermark"
+      ]
+    },
+    {
+      "id": 15,
+      "type": "Pipe from any [Crystools]",
+      "pos": [
+        975,
+        200
+      ],
+      "size": {
+        "0": 216.59999084472656,
+        "1": 146
+      },
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "CPipeAny",
+          "type": "CPipeAny",
+          "link": 32
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CPipeAny",
+          "type": "CPipeAny",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "any_1",
+          "type": "*",
+          "links": [
+            17
+          ],
+          "shape": 3,
+          "slot_index": 1
+        },
+        {
+          "name": "any_2",
+          "type": "*",
+          "links": [
+            27
+          ],
+          "shape": 3,
+          "slot_index": 2
+        },
+        {
+          "name": "any_3",
+          "type": "*",
+          "links": [
+            26
+          ],
+          "shape": 3,
+          "slot_index": 3
+        },
+        {
+          "name": "any_4",
+          "type": "*",
+          "links": [
+            25
+          ],
+          "shape": 3,
+          "slot_index": 4
+        },
+        {
+          "name": "any_5",
+          "type": "*",
+          "links": [
+            24
+          ],
+          "shape": 3,
+          "slot_index": 5
+        },
+        {
+          "name": "any_6",
+          "type": "*",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Pipe from any [Crystools]"
+      }
+    },
+    {
+      "id": 6,
+      "type": "CLIPTextEncode",
+      "pos": [
+        75,
+        275
+      ],
+      "size": {
+        "0": 422.84503173828125,
+        "1": 164.31304931640625
+      },
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            29
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "beautiful scenery nature glass bottle landscape, , purple galaxy bottle,"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "EmptyLatentImage",
+      "pos": [
+        175,
+        775
+      ],
+      "size": {
+        "0": 315,
+        "1": 106
+      },
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            21
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        512,
+        512,
+        1
+      ]
+    },
+    {
+      "id": 14,
+      "type": "Pipe to/edit any [Crystools]",
+      "pos": [
+        625,
+        200
+      ],
+      "size": {
+        "0": 216.59999084472656,
+        "1": 146
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "CPipeAny",
+          "type": "CPipeAny",
+          "link": null
+        },
+        {
+          "name": "any_1",
+          "type": "*",
+          "link": 13
+        },
+        {
+          "name": "any_2",
+          "type": "*",
+          "link": 28
+        },
+        {
+          "name": "any_3",
+          "type": "*",
+          "link": 29
+        },
+        {
+          "name": "any_4",
+          "type": "*",
+          "link": 22
+        },
+        {
+          "name": "any_5",
+          "type": "*",
+          "link": 21
+        },
+        {
+          "name": "any_6",
+          "type": "*",
+          "link": 33
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CPipeAny",
+          "type": "CPipeAny",
+          "links": [
+            30
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Pipe to/edit any [Crystools]"
+      }
+    },
+    {
+      "id": 16,
+      "type": "Pipe to/edit any [Crystools]",
+      "pos": [
+        950,
+        475
+      ],
+      "size": {
+        "0": 216.59999084472656,
+        "1": 146
+      },
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "CPipeAny",
+          "type": "CPipeAny",
+          "link": 31
+        },
+        {
+          "name": "any_1",
+          "type": "*",
+          "link": null
+        },
+        {
+          "name": "any_2",
+          "type": "*",
+          "link": null
+        },
+        {
+          "name": "any_3",
+          "type": "*",
+          "link": 37
+        },
+        {
+          "name": "any_4",
+          "type": "*",
+          "link": null
+        },
+        {
+          "name": "any_5",
+          "type": "*",
+          "link": null
+        },
+        {
+          "name": "any_6",
+          "type": "*",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CPipeAny",
+          "type": "CPipeAny",
+          "links": [
+            32
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Pipe to/edit any [Crystools]"
+      }
+    },
+    {
+      "id": 4,
+      "type": "CheckpointLoaderSimple",
+      "pos": [
+        175,
+        100
+      ],
+      "size": {
+        "0": 315,
+        "1": 98
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            13
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            3,
+            5,
+            33
+          ],
+          "slot_index": 1
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            28
+          ],
+          "slot_index": 2
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CheckpointLoaderSimple"
+      },
+      "widgets_values": [
+        "SD1.5\\3d\\disneyPixarCartoon_v10.safetensors"
+      ]
+    },
+    {
+      "id": 17,
+      "type": "Pipe from any [Crystools]",
+      "pos": [
+        650,
+        475
+      ],
+      "size": {
+        "0": 216.59999084472656,
+        "1": 146
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "CPipeAny",
+          "type": "CPipeAny",
+          "link": 30
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CPipeAny",
+          "type": "CPipeAny",
+          "links": [
+            31
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "any_1",
+          "type": "*",
+          "links": [],
+          "shape": 3,
+          "slot_index": 1
+        },
+        {
+          "name": "any_2",
+          "type": "*",
+          "links": [],
+          "shape": 3,
+          "slot_index": 2
+        },
+        {
+          "name": "any_3",
+          "type": "*",
+          "links": [
+            35
+          ],
+          "shape": 3,
+          "slot_index": 3
+        },
+        {
+          "name": "any_4",
+          "type": "*",
+          "links": [],
+          "shape": 3,
+          "slot_index": 4
+        },
+        {
+          "name": "any_5",
+          "type": "*",
+          "links": [],
+          "shape": 3,
+          "slot_index": 5
+        },
+        {
+          "name": "any_6",
+          "type": "*",
+          "links": [
+            34
+          ],
+          "shape": 3,
+          "slot_index": 6
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Pipe from any [Crystools]"
+      }
+    },
+    {
+      "id": 19,
+      "type": "ConditioningCombine",
+      "pos": [
+        925,
+        750
+      ],
+      "size": {
+        "0": 342.5999755859375,
+        "1": 46
+      },
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "conditioning_1",
+          "type": "CONDITIONING",
+          "link": 35
+        },
+        {
+          "name": "conditioning_2",
+          "type": "CONDITIONING",
+          "link": 36
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            37
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ConditioningCombine"
+      }
+    },
+    {
+      "id": 18,
+      "type": "CLIPTextEncode",
+      "pos": [
+        650,
+        775
+      ],
+      "size": [
+        200,
+        75.99999237060547
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 34
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            36
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "at night"
+      ]
+    }
+  ],
+  "links": [
+    [
+      3,
+      4,
+      1,
+      6,
+      0,
+      "CLIP"
+    ],
+    [
+      5,
+      4,
+      1,
+      7,
+      0,
+      "CLIP"
+    ],
+    [
+      7,
+      3,
+      0,
+      8,
+      0,
+      "LATENT"
+    ],
+    [
+      9,
+      8,
+      0,
+      9,
+      0,
+      "IMAGE"
+    ],
+    [
+      13,
+      4,
+      0,
+      14,
+      1,
+      "*"
+    ],
+    [
+      17,
+      15,
+      1,
+      3,
+      0,
+      "MODEL"
+    ],
+    [
+      21,
+      5,
+      0,
+      14,
+      5,
+      "*"
+    ],
+    [
+      22,
+      7,
+      0,
+      14,
+      4,
+      "*"
+    ],
+    [
+      24,
+      15,
+      5,
+      3,
+      3,
+      "LATENT"
+    ],
+    [
+      25,
+      15,
+      4,
+      3,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      26,
+      15,
+      3,
+      3,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      27,
+      15,
+      2,
+      8,
+      1,
+      "VAE"
+    ],
+    [
+      28,
+      4,
+      2,
+      14,
+      2,
+      "*"
+    ],
+    [
+      29,
+      6,
+      0,
+      14,
+      3,
+      "*"
+    ],
+    [
+      30,
+      14,
+      0,
+      17,
+      0,
+      "CPipeAny"
+    ],
+    [
+      31,
+      17,
+      0,
+      16,
+      0,
+      "CPipeAny"
+    ],
+    [
+      32,
+      16,
+      0,
+      15,
+      0,
+      "CPipeAny"
+    ],
+    [
+      33,
+      4,
+      1,
+      14,
+      6,
+      "*"
+    ],
+    [
+      34,
+      17,
+      6,
+      18,
+      0,
+      "CLIP"
+    ],
+    [
+      35,
+      17,
+      3,
+      19,
+      0,
+      "CONDITIONING"
+    ],
+    [
+      36,
+      18,
+      0,
+      19,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      37,
+      19,
+      0,
+      16,
+      3,
+      "*"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

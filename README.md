@@ -32,6 +32,8 @@ The input comes from the [load image with metadata](#node-load-image-with-metada
 
 ![Metadata extractor](./docs/metadata-extractor.png)
 
+**Sample:** [metadata-extractor.json](./samples/metadata-extractor.json)
+
 ><details>
 >  <summary>Other metadata sample (photoshop)</summary>
 > 
@@ -63,6 +65,8 @@ There are tree potential "outputs": `values_changed`, `dictionary_item_added`, `
 
 ![Metadata extractor](./docs/metadata-comparator.png)
 
+**Sample:** [metadata-comparator.json](./samples/metadata-comparator.json)
+
 **Notes:**  
 - I use [DeepDiff](https://pypi.org/project/deepdiff) for that, for more info check the link.  
 - If you want to compare two JSONs, you can use the [JSON comparator](#node-JSON-comparator) node.
@@ -90,6 +94,8 @@ With this node, you will be able to see the JSON produced from your entire promp
 
 ![Show metadata](./docs/debugger-show-metadata.png)
 
+**Sample:** [debugger-metadata.json](./samples/debugger-metadata.json)
+
 ><details>
 >  <summary><i>Parameters</i></summary>
 >
@@ -104,6 +110,8 @@ With this node, you will be able to see the JSON produced from your entire promp
 You can see on the console or display any text or data from the nodes. Connect it to what you want to inspect, and you will see it.
 
 ![Show any](./docs/debugger-show-any.png)
+
+**Sample:** [debugger-any.json](./samples/debugger-any.json)
 
 ><details>
 >  <summary><i>Parameters</i></summary>
@@ -122,6 +130,8 @@ As same the previous one, but it formatted the value to JSON (only display).
 
 ![Show any](./docs/debugger-show-json.png)
 
+**Sample:** [debugger-json.json](./samples/debugger-json.json)
+
 ><details>
 >  <summary><i>Parameters</i></summary>
 >
@@ -138,6 +148,8 @@ As same the previous one, but it formatted the value to JSON (only display).
 This node is the same as the default one, but it adds three features: Prompt, Metadata, and supports **subfolders** of the "input" folder.
 
 ![Load image with metadata](./docs/image-load.png)
+
+**Sample:** [image-load.json](./samples/image-load.json)
 
 ><details>
 >  <summary><i>Parameters</i></summary>
@@ -164,6 +176,8 @@ This node is used to preview the image with the **current prompt** and additiona
 
 As you can see the seed, steps, and cfg were changed
 
+**Sample:** [image-preview-image.json](./samples/image-preview-image.json)
+
 ><details>
 >  <summary><i>Parameters</i></summary>
 >
@@ -187,6 +201,8 @@ It supports same features as [preview from image](#node-preview-from-image) (cac
  
 ![Preview from metadata](./docs/image-preview-metadata.png)
 
+**Sample:** [image-preview-metadata.json](./samples/image-preview-metadata.json)
+
 ### Node: Show resolution
 
 This node is used to show the resolution of an image.
@@ -194,6 +210,8 @@ This node is used to show the resolution of an image.
 > Can be used with any image link.
 
 ![Show resolution](./docs/image-resolution.png)
+
+**Sample:** [image-resolution.json](./samples/image-resolution.json)
 
 ><details>
 >  <summary><i>Parameters</i></summary>
@@ -225,9 +243,13 @@ With pipes:
 
 ![Pipes](./docs/pipe-1.png)
 
+**Sample:** [pipe-1.json](./samples/pipe-1.json)
+
 Editing pipes:
 
 ![Pipes](./docs/pipe-2.png)
+
+**Sample:** [pipe-2.json](./samples/pipe-2.json)
 
 ><details>
 >  <summary><i>Parameters</i></summary>
@@ -263,6 +285,8 @@ This node is so useful to compare two JSONs and see the differences.
 
 ![JSON comparator](./docs/utils-json-comparator.png)
 
+**Sample:** [utils-json-comparator.json](./samples/utils-json-comparator.json)
+
 
 ><details>
 >  <summary><i>Parameters</i></summary>
@@ -286,6 +310,8 @@ This node is used to show the stats of the system (RAM, VRAM and Space).
 It **should** connect as a pipe.
 
 ![JSON comparator](./docs/utils-stats.png)
+
+**Sample:** [utils-stats.json](./samples/utils-stats.json)
 
 ><details>
 >  <summary><i>Parameters</i></summary>
@@ -319,6 +345,8 @@ A set of nodes with list of values (any or strings/texts) for any propose (news 
 
 ![Lists](./docs/list-string.png)
 
+**Sample:** [list-strings.json](./samples/list-strings.json)
+
 ><details>
 >  <summary><i>Parameters</i></summary>
 >
@@ -335,6 +363,8 @@ A set of nodes with list of values (any or strings/texts) for any propose (news 
 You can concatenate any value (it will try to convert to string and show the value), so util to see several values at the same time.
 
 ![Lists](./docs/list-any.png)
+
+**Sample:** [list-any.json](./samples/list-any.json)
 
 ><details>
 >  <summary><i>Parameters</i></summary>
@@ -355,17 +385,20 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ![Switches](./docs/switches.png)
 
+**Sample:** [switch.json](./samples/switch.json)
+
 
 
 ## About
 
 **Notes from the author:**
-- This is my first project in python ¯\_(ツ)_/¯ (PR are welcome!)
+- This is my first project in python ¯\\_(ツ)_/¯ (PR are welcome!)
 - I'm software engineer but in other languages (web technologies)
 - My instagram is: https://www.instagram.com/crystian.ia I'll publish my works on it, consider follow me for news! :)
 - I'm not a native english speaker, so sorry for my english :P
 
 ## To do
+- [ ] Review the priority of list of nodes
 - [ ] Add support for others image formats (jpg, gif, etc.)
 - [ ] Several unit tests
 - [ ] Add permanent cache for preview/metadata image (to survive to F5! or restart the server)

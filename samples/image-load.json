@@ -1,0 +1,59 @@
+{
+  "last_node_id": 1,
+  "last_link_id": 0,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "Load image with metadata [Crystools]",
+      "pos": [
+        150,
+        200
+      ],
+      "size": [
+        325,
+        350
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "prompt",
+          "type": "JSON",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "Metadata RAW",
+          "type": "METADATA_RAW",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Load image with metadata [Crystools]"
+      },
+      "widgets_values": [
+        "tests/ComfyUI_00314_20-8-euler.png",
+        "image"
+      ]
+    }
+  ],
+  "links": [],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

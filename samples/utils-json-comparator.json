@@ -1,0 +1,212 @@
+{
+  "last_node_id": 4,
+  "last_link_id": 3,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "Load image with metadata [Crystools]",
+      "pos": [
+        200,
+        250
+      ],
+      "size": [
+        325,
+        350
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "prompt",
+          "type": "JSON",
+          "links": [
+            1
+          ],
+          "shape": 3,
+          "slot_index": 2
+        },
+        {
+          "name": "Metadata RAW",
+          "type": "METADATA_RAW",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Load image with metadata [Crystools]"
+      },
+      "widgets_values": [
+        "tests/ComfyUI_00314_20-8-euler.png",
+        "image"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "Load image with metadata [Crystools]",
+      "pos": [
+        200,
+        700
+      ],
+      "size": [
+        325,
+        350
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "prompt",
+          "type": "JSON",
+          "links": [
+            2
+          ],
+          "shape": 3,
+          "slot_index": 2
+        },
+        {
+          "name": "Metadata RAW",
+          "type": "METADATA_RAW",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Load image with metadata [Crystools]"
+      },
+      "widgets_values": [
+        "tests/ComfyUI_00315_21-81-heun.png",
+        "image"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "Json comparator [Crystools]",
+      "pos": [
+        650,
+        275
+      ],
+      "size": {
+        "0": 279.5999755859375,
+        "1": 46
+      },
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "json_old",
+          "type": "JSON",
+          "link": 1
+        },
+        {
+          "name": "json_new",
+          "type": "JSON",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "json_compared",
+          "type": "JSON",
+          "links": [
+            3
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Json comparator [Crystools]"
+      }
+    },
+    {
+      "id": 4,
+      "type": "Show any to JSON [Crystools]",
+      "pos": [
+        650,
+        450
+      ],
+      "size": [
+        325,
+        350
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "any_value",
+          "type": "*",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "string",
+          "type": "STRING",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Show any to JSON [Crystools]"
+      }
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      2,
+      3,
+      0,
+      "JSON"
+    ],
+    [
+      2,
+      2,
+      2,
+      3,
+      1,
+      "JSON"
+    ],
+    [
+      3,
+      3,
+      0,
+      4,
+      0,
+      "*"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

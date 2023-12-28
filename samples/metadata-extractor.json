@@ -1,0 +1,350 @@
+{
+  "last_node_id": 8,
+  "last_link_id": 7,
+  "nodes": [
+    {
+      "id": 5,
+      "type": "Show any [Crystools]",
+      "pos": [
+        1100,
+        575
+      ],
+      "size": [
+        475,
+        225
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "any_value",
+          "type": "*",
+          "link": 4
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Show any [Crystools]"
+      }
+    },
+    {
+      "id": 4,
+      "type": "Show any [Crystools]",
+      "pos": [
+        1100,
+        50
+      ],
+      "size": [
+        475,
+        450
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "any_value",
+          "type": "*",
+          "link": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Show any [Crystools]"
+      }
+    },
+    {
+      "id": 8,
+      "type": "Show any [Crystools]",
+      "pos": [
+        100,
+        900
+      ],
+      "size": [
+        450,
+        375
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "any_value",
+          "type": "*",
+          "link": 7
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Show any [Crystools]"
+      }
+    },
+    {
+      "id": 1,
+      "type": "Load image with metadata [Crystools]",
+      "pos": [
+        100,
+        75
+      ],
+      "size": [
+        325,
+        350
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "prompt",
+          "type": "JSON",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "Metadata RAW",
+          "type": "METADATA_RAW",
+          "links": [
+            1
+          ],
+          "shape": 3,
+          "slot_index": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Load image with metadata [Crystools]"
+      },
+      "widgets_values": [
+        "tests/ComfyUI_00314_20-8-euler.png",
+        "image"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "Metadata extractor [Crystools]",
+      "pos": [
+        125,
+        625
+      ],
+      "size": {
+        "0": 355.20001220703125,
+        "1": 126
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "metadata_raw",
+          "type": "METADATA_RAW",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "JSON",
+          "links": [
+            2
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "workflow",
+          "type": "JSON",
+          "links": [
+            3
+          ],
+          "shape": 3,
+          "slot_index": 1
+        },
+        {
+          "name": "file info",
+          "type": "JSON",
+          "links": [
+            4
+          ],
+          "shape": 3,
+          "slot_index": 2
+        },
+        {
+          "name": "raw to JSON",
+          "type": "JSON",
+          "links": [
+            5
+          ],
+          "shape": 3,
+          "slot_index": 3
+        },
+        {
+          "name": "raw to property",
+          "type": "STRING",
+          "links": [
+            6
+          ],
+          "shape": 3,
+          "slot_index": 4
+        },
+        {
+          "name": "raw to csv",
+          "type": "STRING",
+          "links": [
+            7
+          ],
+          "shape": 3,
+          "slot_index": 5
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Metadata extractor [Crystools]"
+      }
+    },
+    {
+      "id": 6,
+      "type": "Show any [Crystools]",
+      "pos": [
+        1100,
+        900
+      ],
+      "size": [
+        475,
+        375
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "any_value",
+          "type": "*",
+          "link": 5
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Show any [Crystools]"
+      }
+    },
+    {
+      "id": 7,
+      "type": "Show any [Crystools]",
+      "pos": [
+        600,
+        900
+      ],
+      "size": [
+        450,
+        375
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "any_value",
+          "type": "*",
+          "link": 6
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Show any [Crystools]"
+      }
+    },
+    {
+      "id": 3,
+      "type": "Show any [Crystools]",
+      "pos": [
+        625,
+        50
+      ],
+      "size": [
+        425,
+        450
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "any_value",
+          "type": "*",
+          "link": 2
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Show any [Crystools]"
+      }
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      3,
+      2,
+      0,
+      "METADATA_RAW"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      0,
+      "*"
+    ],
+    [
+      3,
+      2,
+      1,
+      4,
+      0,
+      "*"
+    ],
+    [
+      4,
+      2,
+      2,
+      5,
+      0,
+      "*"
+    ],
+    [
+      5,
+      2,
+      3,
+      6,
+      0,
+      "*"
+    ],
+    [
+      6,
+      2,
+      4,
+      7,
+      0,
+      "*"
+    ],
+    [
+      7,
+      2,
+      5,
+      8,
+      0,
+      "*"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

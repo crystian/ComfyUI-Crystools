@@ -1,0 +1,182 @@
+{
+  "last_node_id": 4,
+  "last_link_id": 4,
+  "nodes": [
+    {
+      "id": 4,
+      "type": "Show any to JSON [Crystools]",
+      "pos": [
+        900,
+        175
+      ],
+      "size": {
+        "0": 400,
+        "1": 825
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "any_value",
+          "type": "*",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "string",
+          "type": "STRING",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Show any to JSON [Crystools]"
+      }
+    },
+    {
+      "id": 2,
+      "type": "Show any to JSON [Crystools]",
+      "pos": [
+        1350,
+        50
+      ],
+      "size": [
+        400,
+        950
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "any_value",
+          "type": "*",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "string",
+          "type": "STRING",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Show any to JSON [Crystools]"
+      }
+    },
+    {
+      "id": 3,
+      "type": "Show any [Crystools]",
+      "pos": [
+        475,
+        250
+      ],
+      "size": [
+        400,
+        750
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "any_value",
+          "type": "*",
+          "link": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Show any [Crystools]"
+      }
+    },
+    {
+      "id": 1,
+      "type": "Load image with metadata [Crystools]",
+      "pos": [
+        100,
+        75
+      ],
+      "size": [
+        325,
+        350
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "prompt",
+          "type": "JSON",
+          "links": [
+            2,
+            3
+          ],
+          "shape": 3,
+          "slot_index": 2
+        },
+        {
+          "name": "Metadata RAW",
+          "type": "METADATA_RAW",
+          "links": [
+            4
+          ],
+          "shape": 3,
+          "slot_index": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Load image with metadata [Crystools]"
+      },
+      "widgets_values": [
+        "tests/ComfyUI_00314_20-8-euler.png",
+        "image"
+      ]
+    }
+  ],
+  "links": [
+    [
+      2,
+      1,
+      2,
+      2,
+      0,
+      "*"
+    ],
+    [
+      3,
+      1,
+      2,
+      3,
+      0,
+      "*"
+    ],
+    [
+      4,
+      1,
+      3,
+      4,
+      0,
+      "*"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}
