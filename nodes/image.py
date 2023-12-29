@@ -3,14 +3,16 @@ import datetime
 import random
 import sys
 import json
-import folder_paths
 import hashlib
 import torch
 import numpy as np
 from pathlib import Path
 from PIL import Image, ImageOps
+from PIL.ExifTags import TAGS, GPSTAGS, IFD
 from PIL.PngImagePlugin import PngImageFile
+from PIL.JpegImagePlugin import JpegImageFile
 from nodes import PreviewImage
+import folder_paths
 
 from ..core import CATEGORY, CONFIG, METADATA_RAW,TEXTS, setWidgetValues, logger, getResolutionByTensor, get_size
 
@@ -73,7 +75,7 @@ class CImagePreviewFromImage(PreviewImage):
             data["ui"]["images"] = images
 
             title = "Source: Image link \n"
-            text += buildPreviewText(metadata, promptFromImage)
+            text += buildPreviewText(metadata)
             text += f"Current prompt (NO FROM IMAGE!):\n"
             text += json.dumps(promptFromImage, indent=CONFIG["indent"])
 
@@ -131,7 +133,7 @@ class CImagePreviewFromMetadata(PreviewImage):
         if metadata_raw is not None:
             promptFromImage = metadata_raw["prompt"]
             title = "Source: Metadata RAW\n"
-            text += buildPreviewText(metadata_raw, promptFromImage)
+            text += buildPreviewText(metadata_raw)
             text += f"Prompt from image:\n"
             text += json.dumps(promptFromImage, indent=CONFIG["indent"])
 
@@ -330,10 +332,37 @@ def buildMetadata(image_path):
             else:
                 metadata[str(k)] = str(v)
 
+    if isinstance(img, JpegImageFile):
+        exif = img.getexif()
+
+        for k, v in exif.items():
+            tag = TAGS.get(k, k)
+            if v is not None:
+                metadata[str(tag)] = str(v)
+
+        for ifd_id in IFD:
+            try:
+                if ifd_id == IFD.GPSInfo:
+                    resolve = GPSTAGS
+                else:
+                    resolve = TAGS
+
+                ifd = exif.get_ifd(ifd_id)
+                ifd_name = str(ifd_id.name)
+                metadata[ifd_name] = {}
+
+                for k, v in ifd.items():
+                    tag = resolve.get(k, k)
+                    metadata[ifd_name][str(tag)] = str(v)
+
+            except KeyError:
+                pass
+
+
     return img, prompt, metadata
 
 
-def buildPreviewText(metadata, prompt):
+def buildPreviewText(metadata):
     text = f"File: {metadata['fileinfo']['filename']}\n"
     text += f"Resolution: {metadata['fileinfo']['resolution']}\n"
     text += f"Date: {metadata['fileinfo']['date']}\n"
