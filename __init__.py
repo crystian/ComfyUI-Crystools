@@ -2,6 +2,7 @@
 @author: Crystian
 @title: Crystools
 @nickname: Crystools
+@version: 1.1.0
 @project: "https://github.com/crystian/ComfyUI-Crystools",
 @description: Plugins for multiples uses, mainly for debugging, you need them! IG: https://www.instagram.com/crystian.ia
 """
@@ -11,7 +12,8 @@ from .nodes.primitive import CBoolean, CText, CTextML, CInteger, CFloat
 from .nodes.switch import CSwitchBooleanAny, CSwitchBooleanLatent, CSwitchBooleanConditioning, CSwitchBooleanImage, \
     CSwitchBooleanString
 from .nodes.debugger import CConsoleAny, CConsoleAnyToJson
-from .nodes.image import CImagePreviewFromImage, CImageLoadWithMetadata, CImageGetResolution, CImagePreviewFromMetadata
+from .nodes.image import CImagePreviewFromImage, CImageLoadWithMetadata, CImageGetResolution, CImagePreviewFromMetadata, \
+    CImageSaveWithExtraMetadata
 from .nodes.list import CListAny, CListString
 from .nodes.pipe import CPipeToAny, CPipeFromAny
 from .nodes.utils import CUtilsCompareJsons, CUtilsStatSystem
@@ -43,6 +45,7 @@ NODE_CLASS_MAPPINGS = {
     CLASSES.CIMAGE_GET_RESOLUTION_NAME.value: CImageGetResolution,
     CLASSES.CIMAGE_PREVIEW_IMAGE_NAME.value: CImagePreviewFromImage,
     CLASSES.CIMAGE_PREVIEW_METADATA_NAME.value: CImagePreviewFromMetadata,
+    CLASSES.CIMAGE_SAVE_METADATA_NAME.value: CImageSaveWithExtraMetadata,
 
     CLASSES.CMETADATA_EXTRACTOR_NAME.value: CMetadataExtractor,
     CLASSES.CMETADATA_COMPARATOR_NAME.value: CMetadataCompare,
@@ -76,6 +79,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     CLASSES.CIMAGE_GET_RESOLUTION_NAME.value: CLASSES.CIMAGE_GET_RESOLUTION_DESC.value,
     CLASSES.CIMAGE_PREVIEW_IMAGE_NAME.value: CLASSES.CIMAGE_PREVIEW_IMAGE_DESC.value,
     CLASSES.CIMAGE_PREVIEW_METADATA_NAME.value: CLASSES.CIMAGE_PREVIEW_METADATA_DESC.value,
+    CLASSES.CIMAGE_SAVE_METADATA_NAME.value: CLASSES.CIMAGE_SAVE_METADATA_DESC.value,
 
     CLASSES.CMETADATA_EXTRACTOR_NAME.value: CLASSES.CMETADATA_EXTRACTOR_DESC.value,
     CLASSES.CMETADATA_COMPARATOR_NAME.value: CLASSES.CMETADATA_COMPARATOR_DESC.value,

@@ -164,6 +164,30 @@ This node is the same as the default one, but it adds three features: Prompt, Me
 
 **Note:** The subfolders support inspired on: [comfyui-imagesubfolders](https://github.com/catscandrive/comfyui-imagesubfolders)
 
+### Node: Save image with extra metadata
+This node is the same as the default one, but it adds two features: Save the workflow or not in the png, and you can add any piece of metadata (as JSON).
+
+This save custom data on the image, so you can share it with others, and they can see the workflow and metadata (see [preview from metadata](#node-preview-from-metadata)), even your custom data.
+
+It can be any type of information supports text and JSON.
+
+![Save image with extra metadata](./docs/image-save.png)
+
+**Sample:** [image-save.json](./samples/image-save.json)
+
+><details>
+>  <summary><i>Parameters</i></summary>
+>
+> - options:
+>   - with_workflow: If you want to save into the image the workflow (special to share the workflow with others)
+> - Input:
+>   - image: The image to save (same as the default node)
+> - Output:
+>   - Metadata RAW: The metadata raw of the image (full workflow) as string
+></details>
+
+**Note:** The data is saved as special "exif" (as ComfyUI do) in the png file, you can read it with [Load image with metadata](#node-load-image-with-metadata).
+
 ### Node: Preview from image
 
 This node is used to preview the image with the **current prompt** and additional features.  
@@ -398,12 +422,19 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 - I'm not a native english speaker, so sorry for my english :P
 
 ## To do
-- [ ] Review the priority of list of nodes
-- [ ] Add support for others image formats (jpg, gif, etc.)
+- [✅] Review the priority of list of nodes
+- [❌] Add support for others image formats (jpg, gif, etc.) - nope, I don't need it, it's complicated
 - [ ] Several unit tests
 - [ ] Add permanent cache for preview/metadata image (to survive to F5! or restart the server)
 
+## Changelog
 
+### 1.1.0 (29/12/2023)
+- Node added: "Save image with extra metadata"
+- Support to **read** Jpeg metadata added (not save)
+
+### 1.0.0 (26/12/2023)
+- First release
 
 ## Installation
 

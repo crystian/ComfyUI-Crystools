@@ -15,11 +15,11 @@ INT = ("INT", {"default": 1,
 
 STRING = ("STRING", {"default": ""})
 
+STRING_ML = ("STRING", {"multiline": True, "default": ""})
+
 STRING_WIDGET = ("STRING", {"forceInput": True})
 
 JSON_WIDGET = ("JSON", {"forceInput": True})
-
-STRING_ML = ("STRING", {"multiline": True, "default": ""})
 
 METADATA_RAW = ("METADATA_RAW", {"forceInput": True})
 

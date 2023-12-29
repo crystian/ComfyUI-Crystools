@@ -52,6 +52,8 @@ class CLASSES(Enum):
     CIMAGE_PREVIEW_IMAGE_DESC = "Preview from image [Crystools]"
     CIMAGE_PREVIEW_METADATA_NAME = "Preview from metadata [Crystools]"
     CIMAGE_PREVIEW_METADATA_DESC = "Preview from metadata [Crystools]"
+    CIMAGE_SAVE_METADATA_NAME = "Save image with extra metadata [Crystools]"
+    CIMAGE_SAVE_METADATA_DESC = "Save image with extra metadata [Crystools]"
 
     CMETADATA_EXTRACTOR_NAME = "Metadata extractor [Crystools]"
     CMETADATA_EXTRACTOR_DESC = "Metadata extractor [Crystools]"
