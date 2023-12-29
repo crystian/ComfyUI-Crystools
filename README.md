@@ -55,7 +55,7 @@ The input comes from the [load image with metadata](#node-load-image-with-metada
 >   - raw to csv: The entire metadata raw as "csv" format.
 ></details>
 
-<br><br>
+<br />
 
 ### Node: Metadata comparator
 
@@ -86,7 +86,7 @@ There are tree potential "outputs": `values_changed`, `dictionary_item_added`, `
 >   - diff: This is the same output you can see in the display of the node, you can use it on others nodes.
 ></details>
 
-<br><br>
+<br />
 
 ---
 
@@ -109,7 +109,7 @@ With this node, you will be able to see the JSON produced from your entire promp
 >   - What: Show the prompt or workflow (prompt are values to produce the image, and workflow is the entire workflow of ComfyUI)
 ></details>
 
-<br><br> 
+<br /> 
 
 ### Node: Show any
 
@@ -130,7 +130,7 @@ You can see on the console or display any text or data from the nodes. Connect i
 >   - Prefix: Prefix to console
 ></details>
 
-<br><br>
+<br />
 
 ### Node: Show any to JSON
 
@@ -149,7 +149,7 @@ As same the previous one, but it formatted the value to JSON (only display).
 >   - string: The same string is shown on display
 ></details>
 
-<br><br>
+<br />
 
 ---
 
@@ -175,7 +175,7 @@ This node is the same as the default one, but it adds three features: Prompt, Me
 
 **Note:** The subfolders support inspired on: [comfyui-imagesubfolders](https://github.com/catscandrive/comfyui-imagesubfolders)
 
-<br><br>
+<br />
 
 ### Node: Save image with extra metadata
 This node is the same as the default one, but it adds two features: Save the workflow or not in the png, and you can add any piece of metadata (as JSON).
@@ -201,7 +201,7 @@ It can be any type of information supports text and JSON.
 
 **Note:** The data is saved as special "exif" (as ComfyUI do) in the png file, you can read it with [Load image with metadata](#node-load-image-with-metadata).
 
-<br><br>
+<br />
 
 ### Node: Preview from image
 
@@ -232,7 +232,7 @@ As you can see the seed, steps, and cfg were changed
 > - If you want to read the metadata of the image, you need to use the [load image with metadata](#node-load-image-with-metadata) and use the output "metadata RAW" not image link.
 > - To do a preview it is necessary save it first on temporal folder, and the data shown is from the temporal image, **not the original one** even **the prompt!**
 
-<br><br>
+<br />
 
 ### Node: Preview from metadata
 
@@ -243,7 +243,7 @@ It supports same features as [preview from image](#node-preview-from-image) (cac
 
 **Sample:** [image-preview-metadata.json](./samples/image-preview-metadata.json)
 
-<br><br>
+<br />
 
 ### Node: Show resolution
 
@@ -265,7 +265,7 @@ This node is used to show the resolution of an image.
 >   - Height: The height of the image
 ></details>
 
-<br><br>
+<br />
 
 ---
 
@@ -317,7 +317,7 @@ Editing pipes:
 ![Pipes](./docs/pipe-3.png)
 ></details>
 
-<br><br>
+<br />
 
 ---
 
@@ -350,7 +350,7 @@ As you can see, it is the same as the [metadata comparator](#node-metadata-compa
 The other is intentionally simple to compare two images metadata, this is more generic.  
 The main difference is that you can compare any JSON, not only metadata.
 
-<br><br>
+<br />
 
 ### Node: Stats system
 
@@ -372,7 +372,7 @@ It **should** connect as a pipe.
 
 **Notes:** The original is in [WAS](https://github.com/WASasquatch/was-node-suite-comfyui), I only show it on the display.
 
-<br><br>
+<br />
 
 ---
 
@@ -384,7 +384,7 @@ A set of nodes with primitive values to use in your prompts.
 
 ![Primitives](./docs/primitives.png)
 
-<br><br>
+<br />
 
 ---
 
@@ -412,7 +412,7 @@ A set of nodes with list of values (any or strings/texts) for any propose (news 
 >   - list_string: The list of strings (only with values)
 ></details>
 
-<br><br>
+<br />
 
 ### Node: List of any
 
@@ -431,7 +431,7 @@ You can concatenate any value (it will try to convert to string and show the val
 >   - list_any: The list of any elements (only with values)
 ></details>
 
-<br><br>
+<br />
 
 ---
 
@@ -445,7 +445,7 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 **Sample:** [switch.json](./samples/switch.json)
 
-<br><br>
+<br />
 
 ---
 
