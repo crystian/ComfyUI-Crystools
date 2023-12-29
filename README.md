@@ -429,7 +429,7 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ## Changelog
 
-### 1.0.1 (29/12/2023)
+### 1.1.0 (29/12/2023)
 - Node added: "Save image with extra metadata"
 - Support to **read** Jpeg metadata added (not save)
 
