@@ -17,9 +17,9 @@ This provides a better nodes to load images, previews, etc, and see "hidden" dat
 - [Primitives](#primitives)
 - [List](#list)
 - [Switch](#switch)
-- Others: [About](#about), [To do](#to-do), [Installation](#installation), [Use](#use)
+- Others: [About](#about), [To do](#to-do), [Changelog](#changelog), [Installation](#installation), [Use](#use)
 
-
+---
 
 ## Metadata
 
@@ -55,6 +55,8 @@ The input comes from the [load image with metadata](#node-load-image-with-metada
 >   - raw to csv: The entire metadata raw as "csv" format.
 ></details>
 
+<br/>
+
 ### Node: Metadata comparator
 
 This node is so useful to compare two metadata and see the differences (**the main reason why I created this extension!**)
@@ -84,7 +86,9 @@ There are tree potential "outputs": `values_changed`, `dictionary_item_added`, `
 >   - diff: This is the same output you can see in the display of the node, you can use it on others nodes.
 ></details>
 
+<br/>
 
+---
 
 ## Debugger
 
@@ -105,6 +109,8 @@ With this node, you will be able to see the JSON produced from your entire promp
 >   - What: Show the prompt or workflow (prompt are values to produce the image, and workflow is the entire workflow of ComfyUI)
 ></details>
 
+<br/> 
+
 ### Node: Show any
 
 You can see on the console or display any text or data from the nodes. Connect it to what you want to inspect, and you will see it.
@@ -124,6 +130,8 @@ You can see on the console or display any text or data from the nodes. Connect i
 >   - Prefix: Prefix to console
 ></details>
 
+<br/>
+
 ### Node: Show any to JSON
 
 As same the previous one, but it formatted the value to JSON (only display).
@@ -141,6 +149,9 @@ As same the previous one, but it formatted the value to JSON (only display).
 >   - string: The same string is shown on display
 ></details>
 
+<br/>
+
+---
 
 ## Image
 
@@ -163,6 +174,8 @@ This node is the same as the default one, but it adds three features: Prompt, Me
 ></details>
 
 **Note:** The subfolders support inspired on: [comfyui-imagesubfolders](https://github.com/catscandrive/comfyui-imagesubfolders)
+
+<br/>
 
 ### Node: Save image with extra metadata
 This node is the same as the default one, but it adds two features: Save the workflow or not in the png, and you can add any piece of metadata (as JSON).
@@ -187,6 +200,8 @@ It can be any type of information supports text and JSON.
 ></details>
 
 **Note:** The data is saved as special "exif" (as ComfyUI do) in the png file, you can read it with [Load image with metadata](#node-load-image-with-metadata).
+
+<br/>
 
 ### Node: Preview from image
 
@@ -217,6 +232,7 @@ As you can see the seed, steps, and cfg were changed
 > - If you want to read the metadata of the image, you need to use the [load image with metadata](#node-load-image-with-metadata) and use the output "metadata RAW" not image link.
 > - To do a preview it is necessary save it first on temporal folder, and the data shown is from the temporal image, **not the original one** even **the prompt!**
 
+<br/>
 
 ### Node: Preview from metadata
 
@@ -226,6 +242,8 @@ It supports same features as [preview from image](#node-preview-from-image) (cac
 ![Preview from metadata](./docs/image-preview-metadata.png)
 
 **Sample:** [image-preview-metadata.json](./samples/image-preview-metadata.json)
+
+<br/>
 
 ### Node: Show resolution
 
@@ -247,7 +265,9 @@ This node is used to show the resolution of an image.
 >   - Height: The height of the image
 ></details>
 
+<br/>
 
+---
 
 ## Pipe
 
@@ -297,7 +317,9 @@ Editing pipes:
 ![Pipes](./docs/pipe-3.png)
 ></details>
 
+<br/>
 
+---
 
 ## Utils
 
@@ -328,6 +350,8 @@ As you can see, it is the same as the [metadata comparator](#node-metadata-compa
 The other is intentionally simple to compare two images metadata, this is more generic.  
 The main difference is that you can compare any JSON, not only metadata.
 
+<br/>
+
 ### Node: Stats system
 
 This node is used to show the stats of the system (RAM, VRAM and Space).  
@@ -348,6 +372,9 @@ It **should** connect as a pipe.
 
 **Notes:** The original is in [WAS](https://github.com/WASasquatch/was-node-suite-comfyui), I only show it on the display.
 
+<br/>
+
+---
 
 ## Primitives
 
@@ -357,6 +384,9 @@ A set of nodes with primitive values to use in your prompts.
 
 ![Primitives](./docs/primitives.png)
 
+<br/>
+
+---
 
 ## List
 A set of nodes with list of values (any or strings/texts) for any propose (news nodes to use it coming soon!).
@@ -382,6 +412,8 @@ A set of nodes with list of values (any or strings/texts) for any propose (news 
 >   - list_string: The list of strings (only with values)
 ></details>
 
+<br/>
+
 ### Node: List of any
 
 You can concatenate any value (it will try to convert to string and show the value), so util to see several values at the same time.
@@ -399,7 +431,9 @@ You can concatenate any value (it will try to convert to string and show the val
 >   - list_any: The list of any elements (only with values)
 ></details>
 
+<br/>
 
+---
 
 ## Switch
 A set of nodes to switch between flows.  
@@ -411,7 +445,9 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 **Sample:** [switch.json](./samples/switch.json)
 
+<br/>
 
+---
 
 ## About
 
@@ -421,11 +457,15 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 - My instagram is: https://www.instagram.com/crystian.ia I'll publish my works on it, consider follow me for news! :)
 - I'm not a native english speaker, so sorry for my english :P
 
+---
+
 ## To do
 - [✅] Review the priority of list of nodes
 - [❌] Add support for others image formats (jpg, gif, etc.) - nope, I don't need it, it's complicated
 - [ ] Several unit tests
 - [ ] Add permanent cache for preview/metadata image (to survive to F5! or restart the server)
+
+---
 
 ## Changelog
 
@@ -435,6 +475,8 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### 1.0.0 (26/12/2023)
 - First release
+
+---
 
 ## Installation
 
@@ -453,7 +495,7 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 Search for `crystools` in the [manager](https://github.com/ltdrdata/ComfyUI-Manager.git) and install it.
 
-
+---
 
 ## Use
 
@@ -464,3 +506,6 @@ You can use it as any other node, just using the menu in the category `crystools
 
 If for some reason you need to see the logs, you can define the environment variable `CRYSTOOLS_LOGLEVEL` and set the [value](https://docs.python.org/es/3/howto/logging.html).
 
+---
+
+Made with ❤️ by Crystian.
