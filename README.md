@@ -201,6 +201,11 @@ It can be any type of information supports text and JSON.
 
 **Note:** The data is saved as special "exif" (as ComfyUI do) in the png file, you can read it with [Load image with metadata](#node-load-image-with-metadata).
 
+> **Important:**
+> - If you want to save your workflow with a particular name, and your data as creator, you need to use the [ComfyUI-Crystools-save](https://github.com/crystian/ComfyUI-Crystools-save) extension, try it!
+![Crystools-save](./docs/crystools-save.png)
+
+
 <br />
 
 ### Node: Preview from image
@@ -469,6 +474,9 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ## Changelog
 
+### Crystools-save: 1.0.0 (29/12/2023)
+- Created another extension to save the info about author on workflow: [ComfyUI-Crystools-save](https://github.com/crystian/ComfyUI-Crystools-save)
+ 
 ### 1.1.0 (29/12/2023)
 - Node added: "Save image with extra metadata"
 - Support to **read** Jpeg metadata added (not save)
