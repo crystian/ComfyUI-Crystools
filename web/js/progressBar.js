@@ -13,7 +13,7 @@ class CrystoolsProgressBar {
   defaultShowStatus = true;
   menuPrefix = '';
   htmlIdCrystoolsRoot = 'crystools-root';
-  htmlIdCrystoolsProgressBar = 'crystools-progress-bar';
+  htmlIdCrystoolsProgressBarContainer = 'crystools-progress-bar-container';
 
   currentStatus = status.executed;
   currentProgress = 0;
@@ -34,7 +34,7 @@ class CrystoolsProgressBar {
     // use new save button
     app.ui.settings.addSetting({
       id: this.idShowProgressBar,
-      name: this.menuPrefix + 'Show progress status in menu?',
+      name: this.menuPrefix + 'Show progress bar in menu',
       type: 'boolean',
       defaultValue: this.defaultShowStatus,
       onChange: this.showProgressBar,
@@ -42,7 +42,7 @@ class CrystoolsProgressBar {
   };
 
   showProgressBar = (value) => {
-    const ctools = document.getElementById(this.htmlIdCrystoolsProgressBar);
+    const ctools = document.getElementById(this.htmlIdCrystoolsProgressBarContainer);
 
     // validation because this run before setup
     if (ctools) {
@@ -53,7 +53,7 @@ class CrystoolsProgressBar {
   updateDisplay = () => {
     if (this.currentStatus === status.executed) {
       // finished
-      this.htmlProgressLabelRef.innerHTML = '';
+      this.htmlProgressLabelRef.innerHTML = 'cached';
 
       const timeElapsed = Date.now() - this.timeStart;
       if (this.timeStart > 0 && timeElapsed > 0) {
@@ -83,12 +83,13 @@ class CrystoolsProgressBar {
       ctoolsRoot = document.createElement('div');
       ctoolsRoot.setAttribute('id', this.htmlIdCrystoolsRoot);
       ctoolsRoot.style.display = 'flex';
+      ctoolsRoot.style.width = '100%';
       ctoolsRoot.style.flexDirection = 'column';
       parentElement.insertAdjacentElement('afterend', ctoolsRoot);
     }
 
     const progressBarContainer = document.createElement('div');
-    progressBarContainer.setAttribute('id', this.htmlIdCrystoolsProgressBar);
+    progressBarContainer.setAttribute('id', this.htmlIdCrystoolsProgressBarContainer);
     progressBarContainer.setAttribute('title', 'click to see the current working node');
     progressBarContainer.style.margin = '4px 0';
     progressBarContainer.style.width = '100%';
@@ -115,7 +116,7 @@ class CrystoolsProgressBar {
     progressLabel.style.position = 'absolute';
     progressLabel.style.margin = 'auto 0';
     progressLabel.style.width = '100%';
-    progressLabel.style.color = 'var(--descrip-text)';
+    progressLabel.style.color = 'var(--drag-text)';
     progressLabel.style.fontSize = '14px';
     progressLabel.innerHTML = '0%';
     this.htmlProgressLabelRef = progressLabel;

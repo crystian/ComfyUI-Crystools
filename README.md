@@ -21,6 +21,20 @@ This provides a better nodes to load images, previews, etc, and see "hidden" dat
 
 ---
 
+## General
+
+### Progress bar
+
+You can see the progress of your workflow with a progress bar on the menu!
+
+Additionally, it shows the time elapsed at the end of the workflow, and you can `click` on it to see the **current working node.** 
+
+![Progress bar](./docs/progress-bar.mp4)
+
+> **Notes:**
+> - If you don't want to see it, you can turn it off from settings (`Show progress bar in menu`)
+
+
 ## Metadata
 
 ### Node: Metadata extractor
