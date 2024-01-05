@@ -489,6 +489,8 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 ---
 
 ## Changelog
+### 1.2.0 (05/01/2024)
+- progress bar added
 
 ### Crystools-save: 1.0.0 (29/12/2023)
 - Created another extension to save the info about author on workflow: [ComfyUI-Crystools-save](https://github.com/crystian/ComfyUI-Crystools-save)
