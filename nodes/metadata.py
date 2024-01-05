@@ -1,7 +1,6 @@
 import json
 import re
-from ..core import CATEGORY, CONFIG, JSON_WIDGET, METADATA_RAW, TEXTS, findJsonStrDiff, findJsonsDiff, get_system_stats, \
-    logger
+from ..core import CATEGORY, CONFIG, METADATA_RAW, TEXTS, findJsonsDiff, logger
 
 
 class CMetadataExtractor:

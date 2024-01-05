@@ -33,6 +33,8 @@ https://github.com/crystian/ComfyUI-Crystools/assets/3886806/35cc1257-2199-4b85-
 
 Additionally, it shows the time elapsed at the end of the workflow, and you can `click` on it to see the **current working node.** 
 
+Additionally, it shows the time elapsed at the end of the workflow, and you can `click` on it to see the **current working node.** 
+
 > **Notes:**
 > - If you don't want to see it, you can turn it off from settings (`Show progress bar in menu`)
 
