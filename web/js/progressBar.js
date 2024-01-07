@@ -57,7 +57,7 @@ class CrystoolsProgressBar {
       if (this.timeStart > 0 && timeElapsed > 0) {
         this.htmlProgressLabelRef.innerHTML = new Date(timeElapsed).toISOString().substr(11, 8);
       }
-      this.htmlProgressSliderRef.style.backgroundColor = 'var(--bg-color)';
+      this.htmlProgressSliderRef.style.width = '0';
 
     } else if (this.currentStatus === status.execution_error) {
       // an error occurred
@@ -69,7 +69,7 @@ class CrystoolsProgressBar {
       // on going
       this.htmlProgressLabelRef.innerHTML = `${this.currentProgress}%`;
       this.htmlProgressSliderRef.style.width = this.htmlProgressLabelRef.innerHTML;
-      this.htmlProgressSliderRef.style.backgroundColor = 'green';
+      this.htmlProgressSliderRef.style.backgroundColor = 'green'; // by reset the color
     }
   };
 
@@ -107,6 +107,8 @@ class CrystoolsProgressBar {
     progressSlider.style.position = 'absolute';
     progressSlider.style.height = '100%';
     progressSlider.style.width = '0';
+    progressSlider.style.transition = 'width 0.2s';
+    progressSlider.style.backgroundColor = 'green';
     this.htmlProgressSliderRef = progressSlider;
     progressBar.append(this.htmlProgressSliderRef);
 

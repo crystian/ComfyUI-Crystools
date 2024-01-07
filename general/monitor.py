@@ -48,7 +48,7 @@ class CMonitor:
         cpu = -1
         ramTotal = -1
         ramUsed = -1
-        ramUsedPercent = -1,
+        ramUsedPercent = -1
         hddTotal = -1
         hddUsed = -1
         hddUsedPercent = -1
@@ -192,7 +192,12 @@ async def newSettings(request):
             if type(rate) is not int and type(rate) is not float:
                 raise Exception('Rate must be an number.')
 
-            cmonitor.rate = rate
+            if cmonitor.rate == 0 and rate > 0:
+                cmonitor.rate = rate
+                cmonitor.startMonitor()
+            else:
+                cmonitor.rate = rate
+
 
         if 'switchCPU' in settings is not None:
             switchCPU = settings['switchCPU']
