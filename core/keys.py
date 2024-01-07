@@ -12,7 +12,7 @@ class TEXTS(Enum):
 
 class CATEGORY(Enum):
     TESTING = "_for_testing"
-    MAIN = "crystools"
+    MAIN = "crystools 🪛"
     PRIMITIVE = "/Primitive"
     DEBUGGER = "/Debugger"
     LIST = "/List"

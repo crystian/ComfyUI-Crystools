@@ -1,6 +1,6 @@
 # ComfyUI-Crystools [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fcrystian%2FComfyUI-Crystools&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com) [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://paypal.me/crystian77)
 
-**_A powerful set of tools for your belt when you work with ComfyUI_**
+**_🪛 A powerful set of tools for your belt when you work with ComfyUI 🪛_**
 
 You can see the progress bar & time elapsed also you can see metadata and compare between two images, compare between two JSONs, show any value to console/display, pipes, and more!
 This provides better nodes to load images, previews, etc, and see "hidden" data, but without loading a new workflow.
@@ -483,14 +483,15 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 ---
 
 ## To do
-- [✅] Review the priority of the list of nodes
-- [❌] Add support for other image formats (jpg, gif, etc.) - nope, I don't need it; it's complicated
 - [ ] Several unit tests
 - [ ] Add permanent cache for preview/metadata image (to survive to F5! or restart the server)
 
 ---
 
 ## Changelog
+### Crystools-save: 1.1.0 (07/01/2024)
+- Labeling updated according to the new version of Crystools (this project)
+
 ### 1.2.0 (05/01/2024)
 - progress bar added
 

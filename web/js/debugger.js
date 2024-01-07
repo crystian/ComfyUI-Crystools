@@ -1,7 +1,7 @@
 import { app } from '../../../scripts/app.js';
 import { api } from '../../../scripts/api.js';
 import { ComfyWidgets } from '../../../scripts/widgets.js';
-import { displayContext } from './common.js';
+import { commonPrefix, displayContext } from './common.js';
 
 // "Show any" Node
 app.registerExtension({
@@ -22,8 +22,8 @@ app.registerExtension({
   name: 'Crystools.Debugger.Metadata',
 
   registerCustomNodes() {
-    const category = 'crystools/Debugger';
-    const friendlyName = 'Show Metadata [Crystools]';
+    const category = `crystools ${commonPrefix}/Debugger`;
+    const friendlyName = 'Show Metadata 🪛';
 
     class MetadataNode {
       // color = "#FF2222";

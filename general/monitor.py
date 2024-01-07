@@ -12,7 +12,7 @@ from ..core import logger
 
 class CMonitor:
     monitorThread = None
-    frequency = 0
+    rate = 0
     nvidia = False
     pynvmlLoaded = False
     cudaAvailable = False
@@ -25,8 +25,8 @@ class CMonitor:
     switchRAM = False
     switchVRAM = False
 
-    def __init__(self, frequency=10, switchCPU=False, switchGPU=False, switchHDD=False, switchRAM=False, switchVRAM=False):
-        self.frequency = frequency
+    def __init__(self, rate=5, switchCPU=False, switchGPU=False, switchHDD=False, switchRAM=False, switchVRAM=False):
+        self.rate = rate
         self.switchCPU = switchCPU
         self.switchGPU = switchGPU
         self.switchHDD = switchHDD
@@ -131,9 +131,9 @@ class CMonitor:
         await s.send_json('crystools.monitor', data)
 
     def monitorLoop(self):
-        while self.frequency > 0:
+        while self.rate > 0:
             asyncio.run(self.send_message(self.buildMonitorData()))
-            time.sleep(self.frequency)
+            time.sleep(self.rate)
 
     def startMonitor(self):
         if self.monitorThread is not None:

@@ -1,5 +1,6 @@
 import { api } from '../../../scripts/api.js';
 import { app } from '../../../scripts/app.js';
+import { commonPrefix } from './common.js';
 
 const status = {
   executing: 'Executing',
@@ -11,7 +12,7 @@ class CrystoolsProgressBar {
   idExtensionName = 'Crystools.progressBar';
   idShowProgressBar = 'Crystools.showStatus';
   defaultShowStatus = true;
-  menuPrefix = '';
+  menuPrefix = commonPrefix;
   htmlIdCrystoolsRoot = 'crystools-root';
   htmlIdCrystoolsProgressBarContainer = 'crystools-progress-bar-container';
 
@@ -31,7 +32,7 @@ class CrystoolsProgressBar {
   createSettings = () => {
     app.ui.settings.addSetting({
       id: this.idShowProgressBar,
-      name: this.menuPrefix + 'Show progress bar in menu',
+      name: this.menuPrefix + 'Show progress bar [menu]',
       type: 'boolean',
       defaultValue: this.defaultShowStatus,
       onChange: this.showProgressBar,
