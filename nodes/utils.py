@@ -1,5 +1,4 @@
-from ..core import CATEGORY, CONFIG, JSON_WIDGET, METADATA_RAW, TEXTS, findJsonStrDiff, findJsonsDiff, get_system_stats, \
-    logger
+from ..core import CATEGORY, JSON_WIDGET, findJsonStrDiff, get_system_stats, logger
 
 
 class CUtilsCompareJsons:
