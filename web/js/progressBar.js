@@ -29,9 +29,6 @@ class CrystoolsProgressBar {
 
   // not on setup because this affect the order on settings, I prefer to options at first
   createSettings = () => {
-    /** Form on settings: (the order is important) */
-
-    // use new save button
     app.ui.settings.addSetting({
       id: this.idShowProgressBar,
       name: this.menuPrefix + 'Show progress bar in menu',
@@ -42,11 +39,11 @@ class CrystoolsProgressBar {
   };
 
   showProgressBar = (value) => {
-    const ctools = document.getElementById(this.htmlIdCrystoolsProgressBarContainer);
+    const container = document.getElementById(this.htmlIdCrystoolsProgressBarContainer);
 
     // validation because this run before setup
-    if (ctools) {
-      ctools.style.display = value ? 'block' : 'none';
+    if (container) {
+      container.style.display = value ? 'block' : 'none';
     }
   };
 
@@ -88,22 +85,22 @@ class CrystoolsProgressBar {
       parentElement.insertAdjacentElement('afterend', ctoolsRoot);
     }
 
-    const progressBarContainer = document.createElement('div');
-    progressBarContainer.setAttribute('id', this.htmlIdCrystoolsProgressBarContainer);
-    progressBarContainer.setAttribute('title', 'click to see the current working node');
-    progressBarContainer.style.margin = '4px 0';
-    progressBarContainer.style.width = '100%';
-    progressBarContainer.style.cursor = 'pointer';
-    progressBarContainer.style.order = '1';
-    progressBarContainer.addEventListener('click', this.centerNode);
-    ctoolsRoot.append(progressBarContainer);
+    const htmlContainer = document.createElement('div');
+    htmlContainer.setAttribute('id', this.htmlIdCrystoolsProgressBarContainer);
+    htmlContainer.setAttribute('title', 'click to see the current working node');
+    htmlContainer.style.margin = '4px 0';
+    htmlContainer.style.width = '100%';
+    htmlContainer.style.cursor = 'pointer';
+    htmlContainer.style.order = '1';
+    htmlContainer.addEventListener('click', this.centerNode);
+    ctoolsRoot.append(htmlContainer);
 
     const progressBar = document.createElement('div');
     progressBar.style.margin = '0 10px';
     progressBar.style.height = '18px';
     progressBar.style.position = 'relative';
     progressBar.style.backgroundColor = 'var(--bg-color)';
-    progressBarContainer.append(progressBar);
+    htmlContainer.append(progressBar);
 
     const progressSlider = document.createElement('div');
     progressSlider.style.position = 'absolute';
