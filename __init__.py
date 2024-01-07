@@ -18,6 +18,7 @@ from .nodes.list import CListAny, CListString
 from .nodes.pipe import CPipeToAny, CPipeFromAny
 from .nodes.utils import CUtilsCompareJsons, CUtilsStatSystem
 from .nodes.metadata import CMetadataExtractor, CMetadataCompare
+from .general import *
 
 NODE_CLASS_MAPPINGS = {
     CLASSES.CBOOLEAN_NAME.value: CBoolean,

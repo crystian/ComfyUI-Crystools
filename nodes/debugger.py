@@ -1,6 +1,5 @@
 import json
-from ..core import CONFIG, CATEGORY, BOOLEAN, BOOLEAN_FALSE, KEYS, TEXTS, STRING, logger, setWidgetValues, any
-
+from ..core import CONFIG, CATEGORY, BOOLEAN, BOOLEAN_FALSE, KEYS, TEXTS, STRING, logger, any
 
 class CConsoleAny:
     def __init__(self):
