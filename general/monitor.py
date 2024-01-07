@@ -1,3 +1,4 @@
+import os
 import asyncio
 import server
 import time
@@ -13,62 +14,114 @@ class CMonitor:
     monitorThread = None
     frequency = 0
     nvidia = False
+    pynvmlLoaded = False
     cudaAvailable = False
     torchDevice = 'cpu'
     cudaDevice = 'cpu'
+    cudaDevicesFound = 0
+    switchCPU = False
+    switchGPU = False
+    switchHDD = False
+    switchRAM = False
+    switchVRAM = False
 
-    # TODO: fixed to first device
-    deviceIndex = 0
-
-    def __init__(self, frequency=10):
+    def __init__(self, frequency=10, switchCPU=False, switchGPU=False, switchHDD=False, switchRAM=False, switchVRAM=False):
         self.frequency = frequency
-        pynvml.nvmlInit()
+        self.switchCPU = switchCPU
+        self.switchGPU = switchGPU
+        self.switchHDD = switchHDD
+        self.switchRAM = switchRAM
+        self.switchVRAM = switchVRAM
+
+        try:
+            pynvml.nvmlInit()
+            self.pynvmlLoaded = True
+        except Exception as e:
+            self.pynvmlLoaded = False
+            logger.error('Could not init pynvml.' + str(e))
+
         self.startMonitor()
 
     def buildMonitorData(self):
-        cpu = psutil.cpu_percent()
-        ram = psutil.virtual_memory()
-        hdd = psutil.disk_usage('/')
-        deviceType = 'cpu'
+        cpu = -1
+        ramTotal = -1
+        ramUsed = -1
+        ramUsedPercent = -1,
+        hddTotal = -1
+        hddUsed = -1
+        hddUsedPercent = -1
         gpuUtilization = -1
         vramUsed = -1
         vramTotal = -1
         vramPercent = -1
 
-        if self.cudaDevice != 'cpu':
+        if self.switchCPU:
+            cpu = psutil.cpu_percent()
+
+        if self.switchRAM:
+            ram = psutil.virtual_memory()
+            ramTotal = ram.total
+            ramUsed = ram.used
+            ramUsedPercent = ram.percent
+
+        if self.switchHDD:
+            hdd = psutil.disk_usage('/')
+            hddTotal = hdd.total
+            hddUsed = hdd.used
+            hddUsedPercent = hdd.percent
+
+        deviceType = 'cpu'
+        gpus = []
+
+        if self.cudaDevice == 'cpu':
+            gpus.append({
+                'gpu_utilization': -1,
+                'vram_total': -1,
+                'vram_used': -1,
+                'vram_used_percent': -1,
+            })
+        else:
             deviceType = self.cudaDevice
-            device = torch.device(deviceType)
 
-            if self.nvidia and self.cudaAvailable:
-                deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(self.deviceIndex)
-                # GPU
-                utilization = pynvml.nvmlDeviceGetUtilizationRates(deviceHandle)
-                gpuUtilization = utilization.gpu
+            if self.pynvmlLoaded and self.nvidia and self.cudaAvailable:
+                for deviceIndex in range(self.cudaDevicesFound):
+                    deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(deviceIndex)
 
-                # VRAM
-                # Torch or pynvml?, pynvml is more accurate with the system, torch is more accurate with comfyUI
-                memory = pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
-                vramUsed = memory.used
-                vramTotal = memory.total
+                    # GPU Utilization
+                    if self.switchGPU:
+                        utilization = pynvml.nvmlDeviceGetUtilizationRates(deviceHandle)
+                        gpuUtilization = utilization.gpu
 
-                # vramUsed = torch.cuda.memory_allocated(device)
-                # vramTotal = torch.cuda.get_device_properties(device).total_memory
+                    # VRAM
+                    if self.switchVRAM:
+                        # Torch or pynvml?, pynvml is more accurate with the system, torch is more accurate with comfyUI
+                        memory = pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
+                        vramUsed = memory.used
+                        vramTotal = memory.total
 
-                vramPercent = vramUsed / vramTotal * 100
+                        # device = torch.device(deviceType)
+                        # vramUsed = torch.cuda.memory_allocated(device)
+                        # vramTotal = torch.cuda.get_device_properties(device).total_memory
+
+                        vramPercent = vramUsed / vramTotal * 100
+
+                    gpus.append({
+                        'gpu_utilization': gpuUtilization,
+                        'vram_total': vramTotal,
+                        'vram_used': vramUsed,
+                        'vram_used_percent': vramPercent,
+                    })
 
         return {
-            'ram_used': ram.used,
-            'ram_total': ram.total,
-            'ram_used_percent': round(ram.percent, 2),
             'cpu_utilization': cpu,
-            'hdd_used': hdd.used,
-            'hdd_total': hdd.total,
-            'hdd_used_percent': round(hdd.percent, 2),
+            'ram_total': ramTotal,
+            'ram_used': ramUsed,
+            'ram_used_percent': ramUsedPercent,
+            'hdd_total': hddTotal,
+            'hdd_used': hddUsed,
+            'hdd_used_percent': hddUsedPercent,
             'device_type': deviceType,
-            'gpu_utilization': gpuUtilization,
-            'vram_used': vramUsed,
-            'vram_total': vramTotal,
-            'vram_used_percent': round(vramPercent, 2),
+            'gpus': gpus,
         }
 
 
@@ -89,7 +142,8 @@ class CMonitor:
         else:
             logger.info('Starting monitor...')
 
-        if pynvml.nvmlDeviceGetCount() > 0:
+        if self.pynvmlLoaded and pynvml.nvmlDeviceGetCount() > 0:
+            self.cudaDevicesFound = pynvml.nvmlDeviceGetCount()
             self.nvidia = True
             logger.info(f'NVIDIA Driver detected - {pynvml.nvmlSystemGetDriverVersion()}')
         else:
@@ -107,13 +161,15 @@ class CMonitor:
             logger.warn('CUDA is available, but torch is using CPU.')
 
         monitorThread = threading.Thread(target=self.monitorLoop)
+        # TODO
         # monitorThread.set()
         monitorThread.daemon = True
         monitorThread.start()
 
     def stopMonitor(self):
         logger.debug('Stopping monitor...')
+        # TODO
         # monitorThread.stop()
 
 
-cmonitor = CMonitor(3)
+cmonitor = CMonitor(3, True, True, True, True, True)
