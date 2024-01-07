@@ -140,6 +140,9 @@ class CMonitor:
             logger.info('Restarting monitor...')
             self.stopMonitor()
         else:
+            if self.rate == 0:
+                return None
+
             logger.info('Starting monitor...')
 
         if self.pynvmlLoaded and pynvml.nvmlDeviceGetCount() > 0:
@@ -172,4 +175,4 @@ class CMonitor:
         # monitorThread.stop()
 
 
-cmonitor = CMonitor(3, True, True, True, True, True)
+cmonitor = CMonitor(0, False, False, False, False, False)

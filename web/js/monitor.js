@@ -1,5 +1,6 @@
 import { app } from "../../../scripts/app.js";
 import { api } from "../../../scripts/api.js";
+import { commonPrefix } from './common.js';
 
 //ram_used = ram.used / (1024 ** 3)
 //    ram_total = ram.total / (1024 ** 3)
@@ -15,9 +16,29 @@ import { api } from "../../../scripts/api.js";
 
 class CrystoolsMonitor {
   idExtensionName = 'Crystools.monitor';
+
   idShowMonitor = 'Crystools.showMonitor';
   defaultShowMonitor = true;
-  menuPrefix = '';
+
+  idInputRate = 'Crystools.inputRate';
+  defaultRate = .5;
+
+  idMonitorBigSize = 'Crystools.bigSize';
+  defaultMonitorBigSize = true;
+
+  // switches
+  idSwitchCPU = 'Crystools.switchCPU';
+  defaultSwitchCPU = true;
+  idSwitchGPU = 'Crystools.switchGPU';
+  defaultSwitchGPU = true;
+  idSwitchHDD = 'Crystools.switchHDD';
+  defaultSwitchHDD = true;
+  idSwitchRAM = 'Crystools.switchRAM';
+  defaultSwitchRAM = true;
+  idSwitchVRAM = 'Crystools.switchVRAM';
+  defaultSwitchVRAM = true;
+
+  menuPrefix = commonPrefix;
   htmlIdCrystoolsRoot = 'crystools-root';
   htmlIdCrystoolsMonitorContainer = 'crystools-monitor-container';
 
@@ -27,11 +48,74 @@ class CrystoolsMonitor {
 
   createSettings = () => {
     app.ui.settings.addSetting({
-      id: this.idShowMonitor,
-      name: this.menuPrefix + 'Show monitors in menu',
+      id: this.idSwitchCPU,
+      name: this.menuPrefix + 'Display CPU monitor [menu]',
       type: 'boolean',
-      defaultValue: this.defaultShowMonitor,
-      onChange: this.showMonitor,
+      defaultValue: this.defaultSwitchCPU,
+      onChange: (value)=>{
+        console.warn('swithcCPU', value);
+      },
+    });
+    app.ui.settings.addSetting({
+      id: this.idSwitchGPU,
+      name: this.menuPrefix + 'Display GPU monitor [menu]',
+      type: 'boolean',
+      defaultValue: this.defaultSwitchGPU,
+      onChange: (value)=>{
+        console.warn('swithGCPU', value);
+      },
+    });
+    app.ui.settings.addSetting({
+      id: this.idSwitchHDD,
+      name: this.menuPrefix + 'Display Hard disk monitor [menu]',
+      tooltip: 'Only the drive where the comfyUI is installed',
+      type: 'boolean',
+      defaultValue: this.defaultSwitchHDD,
+      onChange: (value)=>{
+        console.warn('swithHDD', value);
+      },
+    });
+    app.ui.settings.addSetting({
+      id: this.idSwitchRAM,
+      name: this.menuPrefix + 'Display RAM monitor [menu]',
+      type: 'boolean',
+      defaultValue: this.defaultSwitchRAM,
+      onChange: (value)=>{
+        console.warn('swithRAM', value);
+      },
+    });
+    app.ui.settings.addSetting({
+      id: this.idSwitchVRAM,
+      name: this.menuPrefix + 'Display Video RAM monitor [menu]',
+      type: 'boolean',
+      defaultValue: this.defaultSwitchVRAM,
+      onChange: (value)=>{
+        console.warn('swithVRAM', value);
+      },
+    });
+    app.ui.settings.addSetting({
+      id: this.idMonitorBigSize,
+      name: this.menuPrefix + 'Display large monitors [menu]',
+      type: 'boolean',
+      defaultValue: this.defaultMonitorBigSize,
+      onChange: (value)=>{
+        console.warn('show big monitors changed', value);
+      },
+    });
+    app.ui.settings.addSetting({
+      id: this.idInputRate,
+      name: this.menuPrefix + 'Monitors refresh rate (in seconds) [menu]',
+      tooltip: 'This is the time between each update of the monitors, 0 means no refresh',
+      type: 'slider',
+      attrs: {
+        min: 0,
+        max: 5,
+        step: 0.25,
+      },
+      defaultValue: this.defaultRate,
+      onChange: (value)=>{
+        console.warn('rate changed', value);
+      },
     });
   };
 
