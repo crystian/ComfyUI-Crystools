@@ -30,7 +30,7 @@ class CrystoolsMonitor {
   htmlMonitorCPURef = null;
   htmlMonitorCPUSliderRef = null;
   htmlMonitorCPULabelRef = null;
-  cssColorCPU = '#0aa015';
+  cssColorCPU = '#0AA015';
 
   // RAM Variables
   idSwitchRAM = 'Crystools.switchRAM';
@@ -38,7 +38,7 @@ class CrystoolsMonitor {
   htmlMonitorRAMRef = null;
   htmlMonitorRAMSliderRef = null;
   htmlMonitorRAMLabelRef = null;
-  cssColorRAM = '#07630d';
+  cssColorRAM = '#07630D';
 
   // GPU Variables
   idSwitchGPU = 'Crystools.switchGPU';
@@ -46,7 +46,7 @@ class CrystoolsMonitor {
   htmlMonitorGPURef = null;
   htmlMonitorGPUSliderRef = null;
   htmlMonitorGPULabelRef = null;
-  cssColorGPU = '#0c86f4';
+  cssColorGPU = '#0C86F4';
 
   // VRAM Variables
   idSwitchVRAM = 'Crystools.switchVRAM';
@@ -54,7 +54,7 @@ class CrystoolsMonitor {
   htmlMonitorVRAMRef = null;
   htmlMonitorVRAMSliderRef = null;
   htmlMonitorVRAMLabelRef = null;
-  cssColorVRAM = '#176ec7';
+  cssColorVRAM = '#176EC7';
 
   // HDD Variables
   idSwitchHDD = 'Crystools.switchHDD';
@@ -62,10 +62,7 @@ class CrystoolsMonitor {
   htmlMonitorHDDRef = null;
   htmlMonitorHDDSliderRef = null;
   htmlMonitorHDDLabelRef = null;
-  cssColorHDD = '#730f92';
-
-  idMonitorBigSize = 'Crystools.bigSize';
-  defaultMonitorBigSize = true;
+  cssColorHDD = '#730F92';
 
   constructor() {
     this.createSettings();
@@ -125,15 +122,6 @@ class CrystoolsMonitor {
     });
 
     app.ui.settings.addSetting({
-      id: this.idMonitorBigSize,
-      name: this.menuPrefix + 'Display large monitors [menu]',
-      type: 'boolean',
-      defaultValue: this.defaultMonitorBigSize,
-      onChange: (value) => {
-        console.warn('show big monitors changed', value);
-      },
-    });
-    app.ui.settings.addSetting({
       id: this.idInputRate,
       name: this.menuPrefix + 'Monitors refresh rate (in seconds) [menu]',
       tooltip: 'This is the time between each update of the monitors, 0 means no refresh',
@@ -152,9 +140,29 @@ class CrystoolsMonitor {
         }
         await this.updateServer({rate: value});
 
+        if (value === 0) {
+          this.updateDisplay({
+            cpu_utilization: -1,
+            device: 'cpu',
+
+            gpus: [{
+              gpu_utilization: -1,
+              vram_total: -1,
+              vram_used: -1,
+              vram_used_percent: -1,
+            }],
+            hdd_total: -1,
+            hdd_used: -1,
+            hdd_used_percent: -1,
+            ram_total: -1,
+            ram_used: -1,
+            ram_used_percent: -1,
+          });
+        }
+
         if (this.htmlMonitorCPUSliderRef) { // validation because this run before setup
           value = value.toFixed(1);
-          const animationConfig = `width ${value}s`
+          const animationConfig = `width ${value}s`;
           this.htmlMonitorCPUSliderRef.style.transition = animationConfig;
           this.htmlMonitorGPUSliderRef.style.transition = animationConfig;
           this.htmlMonitorHDDSliderRef.style.transition = animationConfig;
@@ -189,29 +197,30 @@ class CrystoolsMonitor {
 
   updateWidget = (container, value) => {
     if (container) {
-      container.style.display = value ? 'block' : 'none';
+      container.style.display = value ? 'flex' : 'none';
     }
   };
 
   updateDisplay = (data) => {
     // console.debug('updateDisplay', data);
-    this.htmlMonitorCPULabelRef.innerHTML = `${data.cpu_utilization.toFixed(1)}%`;
+    this.htmlMonitorCPULabelRef.innerHTML = `${Math.floor(data.cpu_utilization)}%`;
+    this.htmlMonitorCPURef.title = `${Math.floor(data.cpu_utilization)}%`;
     this.htmlMonitorCPUSliderRef.style.width = this.htmlMonitorCPULabelRef.innerHTML;
 
     const gpu = data.gpus[0];
     if (gpu) {
-      this.htmlMonitorGPULabelRef.innerHTML = `${gpu.gpu_utilization.toFixed(1)}%`;
+      this.htmlMonitorGPULabelRef.innerHTML = `${Math.floor(gpu.gpu_utilization)}%`;
       this.htmlMonitorGPUSliderRef.style.width = this.htmlMonitorGPULabelRef.innerHTML;
-      this.htmlMonitorVRAMLabelRef.innerHTML = `${gpu.vram_used_percent.toFixed(1)}%`;
+      this.htmlMonitorVRAMLabelRef.innerHTML = `${Math.floor(gpu.vram_used_percent)}%`;
       this.htmlMonitorVRAMSliderRef.style.width = this.htmlMonitorVRAMLabelRef.innerHTML;
     } else {
       console.error('no gpu found');
     }
 
-    this.htmlMonitorHDDLabelRef.innerHTML = `${data.hdd_used_percent.toFixed(1)}%`;
+    this.htmlMonitorHDDLabelRef.innerHTML = `${Math.floor(data.hdd_used_percent)}%`;
     this.htmlMonitorHDDSliderRef.style.width = this.htmlMonitorHDDLabelRef.innerHTML;
 
-    this.htmlMonitorRAMLabelRef.innerHTML = `${data.ram_used_percent?.toFixed(1)}%`;
+    this.htmlMonitorRAMLabelRef.innerHTML = `${Math.floor(data.ram_used_percent)}%`;
     this.htmlMonitorRAMSliderRef.style.width = this.htmlMonitorRAMLabelRef.innerHTML;
   };
 
@@ -245,156 +254,101 @@ class CrystoolsMonitor {
     this.registerListeners();
   }
 
+  createMonitor = (id, label, color) => {
+    const option = {
+      rootRef: null,
+      sliderRef: null,
+      labelRef: null,
+    };
+
+    const htmlMain = document.createElement('div');
+    htmlMain.setAttribute('id', id);
+    htmlMain.style.margin = '2px 10px';
+    htmlMain.style.height = '12px';
+    htmlMain.style.position = 'relative';
+    htmlMain.style.display = 'flex';
+    htmlMain.style.alignItems = 'center';
+    htmlMain.style.flexDirection = 'row';
+    option.rootRef = htmlMain;
+
+    const htmlMonitorText = document.createElement('div');
+    htmlMonitorText.style.width = '35px';
+    htmlMonitorText.style.fontSize = '10px';
+    htmlMonitorText.innerHTML = label;
+    htmlMain.append(htmlMonitorText);
+
+    const htmlMonitorContent = document.createElement('div');
+    htmlMonitorContent.style.height = '100%';
+    htmlMonitorContent.style.flexGrow = '1';
+    htmlMonitorContent.style.position = 'relative';
+    htmlMonitorContent.style.backgroundColor = 'var(--bg-color)';
+    htmlMain.append(htmlMonitorContent);
+
+    const htmlMonitorSlider = document.createElement('div');
+    htmlMonitorSlider.style.position = 'absolute';
+    htmlMonitorSlider.style.height = '100%';
+    htmlMonitorSlider.style.width = '0';
+    htmlMonitorSlider.style.backgroundColor = color;
+    htmlMonitorSlider.style.transition = 'width 0.5s';
+    option.sliderRef = htmlMonitorSlider;
+    htmlMonitorContent.append(htmlMonitorSlider);
+
+    const htmlMonitorLabel = document.createElement('div');
+    htmlMonitorLabel.style.position = 'relative';
+    htmlMonitorLabel.style.width = '100%';
+    htmlMonitorLabel.style.color = 'var(--drag-text)';
+    htmlMonitorLabel.style.fontSize = '10px';
+    htmlMonitorLabel.innerHTML = '0%';
+    option.labelRef = htmlMonitorLabel;
+    htmlMonitorContent.append(htmlMonitorLabel);
+
+    return option;
+  };
+
   createMonitorCPU = () => {
-    const htmlMonitorCPU = document.createElement('div');
-    htmlMonitorCPU.setAttribute('id', 'crystools-monitor-cpu');
-    htmlMonitorCPU.style.margin = '2px 10px';
-    htmlMonitorCPU.style.height = '18px';
-    htmlMonitorCPU.style.position = 'relative';
-    htmlMonitorCPU.style.backgroundColor = 'var(--bg-color)';
-    this.htmlMonitorCPURef = htmlMonitorCPU;
+    const options = this.createMonitor('crystools-monitor-cpu', 'CPU', this.cssColorCPU);
 
-    const htmlMonitorCPUSlider = document.createElement('div');
-    htmlMonitorCPUSlider.style.position = 'absolute';
-    htmlMonitorCPUSlider.style.height = '100%';
-    htmlMonitorCPUSlider.style.width = '0';
-    htmlMonitorCPUSlider.style.backgroundColor = this.cssColorCPU;
-    htmlMonitorCPUSlider.style.transition = 'width 0.5s';
-    this.htmlMonitorCPUSliderRef = htmlMonitorCPUSlider;
-    htmlMonitorCPU.append(this.htmlMonitorCPUSliderRef);
-
-    const htmlMonitorCPULabel = document.createElement('div');
-    htmlMonitorCPULabel.style.position = 'absolute';
-    htmlMonitorCPULabel.style.margin = 'auto 0';
-    htmlMonitorCPULabel.style.width = '100%';
-    htmlMonitorCPULabel.style.color = 'var(--drag-text)';
-    htmlMonitorCPULabel.style.fontSize = '14px';
-    htmlMonitorCPULabel.innerHTML = '0%';
-    this.htmlMonitorCPULabelRef = htmlMonitorCPULabel;
-    htmlMonitorCPU.append(this.htmlMonitorCPULabelRef);
+    this.htmlMonitorCPURef = options.rootRef;
+    this.htmlMonitorCPUSliderRef = options.sliderRef;
+    this.htmlMonitorCPULabelRef = options.labelRef;
     return this.htmlMonitorCPURef;
   };
 
   createMonitorRAM = () => {
-    const htmlMonitorRAM = document.createElement('div');
-    htmlMonitorRAM.setAttribute('id', 'crystools-monitor-gpu');
-    htmlMonitorRAM.style.margin = '2px 10px';
-    htmlMonitorRAM.style.height = '18px';
-    htmlMonitorRAM.style.position = 'relative';
-    htmlMonitorRAM.style.backgroundColor = 'var(--bg-color)';
-    this.htmlMonitorRAMRef = htmlMonitorRAM;
+    const options = this.createMonitor('crystools-monitor-ram', 'RAM', this.cssColorRAM);
 
-    const htmlMonitorRAMSlider = document.createElement('div');
-    htmlMonitorRAMSlider.style.position = 'absolute';
-    htmlMonitorRAMSlider.style.height = '100%';
-    htmlMonitorRAMSlider.style.width = '0';
-    htmlMonitorRAMSlider.style.backgroundColor = this.cssColorRAM;
-    htmlMonitorRAMSlider.style.transition = 'width 0.5s';
-    this.htmlMonitorRAMSliderRef = htmlMonitorRAMSlider;
-    htmlMonitorRAM.append(this.htmlMonitorRAMSliderRef);
-
-    const htmlMonitorRAMLabel = document.createElement('div');
-    htmlMonitorRAMLabel.style.position = 'absolute';
-    htmlMonitorRAMLabel.style.margin = 'auto 0';
-    htmlMonitorRAMLabel.style.width = '100%';
-    htmlMonitorRAMLabel.style.color = 'var(--drag-text)';
-    htmlMonitorRAMLabel.style.fontSize = '14px';
-    htmlMonitorRAMLabel.innerHTML = '0%';
-    this.htmlMonitorRAMLabelRef = htmlMonitorRAMLabel;
-    htmlMonitorRAM.append(this.htmlMonitorRAMLabelRef);
+    this.htmlMonitorRAMRef = options.rootRef;
+    this.htmlMonitorRAMSliderRef = options.sliderRef;
+    this.htmlMonitorRAMLabelRef = options.labelRef;
     return this.htmlMonitorRAMRef;
   };
 
   createMonitorGPU = () => {
-    const htmlMonitorGPU = document.createElement('div');
-    htmlMonitorGPU.setAttribute('id', 'crystools-monitor-gpu');
-    htmlMonitorGPU.style.margin = '2px 10px';
-    htmlMonitorGPU.style.height = '18px';
-    htmlMonitorGPU.style.position = 'relative';
-    htmlMonitorGPU.style.backgroundColor = 'var(--bg-color)';
-    this.htmlMonitorGPURef = htmlMonitorGPU;
+    const options = this.createMonitor('crystools-monitor-gpu', 'GPU', this.cssColorGPU);
 
-    const htmlMonitorGPUSlider = document.createElement('div');
-    htmlMonitorGPUSlider.style.position = 'absolute';
-    htmlMonitorGPUSlider.style.height = '100%';
-    htmlMonitorGPUSlider.style.width = '0';
-    htmlMonitorGPUSlider.style.backgroundColor = this.cssColorGPU;
-    htmlMonitorGPUSlider.style.transition = 'width 0.5s';
-    this.htmlMonitorGPUSliderRef = htmlMonitorGPUSlider;
-    htmlMonitorGPU.append(this.htmlMonitorGPUSliderRef);
-
-    const htmlMonitorGPULabel = document.createElement('div');
-    htmlMonitorGPULabel.style.position = 'absolute';
-    htmlMonitorGPULabel.style.margin = 'auto 0';
-    htmlMonitorGPULabel.style.width = '100%';
-    htmlMonitorGPULabel.style.color = 'var(--drag-text)';
-    htmlMonitorGPULabel.style.fontSize = '14px';
-    htmlMonitorGPULabel.innerHTML = '0%';
-    this.htmlMonitorGPULabelRef = htmlMonitorGPULabel;
-    htmlMonitorGPU.append(this.htmlMonitorGPULabelRef);
+    this.htmlMonitorGPURef = options.rootRef;
+    this.htmlMonitorGPUSliderRef = options.sliderRef;
+    this.htmlMonitorGPULabelRef = options.labelRef;
     return this.htmlMonitorGPURef;
   };
 
   createMonitorVRAM = () => {
-    const htmlMonitorVRAM = document.createElement('div');
-    htmlMonitorVRAM.setAttribute('id', 'crystools-monitor-gpu');
-    htmlMonitorVRAM.style.margin = '2px 10px';
-    htmlMonitorVRAM.style.height = '18px';
-    htmlMonitorVRAM.style.position = 'relative';
-    htmlMonitorVRAM.style.backgroundColor = 'var(--bg-color)';
-    this.htmlMonitorVRAMRef = htmlMonitorVRAM;
+    const options = this.createMonitor('crystools-monitor-vram', 'VRAM', this.cssColorVRAM);
 
-    const htmlMonitorVRAMSlider = document.createElement('div');
-    htmlMonitorVRAMSlider.style.position = 'absolute';
-    htmlMonitorVRAMSlider.style.height = '100%';
-    htmlMonitorVRAMSlider.style.width = '0';
-    htmlMonitorVRAMSlider.style.backgroundColor = this.cssColorVRAM;
-    htmlMonitorVRAMSlider.style.transition = 'width 0.5s';
-    this.htmlMonitorVRAMSliderRef = htmlMonitorVRAMSlider;
-    htmlMonitorVRAM.append(this.htmlMonitorVRAMSliderRef);
-
-    const htmlMonitorVRAMLabel = document.createElement('div');
-    htmlMonitorVRAMLabel.style.position = 'absolute';
-    htmlMonitorVRAMLabel.style.margin = 'auto 0';
-    htmlMonitorVRAMLabel.style.width = '100%';
-    htmlMonitorVRAMLabel.style.color = 'var(--drag-text)';
-    htmlMonitorVRAMLabel.style.fontSize = '14px';
-    htmlMonitorVRAMLabel.innerHTML = '0%';
-    this.htmlMonitorVRAMLabelRef = htmlMonitorVRAMLabel;
-    htmlMonitorVRAM.append(this.htmlMonitorVRAMLabelRef);
+    this.htmlMonitorVRAMRef = options.rootRef;
+    this.htmlMonitorVRAMSliderRef = options.sliderRef;
+    this.htmlMonitorVRAMLabelRef = options.labelRef;
     return this.htmlMonitorVRAMRef;
   };
 
   createMonitorHDD = () => {
-    const htmlMonitorHDD = document.createElement('div');
-    htmlMonitorHDD.setAttribute('id', 'crystools-monitor-gpu');
-    htmlMonitorHDD.style.margin = '2px 10px';
-    htmlMonitorHDD.style.height = '18px';
-    htmlMonitorHDD.style.position = 'relative';
-    htmlMonitorHDD.style.backgroundColor = 'var(--bg-color)';
-    this.htmlMonitorHDDRef = htmlMonitorHDD;
+    const options = this.createMonitor('crystools-monitor-hdd', 'HDD', this.cssColorHDD);
 
-    const htmlMonitorHDDSlider = document.createElement('div');
-    htmlMonitorHDDSlider.style.position = 'absolute';
-    htmlMonitorHDDSlider.style.height = '100%';
-    htmlMonitorHDDSlider.style.width = '0';
-    htmlMonitorHDDSlider.style.backgroundColor = this.cssColorHDD;
-    htmlMonitorHDDSlider.style.transition = 'width 0.5s';
-    this.htmlMonitorHDDSliderRef = htmlMonitorHDDSlider;
-    htmlMonitorHDD.append(this.htmlMonitorHDDSliderRef);
-
-    const htmlMonitorHDDLabel = document.createElement('div');
-    htmlMonitorHDDLabel.style.position = 'absolute';
-    htmlMonitorHDDLabel.style.margin = 'auto 0';
-    htmlMonitorHDDLabel.style.width = '100%';
-    htmlMonitorHDDLabel.style.color = 'var(--drag-text)';
-    htmlMonitorHDDLabel.style.fontSize = '14px';
-    htmlMonitorHDDLabel.innerHTML = '0%';
-    this.htmlMonitorHDDLabelRef = htmlMonitorHDDLabel;
-    htmlMonitorHDD.append(this.htmlMonitorHDDLabelRef);
+    this.htmlMonitorHDDRef = options.rootRef;
+    this.htmlMonitorHDDSliderRef = options.sliderRef;
+    this.htmlMonitorHDDLabelRef = options.labelRef;
     return this.htmlMonitorHDDRef;
   };
-
 
   registerListeners = () => {
     api.addEventListener('crystools.monitor', (event) => {

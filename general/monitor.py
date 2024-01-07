@@ -10,6 +10,7 @@ from server import PromptServer
 from aiohttp import web
 from ..core import logger
 
+lock = threading.Lock()
 
 class CMonitor:
     monitorThread = None
@@ -134,7 +135,9 @@ class CMonitor:
 
     def monitorLoop(self):
         while self.rate > 0 and not self.threadController.is_set():
+            lock.acquire()
             asyncio.run(self.send_message(self.buildMonitorData()))
+            lock.release()
             time.sleep(self.rate)
 
     def startMonitor(self):
@@ -179,7 +182,7 @@ class CMonitor:
         self.threadController.set()
 
 
-cmonitor = CMonitor(1, False, False, False, False, False)
+cmonitor = CMonitor(1, True, True, True, True, True)
 
 
 @PromptServer.instance.routes.patch("/crystools/monitor")
