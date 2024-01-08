@@ -1,5 +1,6 @@
 import { api } from '../../../scripts/api.js';
 import { app } from '../../../scripts/app.js';
+import { commonPrefix } from './common.js';
 
 const status = {
   executing: 'Executing',
@@ -11,7 +12,7 @@ class CrystoolsProgressBar {
   idExtensionName = 'Crystools.progressBar';
   idShowProgressBar = 'Crystools.showStatus';
   defaultShowStatus = true;
-  menuPrefix = '';
+  menuPrefix = commonPrefix;
   htmlIdCrystoolsRoot = 'crystools-root';
   htmlIdCrystoolsProgressBarContainer = 'crystools-progress-bar-container';
 
@@ -29,12 +30,9 @@ class CrystoolsProgressBar {
 
   // not on setup because this affect the order on settings, I prefer to options at first
   createSettings = () => {
-    /** Form on settings: (the order is important) */
-
-    // use new save button
     app.ui.settings.addSetting({
       id: this.idShowProgressBar,
-      name: this.menuPrefix + 'Show progress bar in menu',
+      name: this.menuPrefix + 'Show progress bar [menu]',
       type: 'boolean',
       defaultValue: this.defaultShowStatus,
       onChange: this.showProgressBar,
@@ -42,11 +40,11 @@ class CrystoolsProgressBar {
   };
 
   showProgressBar = (value) => {
-    const ctools = document.getElementById(this.htmlIdCrystoolsProgressBarContainer);
+    const container = document.getElementById(this.htmlIdCrystoolsProgressBarContainer);
 
     // validation because this run before setup
-    if (ctools) {
-      ctools.style.display = value ? 'block' : 'none';
+    if (container) {
+      container.style.display = value ? 'block' : 'none';
     }
   };
 
@@ -59,7 +57,7 @@ class CrystoolsProgressBar {
       if (this.timeStart > 0 && timeElapsed > 0) {
         this.htmlProgressLabelRef.innerHTML = new Date(timeElapsed).toISOString().substr(11, 8);
       }
-      this.htmlProgressSliderRef.style.backgroundColor = 'var(--bg-color)';
+      this.htmlProgressSliderRef.style.width = '0';
 
     } else if (this.currentStatus === status.execution_error) {
       // an error occurred
@@ -71,7 +69,7 @@ class CrystoolsProgressBar {
       // on going
       this.htmlProgressLabelRef.innerHTML = `${this.currentProgress}%`;
       this.htmlProgressSliderRef.style.width = this.htmlProgressLabelRef.innerHTML;
-      this.htmlProgressSliderRef.style.backgroundColor = 'green';
+      this.htmlProgressSliderRef.style.backgroundColor = 'green'; // by reset the color
     }
   };
 
@@ -88,27 +86,29 @@ class CrystoolsProgressBar {
       parentElement.insertAdjacentElement('afterend', ctoolsRoot);
     }
 
-    const progressBarContainer = document.createElement('div');
-    progressBarContainer.setAttribute('id', this.htmlIdCrystoolsProgressBarContainer);
-    progressBarContainer.setAttribute('title', 'click to see the current working node');
-    progressBarContainer.style.margin = '4px 0';
-    progressBarContainer.style.width = '100%';
-    progressBarContainer.style.cursor = 'pointer';
-    progressBarContainer.style.order = '1';
-    progressBarContainer.addEventListener('click', this.centerNode);
-    ctoolsRoot.append(progressBarContainer);
+    const htmlContainer = document.createElement('div');
+    htmlContainer.setAttribute('id', this.htmlIdCrystoolsProgressBarContainer);
+    htmlContainer.setAttribute('title', 'click to see the current working node');
+    htmlContainer.style.margin = '4px 0';
+    htmlContainer.style.width = '100%';
+    htmlContainer.style.cursor = 'pointer';
+    htmlContainer.style.order = '1';
+    htmlContainer.addEventListener('click', this.centerNode);
+    ctoolsRoot.append(htmlContainer);
 
     const progressBar = document.createElement('div');
     progressBar.style.margin = '0 10px';
     progressBar.style.height = '18px';
     progressBar.style.position = 'relative';
     progressBar.style.backgroundColor = 'var(--bg-color)';
-    progressBarContainer.append(progressBar);
+    htmlContainer.append(progressBar);
 
     const progressSlider = document.createElement('div');
     progressSlider.style.position = 'absolute';
     progressSlider.style.height = '100%';
     progressSlider.style.width = '0';
+    progressSlider.style.transition = 'width 0.2s';
+    progressSlider.style.backgroundColor = 'green';
     this.htmlProgressSliderRef = progressSlider;
     progressBar.append(this.htmlProgressSliderRef);
 

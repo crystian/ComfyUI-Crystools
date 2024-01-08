@@ -1,6 +1,6 @@
 # ComfyUI-Crystools [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fcrystian%2FComfyUI-Crystools&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com) [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://paypal.me/crystian77)
 
-**_A powerful set of tools for your belt when you work with ComfyUI_**
+**_🪛 A powerful set of tools for your belt when you work with ComfyUI 🪛_**
 
 You can see the progress bar & time elapsed also you can see metadata and compare between two images, compare between two JSONs, show any value to console/display, pipes, and more!
 This provides better nodes to load images, previews, etc, and see "hidden" data, but without loading a new workflow.
@@ -23,6 +23,29 @@ This provides better nodes to load images, previews, etc, and see "hidden" data,
 
 ## General
 
+### Resources monitor
+
+**🎉Finally, you can see the resources used by ComfyUI (CPU, GPU, RAM, VRAM, and space) on the menu in real-time!**
+
+![Monitors](./docs/monitor.png)
+
+Now you can identify the bottlenecks in your workflow and know when it's time to restart the server, unload models or even close some tabs!
+
+You can configure the refresh rate which resources to show:
+
+![Monitors](./docs/monitor-settings.png)
+
+> **Notes:**
+> - The GPU data is only available when you use CUDA (only NVIDIA cards, sorry AMD users).
+> - It is not perfect, but it is a good approximation.
+> - Data comes from these libraries:
+>   - [psutil](https://pypi.org/project/psutil/)
+>   - [torch](https://pytorch.org/)
+>   - [pynvml](https://pypi.org/project/pynvml/) (official NVIDIA library)
+> - This is a beta version, so please report any issue you find.
+
+
+
 ### Progress bar
 
 You can see the progress of your workflow with a progress bar on the menu!
@@ -30,8 +53,6 @@ You can see the progress of your workflow with a progress bar on the menu!
 ![Progress bar](./docs/progress-bar.png)
 
 https://github.com/crystian/ComfyUI-Crystools/assets/3886806/35cc1257-2199-4b85-936e-2e31d892959c
-
-Additionally, it shows the time elapsed at the end of the workflow, and you can `click` on it to see the **current working node.** 
 
 Additionally, it shows the time elapsed at the end of the workflow, and you can `click` on it to see the **current working node.** 
 
@@ -483,14 +504,19 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 ---
 
 ## To do
-- [✅] Review the priority of the list of nodes
-- [❌] Add support for other image formats (jpg, gif, etc.) - nope, I don't need it; it's complicated
 - [ ] Several unit tests
 - [ ] Add permanent cache for preview/metadata image (to survive to F5! or restart the server)
 
 ---
 
 ## Changelog
+### 1.3.0 (08/01/2024)
+- Added in general Resources monitor (CPU, GPU, RAM, VRAM, and space)
+- Added this icon to identify this set of tools: 🪛 
+
+### Crystools-save: 1.1.0 (07/01/2024)
+- Labeling updated according to the new version of Crystools (this project)
+
 ### 1.2.0 (05/01/2024)
 - progress bar added
 

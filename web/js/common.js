@@ -1,5 +1,7 @@
 import { ComfyWidgets } from '../../../scripts/widgets.js';
 
+export const commonPrefix = '🪛';
+
 export function displayContext(nodeType, app, index = 0, serialize_widgets = false, isVirtualNode = false) {
   function populate(text) {
     if (this.widgets) {
@@ -53,7 +55,6 @@ export function displayContext(nodeType, app, index = 0, serialize_widgets = fal
     }
   };
 }
-
 
 // propagate the output value to the dependents nodes, it does not work with some nodes ¯\_(ツ)_/¯
 const propagateOutputToDependentsNodes = function(output, value) {
