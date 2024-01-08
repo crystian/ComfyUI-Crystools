@@ -2,8 +2,8 @@
 
 **_🪛 A powerful set of tools for your belt when you work with ComfyUI 🪛_**
 
-You can see the progress bar & time elapsed also you can see metadata and compare between two images, compare between two JSONs, show any value to console/display, pipes, and more!
-This provides better nodes to load images, previews, etc, and see "hidden" data, but without loading a new workflow.
+With this suit, you can see the resources monitor, progress bar & time elapsed, metadata and compare between two images, compare between two JSONs, show any value to console/display, pipes, and more!
+This provides better nodes to load/save images, previews, etc, and see "hidden" data without loading a new workflow.
 
 ![Show metadata](./docs/jake.gif)
 
