@@ -37,8 +37,8 @@ Device: cuda:0 NVIDIA GeForce RTX 3080 Ti : cudaMallocAsync
 ### Loading: ComfyUI-Manager (V1.25.3)
 ### ComfyUI Revision: 1886 [6a10640f] | Released on '2024-01-08'
 ```
-If you have an NVIDIA GPU, also copy this part:
 ```
+[Crystools INFO] Crystools version: 1.3.2
 [Crystools INFO] NVIDIA Driver detected - 546.33
 ```
 
