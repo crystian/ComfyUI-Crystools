@@ -143,13 +143,13 @@ class CMonitor:
     def startMonitor(self):
         if self.monitorThread is not None:
             self.stopMonitor()
-            logger.info('Restarting monitor...')
+            logger.debug('Restarting monitor...')
         else:
             if self.rate == 0:
                 logger.debug('Monitor rate is 0, not starting monitor.')
                 return None
 
-            logger.info('Starting monitor...')
+            logger.debug('Starting monitor...')
 
         if self.pynvmlLoaded and pynvml.nvmlDeviceGetCount() > 0:
             self.cudaDevicesFound = pynvml.nvmlDeviceGetCount()

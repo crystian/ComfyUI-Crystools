@@ -510,18 +510,17 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 ---
 
 ## Changelog
+
+### Crystools
+
 ### 1.3.0 (08/01/2024)
 - Added in general Resources monitor (CPU, GPU, RAM, VRAM, and space)
 - Added this icon to identify this set of tools: 🪛 
 
-### Crystools-save: 1.1.0 (07/01/2024)
-- Labeling updated according to the new version of Crystools (this project)
 
 ### 1.2.0 (05/01/2024)
 - progress bar added
 
-### Crystools-save: 1.0.0 (29/12/2023)
-- Created another extension to save the info about the author on workflow: [ComfyUI-Crystools-save](https://github.com/crystian/ComfyUI-Crystools-save)
  
 ### 1.1.0 (29/12/2023)
 - Node added: "Save image with extra metadata"
@@ -529,6 +528,15 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### 1.0.0 (26/12/2023)
 - First release
+
+
+### Crystools-save
+
+### 1.1.0 (07/01/2024)
+- Labeling updated according to the new version of Crystools (this project)
+
+### 1.0.0 (29/12/2023)
+- Created another extension to save the info about the author on workflow: [ComfyUI-Crystools-save](https://github.com/crystian/ComfyUI-Crystools-save)
 
 ---
 

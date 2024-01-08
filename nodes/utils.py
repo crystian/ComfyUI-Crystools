@@ -50,6 +50,6 @@ class CUtilsStatSystem:
         for stat in get_system_stats():
             log += stat + "\n"
 
-        logger.info(log)
+        logger.debug(log)
 
         return {"ui": {"text": [log]}, "result": (latent,)}
