@@ -204,7 +204,6 @@ class CrystoolsMonitor {
   updateDisplay = (data) => {
     // console.debug('updateDisplay', data);
     this.htmlMonitorCPULabelRef.innerHTML = `${Math.floor(data.cpu_utilization)}%`;
-    this.htmlMonitorCPURef.title = `${Math.floor(data.cpu_utilization)}%`;
     this.htmlMonitorCPUSliderRef.style.width = this.htmlMonitorCPULabelRef.innerHTML;
 
     const gpu = data.gpus[0];
@@ -242,6 +241,7 @@ class CrystoolsMonitor {
     htmlContainer.style.width = '100%';
     htmlContainer.style.cursor = 'crosshair';
     htmlContainer.style.order = '3';
+    htmlContainer.style.margin = '4px 0';
     ctoolsRoot.append(htmlContainer);
 
     htmlContainer.append(this.createMonitorCPU());

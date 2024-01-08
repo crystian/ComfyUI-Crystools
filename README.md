@@ -23,6 +23,29 @@ This provides better nodes to load images, previews, etc, and see "hidden" data,
 
 ## General
 
+### Resources monitor
+
+**🎉Finally, you can see the resources used by ComfyUI (CPU, GPU, RAM, VRAM, and space) on the menu in real-time!**
+
+![Monitors](./docs/monitor.png)
+
+Now you can identify the bottlenecks in your workflow and know when it's time to restart the server, unload models or even close some tabs!
+
+You can configure the refresh rate which resources to show:
+
+![Monitors](./docs/monitor-settings.png)
+
+> **Notes:**
+> - The GPU data is only available when you use CUDA (only NVIDIA cards, sorry AMD users).
+> - It is not perfect, but it is a good approximation.
+> - Data comes from these libraries:
+>   - [psutil](https://pypi.org/project/psutil/)
+>   - [torch](https://pytorch.org/)
+>   - [pynvml](https://pypi.org/project/pynvml/) (official NVIDIA library)
+> - This is a beta version, so please report any issue you find.
+
+
+
 ### Progress bar
 
 You can see the progress of your workflow with a progress bar on the menu!
@@ -30,8 +53,6 @@ You can see the progress of your workflow with a progress bar on the menu!
 ![Progress bar](./docs/progress-bar.png)
 
 https://github.com/crystian/ComfyUI-Crystools/assets/3886806/35cc1257-2199-4b85-936e-2e31d892959c
-
-Additionally, it shows the time elapsed at the end of the workflow, and you can `click` on it to see the **current working node.** 
 
 Additionally, it shows the time elapsed at the end of the workflow, and you can `click` on it to see the **current working node.** 
 
@@ -489,6 +510,10 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 ---
 
 ## Changelog
+### 1.3.0 (08/01/2024)
+- Added in general Resources monitor (CPU, GPU, RAM, VRAM, and space)
+- Added this icon to identify this set of tools: 🪛 
+
 ### Crystools-save: 1.1.0 (07/01/2024)
 - Labeling updated according to the new version of Crystools (this project)
 
