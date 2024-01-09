@@ -190,7 +190,6 @@ class CrystoolsMonitor {
   };
 
   updateDisplay = (data) => {
-    // console.debug('updateDisplay', data);
     this.htmlMonitorCPULabelRef.innerHTML = `${Math.floor(data.cpu_utilization)}%`;
     this.htmlMonitorCPUSliderRef.style.width = this.htmlMonitorCPULabelRef.innerHTML;
 

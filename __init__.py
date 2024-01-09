@@ -2,7 +2,7 @@
 @author: Crystian
 @title: Crystools
 @nickname: Crystools
-@version: 1.3.2
+@version: 1.3.3
 @project: "https://github.com/crystian/ComfyUI-Crystools",
 @description: Plugins for multiples uses, mainly for debugging, you need them! IG: https://www.instagram.com/crystian.ia
 """
@@ -21,6 +21,7 @@ from .nodes.list import CListAny, CListString
 from .nodes.pipe import CPipeToAny, CPipeFromAny
 from .nodes.utils import CUtilsCompareJsons, CUtilsStatSystem
 from .nodes.metadata import CMetadataExtractor, CMetadataCompare
+from .server import *
 from .general import *
 
 NODE_CLASS_MAPPINGS = {
