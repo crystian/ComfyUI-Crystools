@@ -126,17 +126,18 @@ class CMonitor:
             'gpus': gpus,
         }
 
-
     async def send_message(self, data) -> None:
-        s = server.PromptServer.instance
-        # logger.debug(f'Sending message... {data}')
-        await s.send_json('crystools.monitor', data)
+        # I'm not sure if it is ok, but works ¯\_(ツ)_/¯
+        # I tried to use async with send_json, but eventually that don't send the message
+        # await s.send_json('crystools.monitor', data)
+        # lock.acquire()
+        server.PromptServer.instance.send_sync('crystools.monitor', data)
+        # lock.release()
 
     def monitorLoop(self):
         while self.rate > 0 and not self.threadController.is_set():
-            lock.acquire()
-            asyncio.run(self.send_message(self.buildMonitorData()))
-            lock.release()
+            data = self.buildMonitorData()
+            asyncio.run(self.send_message(data))
             time.sleep(self.rate)
 
     def startMonitor(self):
