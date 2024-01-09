@@ -2,10 +2,13 @@
 @author: Crystian
 @title: Crystools
 @nickname: Crystools
-@version: 1.3.0
+@version: 1.3.3
 @project: "https://github.com/crystian/ComfyUI-Crystools",
 @description: Plugins for multiples uses, mainly for debugging, you need them! IG: https://www.instagram.com/crystian.ia
 """
+
+from .core import version, logger
+logger.info(f'Crystools version: {version}')
 
 from .nodes._names import CLASSES
 from .nodes.primitive import CBoolean, CText, CTextML, CInteger, CFloat
@@ -18,6 +21,7 @@ from .nodes.list import CListAny, CListString
 from .nodes.pipe import CPipeToAny, CPipeFromAny
 from .nodes.utils import CUtilsCompareJsons, CUtilsStatSystem
 from .nodes.metadata import CMetadataExtractor, CMetadataCompare
+from .server import *
 from .general import *
 
 NODE_CLASS_MAPPINGS = {
@@ -88,5 +92,6 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     CLASSES.CUTILS_JSON_COMPARATOR_NAME.value: CLASSES.CUTILS_JSON_COMPARATOR_DESC.value,
     CLASSES.CUTILS_STAT_SYSTEM_NAME.value: CLASSES.CUTILS_STAT_SYSTEM_DESC.value,
 }
+
 
 WEB_DIRECTORY = "./web"

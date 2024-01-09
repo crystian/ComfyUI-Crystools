@@ -219,7 +219,7 @@ class CImageGetResolution:
         res = getResolutionByTensor(image)
         text = [f"{res['x']}x{res['y']}"]
         setWidgetValues(text, unique_id, extra_pnginfo)
-        logger.info(f"Resolution: {text}")
+        logger.debug(f"Resolution: {text}")
         return {"ui": {"text": text}, "result": (res["x"], res["y"])}
 
 

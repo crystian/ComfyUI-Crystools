@@ -75,7 +75,7 @@ class CMetadataExtractor:
                 logger.warn(e)
 
         elif metadata_raw is None:
-            logger.info("metadata_raw is None")
+            logger.debug("metadata_raw is None")
         else:
             logger.warn(TEXTS.INVALID_METADATA_MSG.value)
 
