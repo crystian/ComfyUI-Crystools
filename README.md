@@ -513,6 +513,10 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### Crystools
 
+### 1.5.0 (10/01/2024)
+- Improvements on the resources monitor and how handle the threads
+- Some fixes 
+
 ### 1.3.0 (08/01/2024)
 - Added in general Resources monitor (CPU, GPU, RAM, VRAM, and space)
 - Added this icon to identify this set of tools: 🪛 

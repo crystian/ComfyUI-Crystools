@@ -19,7 +19,7 @@ class CMonitor:
         self.rate = rate
         self.stats = CStats(switchCPU, switchGPU, switchHDD, switchRAM, switchVRAM)
         self.stats.diagnostic()
-        
+
         self.startMonitor()
 
     async def send_message(self, data) -> None:
