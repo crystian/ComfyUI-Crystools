@@ -25,21 +25,20 @@ If applicable, add the error message from the console.
 **Versions:**  
 Copy the output of the console (4 parts), like this:
 ```
-** Platform: Windows
 ** Python version: 3.10.11 (tags/v3.10.11:7d4cc5a, Apr  5 2023, 00:38:17) [MSC v.1929 64 bit (AMD64)]
 ```
 ```
 Total VRAM 12287 MB, total RAM 130996 MB
 Set vram state to: NORMAL_VRAM
-Device: cuda:0 NVIDIA GeForce RTX 3080 Ti : cudaMallocAsync
 ```
 ```
 ### Loading: ComfyUI-Manager (V1.25.3)
 ### ComfyUI Revision: 1886 [6a10640f] | Released on '2024-01-08'
 ```
 ```
-[Crystools INFO] Crystools version: 1.3.2
-[Crystools INFO] NVIDIA Driver detected - 546.33
+[Crystools INFO] Crystools version: 1.4.0
+[Crystools INFO] CPU: AMD Ryzen 9 5950X 16-Core Processor - Arch: AMD64 - OS: Windows 10
+[Crystools INFO] NVIDIA Driver detected - 546.33 - cuda:0 NVIDIA GeForce RTX 3080 Ti : cudaMallocAsync
 ```
 
 **Additional context**  

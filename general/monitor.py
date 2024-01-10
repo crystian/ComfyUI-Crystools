@@ -3,13 +3,15 @@ import server
 import time
 import threading
 import psutil
+import platform
+import cpuinfo
 import torch
 import pynvml
 from comfy.model_management import get_torch_device_name, get_torch_device
 
 from ..core import logger
 
-lock = threading.Lock()
+# lock = threading.Lock()
 
 class CMonitor:
     monitorThread = None
@@ -34,6 +36,11 @@ class CMonitor:
         self.switchHDD = switchHDD
         self.switchRAM = switchRAM
         self.switchVRAM = switchVRAM
+
+        specName = 'CPU: ' + cpuinfo.get_cpu_info().get('brand_raw', "Unknown")
+        specArch = 'Arch: ' + cpuinfo.get_cpu_info().get('arch_string_raw', "Unknown")
+        specOs = 'OS: ' + str(platform.system()) + ' ' + str(platform.release())
+        logger.info(f"{specName} - {specArch} - {specOs}")
 
         try:
             pynvml.nvmlInit()
@@ -154,7 +161,7 @@ class CMonitor:
         if self.pynvmlLoaded and pynvml.nvmlDeviceGetCount() > 0:
             self.cudaDevicesFound = pynvml.nvmlDeviceGetCount()
             self.nvidia = True
-            logger.info(f'NVIDIA Driver detected - {pynvml.nvmlSystemGetDriverVersion()}')
+            logger.info(f'NVIDIA Driver detected - {pynvml.nvmlSystemGetDriverVersion()} - {get_torch_device_name(get_torch_device())}')
         else:
             logger.warn('No NVIDIA GPU detected.')
 
