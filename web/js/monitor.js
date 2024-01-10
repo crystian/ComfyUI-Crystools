@@ -123,28 +123,37 @@ class CrystoolsMonitor {
       onChange: async(value) => {
         try {
           value = parseFloat(value);
+          if (isNaN(value)) {
+            throw new Error('invalid value');
+          }
         } catch (error) {
           console.error(error);
+          return;
         }
-        await this.updateServer({rate: value});
+        try {
+          await this.updateServer({rate: value});
+        } catch (error) {
+          console.error(error);
+          return;
+        }
 
         if (value === 0) {
           this.updateDisplay({
-            cpu_utilization: -1,
+            cpu_utilization: 0,
             device: 'cpu',
 
             gpus: [{
-              gpu_utilization: -1,
-              vram_total: -1,
-              vram_used: -1,
-              vram_used_percent: -1,
+              gpu_utilization: 0,
+              vram_total: 0,
+              vram_used: 0,
+              vram_used_percent: 0,
             }],
-            hdd_total: -1,
-            hdd_used: -1,
-            hdd_used_percent: -1,
-            ram_total: -1,
-            ram_used: -1,
-            ram_used_percent: -1,
+            hdd_total: 0,
+            hdd_used: 0,
+            hdd_used_percent: 0,
+            ram_total: 0,
+            ram_used: 0,
+            ram_used_percent: 0,
           });
         }
 
@@ -156,6 +165,11 @@ class CrystoolsMonitor {
           this.htmlMonitorHDDSliderRef.style.transition = animationConfig;
           this.htmlMonitorRAMSliderRef.style.transition = animationConfig;
           this.htmlMonitorVRAMSliderRef.style.transition = animationConfig;
+          this.htmlMonitorCPUSliderRef.style.width = value;
+          this.htmlMonitorGPUSliderRef.style.width = value;
+          this.htmlMonitorHDDSliderRef.style.width = value;
+          this.htmlMonitorRAMSliderRef.style.width = value;
+          this.htmlMonitorVRAMSliderRef.style.width = value;
         }
       },
     });
@@ -170,9 +184,8 @@ class CrystoolsMonitor {
     if (resp.status === 200) {
       return await resp.text();
     } else {
-      console.error(resp);
+      throw new Error(resp.statusText);
     }
-    return undefined;
   };
 
   updateAllWidget = () => {
@@ -191,6 +204,9 @@ class CrystoolsMonitor {
 
   updateDisplay = (data) => {
     // console.log('updateDisplay', data);
+    if (!this.htmlMonitorCPULabelRef) {
+      return;
+    }
     this.htmlMonitorCPULabelRef.innerHTML = `${Math.floor(data.cpu_utilization)}%`;
     this.htmlMonitorCPUSliderRef.style.width = this.htmlMonitorCPULabelRef.innerHTML;
 

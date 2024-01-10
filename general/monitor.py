@@ -18,7 +18,8 @@ class CMonitor:
     def __init__(self, rate=5, switchCPU=False, switchGPU=False, switchHDD=False, switchRAM=False, switchVRAM=False):
         self.rate = rate
         self.stats = CStats(switchCPU, switchGPU, switchHDD, switchRAM, switchVRAM)
-
+        self.stats.diagnostic()
+        
         self.startMonitor()
 
     async def send_message(self, data) -> None:
@@ -46,8 +47,6 @@ class CMonitor:
                 return None
 
             logger.debug('Starting monitor...')
-
-        self.stats.diagnostic()
 
         self.threadController.clear()
 
