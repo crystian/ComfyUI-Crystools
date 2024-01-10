@@ -11,7 +11,7 @@ from comfy.model_management import get_torch_device_name, get_torch_device
 
 from ..core import logger
 
-# lock = threading.Lock()
+lock = threading.Lock()
 
 class CMonitor:
     monitorThread = None
@@ -179,7 +179,9 @@ class CMonitor:
         self.threadController.clear()
 
         if self.monitorThread is None or not self.monitorThread.is_alive():
+            lock.acquire()
             self.monitorThread = threading.Thread(target=self.monitorLoop)
+            lock.release()
             self.monitorThread.daemon = True
             self.monitorThread.start()
 
