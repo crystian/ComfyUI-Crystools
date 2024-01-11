@@ -25,35 +25,35 @@ async def newSettings(request):
             if type(switchCPU) is not bool:
                 raise Exception('switchCPU must be an boolean.')
 
-            cmonitor.switchCPU = switchCPU
+            cmonitor.stats.switchCPU = switchCPU
 
         if 'switchGPU' in settings is not None:
             switchGPU = settings['switchGPU']
             if type(switchGPU) is not bool:
                 raise Exception('switchGPU must be an boolean.')
 
-            cmonitor.switchGPU = switchGPU
+            cmonitor.stats.switchGPU = switchGPU
 
         if 'switchHDD' in settings is not None:
             switchHDD = settings['switchHDD']
             if type(switchHDD) is not bool:
                 raise Exception('switchHDD must be an boolean.')
 
-            cmonitor.switchHDD = switchHDD
+            cmonitor.stats.switchHDD = switchHDD
 
         if 'switchRAM' in settings is not None:
             switchRAM = settings['switchRAM']
             if type(switchRAM) is not bool:
                 raise Exception('switchRAM must be an boolean.')
 
-            cmonitor.switchRAM = switchRAM
+            cmonitor.stats.switchRAM = switchRAM
 
         if 'switchVRAM' in settings is not None:
             switchVRAM = settings['switchVRAM']
             if type(switchVRAM) is not bool:
                 raise Exception('switchVRAM must be an boolean.')
 
-            cmonitor.switchVRAM = switchVRAM
+            cmonitor.stats.switchVRAM = switchVRAM
 
         return web.Response(status=200)
     except Exception as e:
