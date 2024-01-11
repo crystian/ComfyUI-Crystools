@@ -39,6 +39,8 @@ class CStats:
             self.pynvmlLoaded = False
             logger.error('Could not init pynvml.' + str(e))
 
+        self.diagnostic()
+
     def buildStatsData(self):
         cpu = -1
         ramTotal = -1
