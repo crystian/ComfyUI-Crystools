@@ -1,5 +1,5 @@
-import { app } from '../../../scripts/app.js';
-import { api } from '../../../scripts/api.js';
+import { app } from '/scripts/app.js';
+import { api } from '/scripts/api.js';
 import { commonPrefix } from './common.js';
 
 class CrystoolsMonitor {
@@ -64,7 +64,9 @@ class CrystoolsMonitor {
       defaultValue: this.defaultSwitchCPU,
       onChange: async(value) => {
         this.updateWidget(this.htmlMonitorCPURef, value);
-        await this.updateServer({switchCPU: value});
+        await this.updateServer({
+switchCPU: value
+});
       },
     });
     app.ui.settings.addSetting({
@@ -74,7 +76,9 @@ class CrystoolsMonitor {
       defaultValue: this.defaultSwitchRAM,
       onChange: async(value) => {
         this.updateWidget(this.htmlMonitorRAMRef, value);
-        await this.updateServer({switchRAM: value});
+        await this.updateServer({
+switchRAM: value
+});
       },
     });
     app.ui.settings.addSetting({
@@ -84,7 +88,9 @@ class CrystoolsMonitor {
       defaultValue: this.defaultSwitchGPU,
       onChange: async(value) => {
         this.updateWidget(this.htmlMonitorGPURef, value);
-        await this.updateServer({switchGPU: value});
+        await this.updateServer({
+switchGPU: value
+});
       },
     });
     app.ui.settings.addSetting({
@@ -94,7 +100,9 @@ class CrystoolsMonitor {
       defaultValue: this.defaultSwitchVRAM,
       onChange: async(value) => {
         this.updateWidget(this.htmlMonitorVRAMRef, value);
-        await this.updateServer({switchVRAM: value});
+        await this.updateServer({
+switchVRAM: value
+});
       },
     });
     app.ui.settings.addSetting({
@@ -105,7 +113,9 @@ class CrystoolsMonitor {
       defaultValue: this.defaultSwitchHDD,
       onChange: async(value) => {
         this.updateWidget(this.htmlMonitorHDDRef, value);
-        await this.updateServer({switchHDD: value});
+        await this.updateServer({
+switchHDD: value
+});
       },
     });
 
@@ -131,7 +141,9 @@ class CrystoolsMonitor {
           return;
         }
         try {
-          await this.updateServer({rate: value});
+          await this.updateServer({
+rate: value
+});
         } catch (error) {
           console.error(error);
           return;
@@ -183,9 +195,9 @@ class CrystoolsMonitor {
     });
     if (resp.status === 200) {
       return await resp.text();
-    } else {
-      throw new Error(resp.statusText);
     }
+      throw new Error(resp.statusText);
+
   };
 
   updateAllWidget = () => {
@@ -193,7 +205,8 @@ class CrystoolsMonitor {
     this.updateWidget(this.htmlMonitorGPURef, app.ui.settings.getSettingValue(this.idSwitchGPU, this.defaultSwitchGPU));
     this.updateWidget(this.htmlMonitorHDDRef, app.ui.settings.getSettingValue(this.idSwitchHDD, this.defaultSwitchHDD));
     this.updateWidget(this.htmlMonitorRAMRef, app.ui.settings.getSettingValue(this.idSwitchRAM, this.defaultSwitchRAM));
-    this.updateWidget(this.htmlMonitorVRAMRef, app.ui.settings.getSettingValue(this.idSwitchVRAM, this.defaultSwitchVRAM));
+    this.updateWidget(this.htmlMonitorVRAMRef, app.ui.settings.getSettingValue(this.idSwitchVRAM,
+      this.defaultSwitchVRAM));
   };
 
   updateWidget = (container, value) => {

@@ -1,5 +1,5 @@
-import { api } from '../../../scripts/api.js';
-import { app } from '../../../scripts/app.js';
+import { api } from '/scripts/api.js';
+import { app } from '/scripts/app.js';
 import { commonPrefix } from './common.js';
 
 const status = {
@@ -74,10 +74,10 @@ class CrystoolsProgressBar {
   };
 
   setup() {
-    const parentElement= document.getElementById('queue-button');
+    const parentElement = document.getElementById('queue-button');
 
     let ctoolsRoot = document.getElementById(this.htmlIdCrystoolsRoot);
-    if(!ctoolsRoot){
+    if (!ctoolsRoot) {
       ctoolsRoot = document.createElement('div');
       ctoolsRoot.setAttribute('id', this.htmlIdCrystoolsRoot);
       ctoolsRoot.style.display = 'flex';
@@ -127,9 +127,11 @@ class CrystoolsProgressBar {
   }
 
   registerListeners = () => {
-    api.addEventListener('status', ({detail}) => {
+    api.addEventListener('status', ({
+      detail,
+    }) => {
       this.currentStatus = this.currentStatus === status.execution_error ? status.execution_error : status.executed;
-      let queueRemaining = detail && detail.exec_info.queue_remaining;
+      const queueRemaining = detail?.exec_info.queue_remaining;
 
       if (queueRemaining) {
         this.currentStatus = status.executing;
@@ -137,8 +139,12 @@ class CrystoolsProgressBar {
       this.updateDisplay();
     });
 
-    api.addEventListener('progress', ({detail}) => {
-      const {value, max, node} = detail;
+    api.addEventListener('progress', ({
+      detail,
+    }) => {
+      const {
+        value, max, node,
+      } = detail;
       const progress = Math.floor((value / max) * 100);
 
       if (!isNaN(progress) && progress >= 0 && progress <= 100) {
@@ -149,7 +155,9 @@ class CrystoolsProgressBar {
       this.updateDisplay();
     });
 
-    api.addEventListener('executed', ({detail}) => {
+    api.addEventListener('executed', ({
+      detail,
+    }) => {
       if (detail?.node) {
         this.currentNode = detail.node;
       }
@@ -157,14 +165,18 @@ class CrystoolsProgressBar {
       this.updateDisplay();
     });
 
-    api.addEventListener('execution_start', ({detail}) => {
+    api.addEventListener('execution_start', ({
+      _detail,
+    }) => {
       this.currentStatus = status.executing;
       this.timeStart = Date.now();
 
       this.updateDisplay();
     });
 
-    api.addEventListener('execution_error', ({detail}) => {
+    api.addEventListener('execution_error', ({
+      _detail,
+    }) => {
       this.currentStatus = status.execution_error;
 
       this.updateDisplay();
@@ -188,4 +200,4 @@ const crystoolsProgressBar = new CrystoolsProgressBar();
 app.registerExtension({
   name: crystoolsProgressBar.idExtensionName,
   setup: crystoolsProgressBar.setup.bind(crystoolsProgressBar),
-})
+});

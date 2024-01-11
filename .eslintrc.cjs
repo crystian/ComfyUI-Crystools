@@ -8,28 +8,27 @@ module.exports = {
     'plugin:@typescript-eslint/stylistic-type-checked'
   ],
   parser: '@typescript-eslint/parser',
-  plugins: [],
+  plugins: ['@typescript-eslint', 'import'],
   parserOptions: {
-    tsconfigRootDir: __dirname,
+    // tsconfigRootDir: __dirname,
     sourceType: 'module',
     ecmaVersion: 'latest',
     ecmaFeatures: {
       // experimentalObjectRestSpread: true,
       modules: true,
-      legacyDecorators: true,
-      jsx: true,
+      legacyDecorators: true
     },
     project: ['./tsconfig.json'],
   },
   rules: {
-    'import/extensions': [
-      'error', 'always', {
-        pattern: {
-          'ts': 'never',
-          'js': 'never',
-        },
-      },
-    ],
+    // 'import/extensions': [
+    //   'error',
+    //   "ignorePackages",
+    //   {
+    //     "js": "always",
+    //     "ts": "never"
+    //   }
+    // ],
     'import/no-unresolved': ['off'],
     'class-methods-use-this': ['off'],
     'radix': ['off'],
@@ -46,6 +45,7 @@ module.exports = {
         'code': 120,
       },
     ],
+    'prefer-rest-params': ['off'],
 
     'import/no-extraneous-dependencies': [
       'error', {
@@ -63,6 +63,7 @@ module.exports = {
       "ImportDeclaration": {"multiline": true, "minProperties": 8 },
       "ExportDeclaration": { "multiline": true, "minProperties": 1 }
     }],
+    '@typescript-eslint/triple-slash-reference': 'off',
     '@typescript-eslint/no-shadow': 'error',
     '@typescript-eslint/no-unsafe-argument': 'off',
     '@typescript-eslint/no-unsafe-assignment': 'off',
@@ -84,13 +85,13 @@ module.exports = {
       {'argsIgnorePattern': '^_'},
     ],
     '@typescript-eslint/explicit-module-boundary-types': [
-      'error', {
+      'off', {
         allowArgumentsExplicitlyTypedAsAny: true,
       },
     ],
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/ban-ts-comment': [
-      'error',
+      'off',
       {'ts-expect-error': 'allow-with-description'},
     ],
     '@typescript-eslint/no-empty-function': [
@@ -153,7 +154,8 @@ module.exports = {
     'no-case-declarations': 'off',
   },
   ignorePatterns: [
-    'node_modules'
+    'node_modules',
+    '*.d.ts'
   ],
   globals: {},
 }

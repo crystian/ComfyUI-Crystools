@@ -1,4 +1,5 @@
-import { ComfyWidgets } from '../../../scripts/widgets.js';
+import { ComfyWidgets } from '/scripts/widgets.js';
+import { app as appFromScript } from '/scripts/app.js';
 
 export const commonPrefix = '🪛';
 
@@ -13,18 +14,23 @@ export function displayContext(nodeType, app, index = 0, serialize_widgets = fal
         this.widgets.length = pos;
       }
     }
-    // if want to not save properties in the node (be careful with F5)
+    // If you want to do not save properties in the node (be careful with F5)
     // BUG on isVirtualNode, with "true", it ignores OUTPUT_NODE on py file!
     this.serialize_widgets = serialize_widgets;
     this.isVirtualNode = isVirtualNode;
 
-    const w = ComfyWidgets['STRING'](this, 'text', ['STRING', {multiline: true}], app).widget;
+    const w = ComfyWidgets.STRING(this, 'text', [
+      'STRING', {
+        multiline: true,
+      },
+    ], app).widget;
     w.inputEl.readOnly = true;
     w.inputEl.style.opacity = 0.6;
     if (Array.isArray(text)) {
       text = text[index];
     }
     w.value = text || '';
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     w.serializeValue = async() => {}; // just for no serialized to itself!
 
     requestAnimationFrame(() => {
@@ -57,18 +63,19 @@ export function displayContext(nodeType, app, index = 0, serialize_widgets = fal
 }
 
 // propagate the output value to the dependents nodes, it does not work with some nodes ¯\_(ツ)_/¯
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const propagateOutputToDependentsNodes = function(output, value) {
-  if (output.links && output.links.length) {
+  if (output.links?.length) {
     for (const l of output.links) {
-      const link_info = app.graph.links[l];
-      const outNode = app.graph.getNodeById(link_info.target_id);
-      const outIn = outNode && outNode.inputs && outNode.inputs[link_info.target_slot];
+      const link_info = appFromScript.graph.links[l];
+      const outNode = appFromScript.graph.getNodeById(link_info.target_id);
+      const outIn = outNode?.inputs?.[link_info.target_slot];
       if (outIn.widget) {
-        const w = outNode.widgets.find((w) => w.name === outIn.widget.name);
-        if (!w) {
+        const widget = outNode.widgets.find((w) => w.name === outIn.widget.name);
+        if (!widget) {
           continue;
         }
-        w.value = value;
+        widget.value = value;
       }
     }
   }

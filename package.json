@@ -4,16 +4,17 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "start": "tsc",
-    "build": "tsc && vite build --emptyOutDir",
+    "start": "tsc --watch",
     "tsc": "tsc",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "lint-fix": "eslint src --fix",
-    "validate": "npm test && npm run coverage && npm run lintcss && npm run tsc && npm run lint && npm run tsc",
-    "fix": "npm run lint-fix"
+    "lint": "eslint web/ts --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint-fix": "eslint web/ts --fix",
+    "validate": "npm run tsc && npm run lint-fix && npm run tsc"
   },
   "devDependencies": {
-    "eslint": "^8.56.0",
-    "typescript": "^5.3.3"
+    "@typescript-eslint/eslint-plugin": "6.18.1",
+    "@typescript-eslint/parser": "6.18.1",
+    "eslint": "8.56.0",
+    "eslint-plugin-import": "2.29.1",
+    "typescript": "5.3.3"
   }
 }

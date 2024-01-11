@@ -1,15 +1,17 @@
-import { app } from '../../../scripts/app.js';
-import { api } from '../../../scripts/api.js';
-import { ComfyWidgets } from '../../../scripts/widgets.js';
+/// <reference path="./types.d.ts" />
+import { app } from '/scripts/app.js';
+import { api } from '/scripts/api.js';
+import { ComfyWidgets } from '/scripts/widgets.js';
 import { commonPrefix, displayContext } from './common.js';
+// import { LiteGraph } from './types'; // for better intellisense
 
 // "Show any" Node
 app.registerExtension({
   name: 'Crystools.Debugger.ConsoleAny',
-  async beforeRegisterNodeDef(nodeType, nodeData, app) {
+  beforeRegisterNodeDef(nodeType, nodeData, appFromArg) {
     if (nodeData.name === 'Show any [Crystools]') {
       // 3 is the index of the text field in the node
-      displayContext(nodeType, app, 3);
+      displayContext(nodeType, appFromArg, 3);
     }
   },
 });
@@ -19,22 +21,45 @@ app.registerExtension({
 
   registerCustomNodes() {
     class MetadataNode {
+      serialize_widgets: boolean;
+      isVirtualNode: boolean;
+      widgets: any[];
+      static category: string;
+      static shape: number;
+      static title: string;
+
       constructor() {
         this.serialize_widgets = false;
         this.isVirtualNode = true;
 
-        const w = ComfyWidgets.STRING(this, '', ['', {default: '', multiline: true}], app).widget;
+        const w = ComfyWidgets.STRING(this, '', [
+          '', {
+            default: '', multiline: true,
+          },
+        ], app).widget;
         w.inputEl.readOnly = true;
-        ComfyWidgets.BOOLEAN(this, 'Active', ['', {default: true}], app);
-        ComfyWidgets.BOOLEAN(this, 'Parsed', ['', {default: true}], app);
-        ComfyWidgets.COMBO(this, 'What', [['Prompt', 'Workflow'], {default: 'Prompt'}]);
+        ComfyWidgets.BOOLEAN(this, 'Active', [
+          '', {
+            default: true,
+          },
+        ], app);
+        ComfyWidgets.BOOLEAN(this, 'Parsed', [
+          '', {
+            default: true,
+          },
+        ], app);
+        ComfyWidgets.COMBO(this, 'What', [
+          ['Prompt', 'Workflow'], {
+            default: 'Prompt',
+          },
+        ]);
 
         // It runs at finish on each prompt queue
         api.addEventListener('executed', this.fillMetadataWidget);
       }
 
       fillMetadataWidget = () => {
-        app.graphToPrompt()
+        return app.graphToPrompt()
         .then(workflow => {
           let result = 'inactive';
           // debugger
@@ -55,10 +80,11 @@ app.registerExtension({
 
           output.value = result;
         });
-      }
+      };
     }
 
     // I'm not sure for what they're using prototype and lots of black magic, don't change the order!
+    // @ts-ignore
     LiteGraph.registerNodeType('Show Metadata [Crystools]', MetadataNode);
     MetadataNode.category = `crystools ${commonPrefix}/Debugger`;
     MetadataNode.shape = LiteGraph.BOX_SHAPE;
