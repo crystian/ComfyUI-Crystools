@@ -6,7 +6,7 @@ from .stats import CStats
 
 from ..core import logger
 
-# lock = threading.Lock()
+lock = threading.Lock()
 
 
 class CMonitor:
@@ -47,7 +47,9 @@ class CMonitor:
         self.threadController.clear()
 
         if self.monitorThread is None or not self.monitorThread.is_alive():
+            lock.acquire()
             self.monitorThread = threading.Thread(target=self.monitorLoop)
+            lock.release()
             self.monitorThread.daemon = True
             self.monitorThread.start()
 
