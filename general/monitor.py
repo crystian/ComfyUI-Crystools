@@ -18,17 +18,13 @@ class CMonitor:
     def __init__(self, rate=5, switchCPU=False, switchGPU=False, switchHDD=False, switchRAM=False, switchVRAM=False):
         self.rate = rate
         self.stats = CStats(switchCPU, switchGPU, switchHDD, switchRAM, switchVRAM)
-        self.stats.diagnostic()
 
         self.startMonitor()
 
     async def send_message(self, data) -> None:
         # I'm not sure if it is ok, but works ¯\_(ツ)_/¯
         # I tried to use async with send_json, but eventually that don't send the message
-        # await s.send_json('crystools.monitor', data)
-        # lock.acquire()
         server.PromptServer.instance.send_sync('crystools.monitor', data)
-        # lock.release()
 
     def monitorLoop(self):
         while self.rate > 0 and not self.threadController.is_set():
