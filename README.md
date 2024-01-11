@@ -513,6 +513,9 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### Crystools
 
+### 1.6.0 (11/01/2024)
+- Fix issue [#7](https://github.com/crystian/ComfyUI-Crystools/issues/7) to the loop deadlock on concurrency
+
 ### 1.5.0 (10/01/2024)
 - Improvements on the resources monitor and how handle the threads
 - Some fixes 
