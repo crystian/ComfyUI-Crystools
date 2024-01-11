@@ -1,0 +1,19 @@
+{
+  "name": "crystools-typescript",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "tsc",
+    "build": "tsc && vite build --emptyOutDir",
+    "tsc": "tsc",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint-fix": "eslint src --fix",
+    "validate": "npm test && npm run coverage && npm run lintcss && npm run tsc && npm run lint && npm run tsc",
+    "fix": "npm run lint-fix"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  }
+}

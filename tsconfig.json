@@ -1,0 +1,55 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    // "typeRoots": [
+    //   "./ts/typings",
+    // ],
+    "baseUrl": "./",
+    "paths": {
+        "*": ["web/ts/typings/*"],
+    },
+    "outDir": "web/",
+    "removeComments": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+    "alwaysStrict": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "allowUnusedLabels": true,
+    "skipLibCheck": true,
+
+    "useDefineForClassFields": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true
+  },
+  "include": [
+    "web/ts/*.ts", "web/ts/**/*.ts", "web/ts/typings/index.d.ts",
+  ],
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.d.ts",
+    "node_modules/**/*.ts"
+  ],
+
+
+
+}

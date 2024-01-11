@@ -153,3 +153,4 @@ cython_debug/
 *.pyc
 
 .idea
+/node_modules

@@ -94,4 +94,4 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 }
 
 
-WEB_DIRECTORY = "./web"
+WEB_DIRECTORY = "./web/js"
