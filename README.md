@@ -27,7 +27,7 @@ This provides better nodes to load/save images, previews, etc, and see "hidden" 
 
 **🎉Finally, you can see the resources used by ComfyUI (CPU, GPU, RAM, VRAM, and space) on the menu in real-time!**
 
-![Monitors](./docs/monitor.gif)
+![Monitors](./docs/monitor.webp)
 
 Now you can identify the bottlenecks in your workflow and know when it's time to restart the server, unload models or even close some tabs!
 
