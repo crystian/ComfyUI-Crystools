@@ -1,10 +1,15 @@
+// / <reference path="./types.ts" />
 import { ComfyWidgets } from '/scripts/widgets.js';
 import { app as appFromScript } from '/scripts/app.js';
+import type { LGraphNode, LiteGraph, serializedLGraph, IWidget } from './types.js';
 
 export const commonPrefix = '🪛';
 
-export function displayContext(nodeType, app, index = 0, serialize_widgets = false, isVirtualNode = false) {
-  function populate(text) {
+export function displayContext(
+  nodeType: LGraphNode, app: LiteGraph,
+  index = 0, serialize_widgets = false, isVirtualNode = false
+) {
+  function populate(this: LGraphNode, text: string | string[]) {
     if (this.widgets) {
       const pos = this.widgets.findIndex((w) => w.name === 'text');
       if (pos !== -1) {
@@ -48,7 +53,7 @@ export function displayContext(nodeType, app, index = 0, serialize_widgets = fal
 
   // When the node is executed we will be sent the input text, display this in the widget
   const onExecuted = nodeType.prototype.onExecuted;
-  nodeType.prototype.onExecuted = function(message) {
+  nodeType.prototype.onExecuted = function(message: { text: string }) {
     onExecuted?.apply(this, arguments);
     populate.call(this, message.text);
   };
@@ -64,14 +69,14 @@ export function displayContext(nodeType, app, index = 0, serialize_widgets = fal
 
 // propagate the output value to the dependents nodes, it does not work with some nodes ¯\_(ツ)_/¯
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const propagateOutputToDependentsNodes = function(output, value) {
+const propagateOutputToDependentsNodes = function(output: serializedLGraph, value: string) {
   if (output.links?.length) {
     for (const l of output.links) {
       const link_info = appFromScript.graph.links[l];
       const outNode = appFromScript.graph.getNodeById(link_info.target_id);
       const outIn = outNode?.inputs?.[link_info.target_slot];
       if (outIn.widget) {
-        const widget = outNode.widgets.find((w) => w.name === outIn.widget.name);
+        const widget = outNode.widgets.find((w: IWidget) => w.name === outIn.widget.name);
         if (!widget) {
           continue;
         }

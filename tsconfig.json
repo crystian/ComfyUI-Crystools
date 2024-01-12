@@ -13,47 +13,46 @@
         "/extensions/*": ["../../web/extensions/*"],
         "/types/*": ["../../web/types/*"],
     },
+    "checkJs": false,
+    "allowJs": true,
     "outDir": "web/js",
 //    "declaration": true,
 //    "declarationDir": "./web/ts/types",
-    "removeComments": true,
-    "strict": false,
-    "alwaysStrict": false,
-    "noImplicitAny": false,
+    "strict": true,
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": false,
+
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "strictNullChecks": false,
-    "strictFunctionTypes": false,
-    "strictBindCallApply": false,
     "strictPropertyInitialization": false,
-    "noImplicitThis": false,
-    "useUnknownInCatchVariables": true,
     "exactOptionalPropertyTypes": false,
-    "noImplicitReturns": false,
+
+    "useUnknownInCatchVariables": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "allowUnusedLabels": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": false,
-
     "useDefineForClassFields": true,
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": false,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "removeComments": true,
     "noEmit": false
   },
   "include": [
-    "web/ts/*.ts", "web/ts/**/*.ts", "web/ts/types.d.ts",
+    "./web/ts/*.ts", "./web/ts/**/*.ts",
   ],
   "exclude": [
     "**/*.spec.ts",
-    "**/*.d.ts",
     "node_modules"
   ],
-
-
-
 }

@@ -154,8 +154,7 @@ module.exports = {
     'no-case-declarations': 'off',
   },
   ignorePatterns: [
-    'node_modules',
-    '*.d.ts'
+    'node_modules'
   ],
   globals: {},
 }
