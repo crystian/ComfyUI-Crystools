@@ -8,7 +8,7 @@
     "tsc": "tsc",
     "lint": "eslint web/ts --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint-fix": "eslint web/ts --fix",
-    "validate": "npm run tsc && npm run lint-fix && npm run tsc"
+    "validate": "npm run tsc && npm run lint"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "6.18.1",
