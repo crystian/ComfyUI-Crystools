@@ -7,8 +7,7 @@ app.registerExtension({
     name: 'Crystools.Debugger.ConsoleAny',
     beforeRegisterNodeDef(nodeType, nodeData, appFromArg) {
         if (nodeData.name === 'Show any [Crystools]') {
-            console.log('nodeType', nodeType);
-            displayContext(nodeType, app, 3);
+            displayContext(nodeType, appFromArg, 3);
         }
     },
 });
@@ -17,7 +16,7 @@ app.registerExtension({
     registerCustomNodes() {
         class MetadataNode extends TLGraphNode {
             constructor() {
-                super();
+                super(`Show Metadata ${commonPrefix}`);
                 Object.defineProperty(this, "fillMetadataWidget", {
                     enumerable: true,
                     configurable: true,
@@ -32,7 +31,6 @@ app.registerExtension({
                             let what = this.widgets[3].value.toLowerCase();
                             if (active) {
                                 what = what === 'prompt' ? 'output' : what;
-                                console.log('workflow', what);
                                 result = workflow[what];
                                 if (parsed) {
                                     result = JSON.stringify(result, null, 2);
@@ -74,6 +72,5 @@ app.registerExtension({
         LiteGraph.registerNodeType('Show Metadata [Crystools]', MetadataNode);
         MetadataNode.category = `crystools ${commonPrefix}/Debugger`;
         MetadataNode.shape = LiteGraph.BOX_SHAPE;
-        MetadataNode.title = `Show Metadata ${commonPrefix}`;
     },
 });

@@ -1,12 +1,11 @@
-import { ComfyWidgets } from '/scripts/widgets.js';
-import { app as appFromScript } from '/scripts/app.js';
-import type { TLiteGraph, TLGraphNode, serializedLGraph, IWidget } from './types.js';
-
-console.log('commodsan.ta2saaa');
+import type { ComfyApp, TLGraphNode } from './liteGraph.js';
+import { ComfyWidgets } from './liteGraph.js';
 
 export const commonPrefix = '🪛';
+
 export function displayContext(
-  nodeType: TLGraphNode, app: TLiteGraph,
+  nodeType: TLGraphNode,
+  appFromArg: ComfyApp,
   index = 0, serialize_widgets = false, isVirtualNode = false
 ) {
   function populate(this: TLGraphNode, text: string | string[]) {
@@ -14,6 +13,7 @@ export function displayContext(
       const pos = this.widgets.findIndex((w) => w.name === 'text');
       if (pos !== -1) {
         for (let i = pos; i < this.widgets.length; i++) {
+
           this.widgets[i].onRemove?.();
         }
         this.widgets.length = pos;
@@ -24,19 +24,19 @@ export function displayContext(
     this.serialize_widgets = serialize_widgets;
     this.isVirtualNode = isVirtualNode;
 
-    const w = ComfyWidgets.STRING(this, 'text', [
+    const widget = ComfyWidgets.STRING(this, 'text', [
       'STRING', {
         multiline: true,
       },
-    ], app).widget;
-    w.inputEl.readOnly = true;
-    w.inputEl.style.opacity = 0.6;
+    ], appFromArg).widget;
+    widget.inputEl.readOnly = true;
+    widget.inputEl.style.opacity = 0.6;
     if (Array.isArray(text)) {
       text = text[index];
     }
-    w.value = text || '';
+    widget.value = text || '';
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    w.serializeValue = async() => {}; // just for no serialized to itself!
+    widget.serializeValue = async() => {}; // just for no serialized to itself!
 
     requestAnimationFrame(() => {
       const sz = this.computeSize();
@@ -47,20 +47,24 @@ export function displayContext(
         sz[1] = this.size[1];
       }
       this.onResize?.(sz);
-      app.graph.setDirtyCanvas(true, false);
+      appFromArg.graph.setDirtyCanvas(true, false);
     });
   }
 
   // When the node is executed we will be sent the input text, display this in the widget
-  const onExecuted = nodeType.prototype.onExecuted;
+  // @ts-ignore
+  const onExecutedOriginal = nodeType.prototype.onExecuted;
+  // @ts-ignore
   nodeType.prototype.onExecuted = function(message: { text: string }) {
-    onExecuted?.apply(this, arguments);
+    onExecutedOriginal?.apply(this, arguments);
     populate.call(this, message.text);
   };
 
-  const onConfigure = nodeType.prototype.onConfigure;
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const onConfigureOriginal = nodeType.prototype.onConfigure;
   nodeType.prototype.onConfigure = function() {
-    onConfigure?.apply(this, arguments);
+    // @ts-ignore
+    onConfigureOriginal?.apply(this, arguments);
     if (this.widgets_values?.length) {
       populate.call(this, this.widgets_values);
     }
@@ -69,21 +73,19 @@ export function displayContext(
 
 
 // propagate the output value to the dependents nodes, it does not work with some nodes ¯\_(ツ)_/¯
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const propagateOutputToDependentsNodes = function(output: serializedLGraph, value: string) {
-  if (output.links?.length) {
-    for (const l of output.links) {
-      // @ts-ignore
-      const link_info = appFromScript.graph.links[l];
-      const outNode = appFromScript.graph.getNodeById(link_info.target_id);
-      const outIn = outNode?.inputs?.[link_info.target_slot];
-      if (outIn.widget) {
-        const widget = outNode.widgets.find((w: IWidget) => w.name === outIn.widget.name);
-        if (!widget) {
-          continue;
-        }
-        widget.value = value;
-      }
-    }
-  }
-};
+// const propagateOutputToDependentsNodes = function(output: serializedLGraph, value: string) {
+//   if (output.links?.length) {
+//     for (const l of output.links) {
+//       const link_info = app.graph.links[l];
+//       const outNode = app.graph.getNodeById(link_info.target_id);
+//       const outIn = outNode?.inputs?.[link_info.target_slot];
+//       if (outIn.widget) {
+//         const widget = outNode.widgets.find((w: IWidget) => w.name === outIn.widget.name);
+//         if (!widget) {
+//           continue;
+//         }
+//         widget.value = value;
+//       }
+//     }
+//   }
+// };

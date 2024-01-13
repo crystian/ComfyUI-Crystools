@@ -9,7 +9,7 @@ export declare type TypeLiteGraph = typeof LiteGraph & {
   graph: LGraph;
 };
 
-export declare type ComfyApi = typeof api;
+// export declare type ComfyApi = typeof api;
 export declare type ComfyNode = any;
 
 // I prefer not use global, but if I change of opinion:

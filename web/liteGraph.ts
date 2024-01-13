@@ -3,8 +3,13 @@
 export type * from './liteGraph.types';
 export * from '/scripts/widgets.js';
 
-import type { LGraphNode as TypeGraphNode, TypeLiteGraph } from './liteGraph.types';
+import type { IWidget as IWidgetOld, LGraphNode as TypeGraphNode, TypeLiteGraph } from './liteGraph.types';
 declare const LGraphNode: typeof TypeGraphNode; // just for get the type
+
+export interface IWidget extends IWidgetOld {
+  onRemove?: () => void;
+  serializeValue?: () => Promise<void>;
+}
 
 export class TLGraphNode extends LGraphNode {
   // on discovery...
@@ -14,7 +19,7 @@ export class TLGraphNode extends LGraphNode {
   static bgcolor: string;
   static collapsable: boolean;
 
-  widgets?: any[];
+  widgets?: IWidget[];
   isVirtualNode?: boolean;
   onResize?: (size: [number, number]) => void;
   widgets_values?: any[];

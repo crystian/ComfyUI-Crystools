@@ -12,19 +12,17 @@ app.registerExtension({
   beforeRegisterNodeDef(nodeType: ComfyNode, nodeData: TLGraphNode, appFromArg: ComfyApp) {
     if (nodeData.name === 'Show any [Crystools]') {
       // 3 is the index of the text field in the node
-      console.log('nodeType', nodeType);
-      displayContext(nodeType, app, 3);
+      displayContext(nodeType, appFromArg, 3);
     }
   },
 });
 
 app.registerExtension({
   name: 'Crystools.Debugger.Metadata',
-
   registerCustomNodes() {
     class MetadataNode extends TLGraphNode {
       constructor() {
-        super();
+        super(`Show Metadata ${commonPrefix}`);
         // this.
         this.serialize_widgets = false;
         this.isVirtualNode = true;
@@ -59,7 +57,6 @@ app.registerExtension({
         return app.graphToPrompt()
         .then(workflow => {
           let result = 'inactive';
-          // debugger
           const output = this.widgets[0];
           const active = this.widgets[1].value;
           const parsed = this.widgets[2].value;
@@ -67,7 +64,6 @@ app.registerExtension({
 
           if (active) {
             what = what === 'prompt' ? 'output' : what; // little fix for better understanding
-            console.log('workflow', what);
             // @ts-ignore
             result = workflow[what];
             if (parsed) {
@@ -86,7 +82,6 @@ app.registerExtension({
     LiteGraph.registerNodeType('Show Metadata [Crystools]', MetadataNode);
     MetadataNode.category = `crystools ${commonPrefix}/Debugger`;
     MetadataNode.shape = LiteGraph.BOX_SHAPE;
-    MetadataNode.title = `Show Metadata ${commonPrefix}`;
     // MetadataNode.collapsable = false;
     // MetadataNode.color = '#FF2222';
     // MetadataNode.bgcolor = '#000000';

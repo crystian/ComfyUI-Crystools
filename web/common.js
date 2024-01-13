@@ -1,8 +1,6 @@
-import { ComfyWidgets } from '/scripts/widgets.js';
-import { app as appFromScript } from '/scripts/app.js';
-console.log('commodsan.ta2saaa');
+import { ComfyWidgets } from './liteGraph.js';
 export const commonPrefix = '🪛';
-export function displayContext(nodeType, app, index = 0, serialize_widgets = false, isVirtualNode = false) {
+export function displayContext(nodeType, appFromArg, index = 0, serialize_widgets = false, isVirtualNode = false) {
     function populate(text) {
         if (this.widgets) {
             const pos = this.widgets.findIndex((w) => w.name === 'text');
@@ -15,18 +13,18 @@ export function displayContext(nodeType, app, index = 0, serialize_widgets = fal
         }
         this.serialize_widgets = serialize_widgets;
         this.isVirtualNode = isVirtualNode;
-        const w = ComfyWidgets.STRING(this, 'text', [
+        const widget = ComfyWidgets.STRING(this, 'text', [
             'STRING', {
                 multiline: true,
             },
-        ], app).widget;
-        w.inputEl.readOnly = true;
-        w.inputEl.style.opacity = 0.6;
+        ], appFromArg).widget;
+        widget.inputEl.readOnly = true;
+        widget.inputEl.style.opacity = 0.6;
         if (Array.isArray(text)) {
             text = text[index];
         }
-        w.value = text || '';
-        w.serializeValue = async () => { };
+        widget.value = text || '';
+        widget.serializeValue = async () => { };
         requestAnimationFrame(() => {
             const sz = this.computeSize();
             if (sz[0] < this.size[0]) {
@@ -36,35 +34,19 @@ export function displayContext(nodeType, app, index = 0, serialize_widgets = fal
                 sz[1] = this.size[1];
             }
             this.onResize?.(sz);
-            app.graph.setDirtyCanvas(true, false);
+            appFromArg.graph.setDirtyCanvas(true, false);
         });
     }
-    const onExecuted = nodeType.prototype.onExecuted;
+    const onExecutedOriginal = nodeType.prototype.onExecuted;
     nodeType.prototype.onExecuted = function (message) {
-        onExecuted?.apply(this, arguments);
+        onExecutedOriginal?.apply(this, arguments);
         populate.call(this, message.text);
     };
-    const onConfigure = nodeType.prototype.onConfigure;
+    const onConfigureOriginal = nodeType.prototype.onConfigure;
     nodeType.prototype.onConfigure = function () {
-        onConfigure?.apply(this, arguments);
+        onConfigureOriginal?.apply(this, arguments);
         if (this.widgets_values?.length) {
             populate.call(this, this.widgets_values);
         }
     };
 }
-const propagateOutputToDependentsNodes = function (output, value) {
-    if (output.links?.length) {
-        for (const l of output.links) {
-            const link_info = appFromScript.graph.links[l];
-            const outNode = appFromScript.graph.getNodeById(link_info.target_id);
-            const outIn = outNode?.inputs?.[link_info.target_slot];
-            if (outIn.widget) {
-                const widget = outNode.widgets.find((w) => w.name === outIn.widget.name);
-                if (!widget) {
-                    continue;
-                }
-                widget.value = value;
-            }
-        }
-    }
-};
