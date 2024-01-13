@@ -3,26 +3,34 @@
     "target": "es2020",
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-     "typeRoots": [
-//       "./web/ts/typings",
-     ],
+    "typeRoots": [
+      // "./web/ts/typings",
+    ],
     "baseUrl": ".",
     "paths": {
-        "/scripts/*": ["../../web/scripts/*"],
-        "/lib/*": ["../../web/lib/*"],
-        "/extensions/*": ["../../web/extensions/*"],
-        "/types/*": ["../../web/types/*"],
+      "/scripts/*": ["../../web/scripts/*"],
+      "/lib/*": ["../../web/lib/*"],
+      "/extensions/*": ["../../web/extensions/*"],
+      "/types/*": ["../../web/types/*"]
     },
+    // "rootDir": "./web/src",
+    // "rootDir": "../../",
+    // "rootDirs": [
+    //   "../../web",
+    //   "web/src"
+    // ],
+    "preserveSymlinks": true,
     "checkJs": false,
     "allowJs": true,
-    "outDir": "web/js",
-//    "declaration": true,
-//    "declarationDir": "./web/ts/types",
+    // if set this, it makes folders in the output folder...
+    // "outDir": "web/dist",
+    "declaration": true,
+    // "declarationDir": "./web/dist/types",
+
     "strict": true,
     "alwaysStrict": true,
     "noImplicitAny": true,
     "strictNullChecks": false,
-
     "strictFunctionTypes": true,
     "strictBindCallApply": true,
     "noImplicitThis": true,
@@ -33,26 +41,26 @@
     "strictPropertyInitialization": false,
     "exactOptionalPropertyTypes": false,
 
+    "noResolve": false,
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
     "useUnknownInCatchVariables": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "noPropertyAccessFromIndexSignature": true,
     "allowUnusedLabels": true,
-    "skipLibCheck": true,
     "allowSyntheticDefaultImports": false,
     "useDefineForClassFields": true,
-    "moduleResolution": "bundler",
     "allowImportingTsExtensions": false,
-    "resolveJsonModule": true,
     "isolatedModules": true,
     "removeComments": true,
     "noEmit": false
   },
   "include": [
-    "./web/ts/*.ts", "./web/ts/**/*.ts",
+    "./web/*.ts"
   ],
   "exclude": [
-    "**/*.spec.ts",
     "node_modules"
-  ],
+  ]
 }

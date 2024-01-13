@@ -127,6 +127,7 @@ module.exports = {
         allowElseIf: true,
       },
     ],
+    'no-debugger': 'off',
     'no-eval': 'error',
     'no-lone-blocks': 'error',
     'no-multi-spaces': 'error',
@@ -154,7 +155,9 @@ module.exports = {
     'no-case-declarations': 'off',
   },
   ignorePatterns: [
-    'node_modules'
+    'node_modules',
+    'web/**/*.d.ts',
+    'web/**/*.js'
   ],
   globals: {},
 }

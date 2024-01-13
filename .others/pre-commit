@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd ../comfyUI/ComfyUI
-rm ./custom_nodes/ComfyUI-Crystools/web/js/*.js -f
+rm ./custom_nodes/ComfyUI-Crystools/web/*.js -f
 
 LOCAL_COMMAND="npm --prefix ./custom_nodes/ComfyUI-Crystools run validate"
 OUTPUT=$($LOCAL_COMMAND 2>&1)
@@ -29,4 +29,4 @@ else
     exit 1
 fi
 
-git add __init__.py core/version.py  web/js/*.js
+git add __init__.py core/version.py  web/*.js

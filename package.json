@@ -6,8 +6,8 @@
   "scripts": {
     "start": "tsc --watch",
     "tsc": "tsc",
-    "lint": "eslint web/ts --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "lint-fix": "eslint web/ts --fix",
+    "lint": "eslint web --ext ts --report-unused-disable-directives --max-warnings 0",
+    "lint-fix": "eslint web --ext ts --fix",
     "validate": "npm run tsc && npm run lint"
   },
   "devDependencies": {

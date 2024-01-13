@@ -2,7 +2,7 @@
 @author: Crystian
 @title: Crystools
 @nickname: Crystools
-@version: 1.7.0
+@version: 1.7.1
 @project: "https://github.com/crystian/ComfyUI-Crystools",
 @description: Plugins for multiples uses, mainly for debugging, you need them! IG: https://www.instagram.com/crystian.ia
 """
@@ -94,4 +94,4 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 }
 
 
-WEB_DIRECTORY = "./web/js"
+WEB_DIRECTORY = "./web"
