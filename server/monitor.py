@@ -109,13 +109,18 @@ def getGPUs(request):
         logger.error(e)
         return web.Response(status=400, text=str(e))
 
+
 @PromptServer.instance.routes.patch("/crystools/monitor/GPU/{index}")
 async def getGPUs(request):
   try:
     index = request.match_info["index"]
     settings = await request.json()
-    print(settings)
-    # cmonitor.hardwareInfo.getGPUInfo()
+    if 'utilization' in settings is not None:
+      if type(settings['utilization']) is not bool:
+        raise Exception('utilization must be an boolean.')
+
+      cmonitor.hardwareInfo.GPUInfo.gpusUtilization[int(index)] = settings['utilization']
+
     return web.Response(status=200)
   except Exception as e:
     logger.error(e)
