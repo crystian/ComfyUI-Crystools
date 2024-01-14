@@ -409,7 +409,7 @@ class CrystoolsMonitor {
         return;
       }
       this.updateDisplay(event.detail);
-    });
+    }, false);
   };
 }
 

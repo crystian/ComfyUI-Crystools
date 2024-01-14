@@ -6,7 +6,7 @@ export const commonPrefix = '🪛';
 export function displayContext(
   nodeType: TLGraphNode,
   appFromArg: ComfyApp,
-  index = 0, serialize_widgets = false, isVirtualNode = false
+  index = 0, serialize_widgets = false, isVirtualNode = false,
 ) {
   function populate(this: TLGraphNode, text: string | string[]) {
     if (this.widgets) {

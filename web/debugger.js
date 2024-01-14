@@ -2,7 +2,6 @@ import { app } from '/scripts/app.js';
 import { api } from '/scripts/api.js';
 import { commonPrefix, displayContext } from './common.js';
 import { LiteGraph, TLGraphNode, ComfyWidgets } from './liteGraph.js';
-console.log('debugger.ts');
 app.registerExtension({
     name: 'Crystools.Debugger.ConsoleAny',
     beforeRegisterNodeDef(nodeType, nodeData, appFromArg) {

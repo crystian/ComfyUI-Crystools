@@ -4,8 +4,6 @@ import { commonPrefix, displayContext } from './common.js';
 import type { ComfyNode, ComfyApp } from './liteGraph.js';
 import { LiteGraph, TLGraphNode, ComfyWidgets } from './liteGraph.js';
 
-console.log('debugger.ts');
-
 // "Show any" Node
 app.registerExtension({
   name: 'Crystools.Debugger.ConsoleAny',

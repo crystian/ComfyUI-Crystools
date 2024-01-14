@@ -5,6 +5,7 @@ export type * from '/scripts/app';
 export type { api } from '/scripts/api';
 
 import { LGraph, LiteGraph } from '/types/litegraph';
+
 export declare type TypeLiteGraph = typeof LiteGraph & {
   graph: LGraph;
 };

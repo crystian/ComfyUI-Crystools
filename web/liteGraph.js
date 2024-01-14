@@ -40,5 +40,4 @@ export class TLGraphNode extends LGraphNode {
         });
     }
 }
-console.log('liteGraph.ts');
 export const LiteGraph = window.LiteGraph;
