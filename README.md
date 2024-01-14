@@ -513,7 +513,10 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### Crystools
 
-### 1.8.0 (14/01/2024)
+### 1.9.0 (14/01/2024)
+- Big refactor on hardwareInfo, gpu was separated on another file
+
+### 1.8.0 (14/01/2024) - internal
 - HDD monitor selector on settings
 
 ### 1.7.0 (11/01/2024) - internal
