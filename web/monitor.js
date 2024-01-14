@@ -296,25 +296,6 @@ class CrystoolsMonitor {
                         });
                     },
                 });
-                void this.getHDDsFromServer().then((data) => {
-                    const which = app.ui.settings.getSettingValue(this.idWhichHDD, this.defaultWhichHDD);
-                    app.ui.settings.addSetting({
-                        id: this.idWhichHDD,
-                        name: this.menuPrefix + 'Partition to show (HDD)',
-                        type: 'combo',
-                        defaultValue: this.defaultWhichHDD,
-                        options: (value) => data.map((m) => ({
-                            value: m,
-                            text: m,
-                            selected: !value ? m === which : m === value,
-                        })),
-                        onChange: async (value) => {
-                            await this.updateServer({
-                                whichHDD: value,
-                            });
-                        },
-                    });
-                });
                 app.ui.settings.addSetting({
                     id: this.idInputRate,
                     name: this.menuPrefix + 'Monitors refresh rate (in seconds) [menu]',
@@ -387,6 +368,28 @@ class CrystoolsMonitor {
                         }
                     },
                 });
+                void this.getHDDsFromServer().then((data) => {
+                    const which = app.ui.settings.getSettingValue(this.idWhichHDD, this.defaultWhichHDD);
+                    app.ui.settings.addSetting({
+                        id: this.idWhichHDD,
+                        name: this.menuPrefix + 'Partition to show (HDD)',
+                        type: 'combo',
+                        defaultValue: this.defaultWhichHDD,
+                        options: (value) => data.map((m) => ({
+                            value: m,
+                            text: m,
+                            selected: !value ? m === which : m === value,
+                        })),
+                        onChange: async (value) => {
+                            await this.updateServer({
+                                whichHDD: value,
+                            });
+                        },
+                    });
+                });
+                void this.getGPUsFromServer().then((data) => {
+                    console.log('data', data);
+                });
             }
         });
         Object.defineProperty(this, "updateServer", {
@@ -410,7 +413,23 @@ class CrystoolsMonitor {
             configurable: true,
             writable: true,
             value: async () => {
-                const resp = await api.fetchApi('/crystools/monitor/HDD', {
+                return this.getDataFromServer('HDD');
+            }
+        });
+        Object.defineProperty(this, "getGPUsFromServer", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: async () => {
+                return this.getDataFromServer('GPU');
+            }
+        });
+        Object.defineProperty(this, "getDataFromServer", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: async (what) => {
+                const resp = await api.fetchApi(`/crystools/monitor/${what}`, {
                     method: 'GET',
                     cache: 'no-store',
                 });
