@@ -1,7 +1,7 @@
 from server import PromptServer
 from aiohttp import web
 from ..core import logger
-from ..general import cmonitor, getHDDsInfo, getGPUsInfo
+from ..general import cmonitor
 
 @PromptServer.instance.routes.patch("/crystools/monitor")
 async def newSettings(request):
@@ -93,7 +93,7 @@ async def monitorSwitch(request):
 @PromptServer.instance.routes.get("/crystools/monitor/HDD")
 def getHDDs(request):
     try:
-        return web.json_response(getHDDsInfo())
+        return web.json_response(cmonitor.hardwareInfo.getHDDsInfo())
     except Exception as e:
         logger.error(e)
         return web.Response(status=400, text=str(e))
@@ -102,7 +102,7 @@ def getHDDs(request):
 @PromptServer.instance.routes.get("/crystools/monitor/GPU")
 def getGPUs(request):
     try:
-        return web.json_response(getGPUsInfo())
+        return web.json_response({})
     except Exception as e:
         logger.error(e)
         return web.Response(status=400, text=str(e))

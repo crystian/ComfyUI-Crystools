@@ -2,6 +2,7 @@ import platform
 import cpuinfo
 import psutil
 from .gpu import CGPUInfo
+from .hdd import getDrivesInfo
 
 from ..core import logger
 
@@ -43,6 +44,9 @@ class CHardwareInfo:
         self.GPUInfo = CGPUInfo()
         self.switchGPU = switchGPU
         self.switchVRAM = switchVRAM
+
+    def getHDDsInfo(self):
+      return getDrivesInfo()
 
     def getStatus(self):
         cpu = -1

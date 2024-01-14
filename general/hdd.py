@@ -1,7 +1,7 @@
 import psutil
 from ..core import logger
 
-def getHDDsInfo():
+def getDrivesInfo():
   hdds = []
   logger.debug('Getting HDDs info...')
   for partition in psutil.disk_partitions():
