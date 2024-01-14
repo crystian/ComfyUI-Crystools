@@ -63,6 +63,7 @@ module.exports = {
       "ImportDeclaration": {"multiline": true, "minProperties": 8 },
       "ExportDeclaration": { "multiline": true, "minProperties": 1 }
     }],
+    "@typescript-eslint/explicit-function-return-type": 'error',
     '@typescript-eslint/triple-slash-reference': 'off',
     '@typescript-eslint/no-shadow': 'error',
     '@typescript-eslint/no-unsafe-argument': 'off',
@@ -118,7 +119,7 @@ module.exports = {
     'eqeqeq': ['error', 'always'],
     'complexity': [
       'error', {
-        max: 6,
+        max: 8,
       },
     ],
     'block-scoped-var': 'error',

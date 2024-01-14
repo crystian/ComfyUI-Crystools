@@ -18,18 +18,18 @@ class CrystoolsProgressBar {
 
   currentStatus = EStatus.executed;
   currentProgress = 0;
-  currentNode?: number = null;
+  currentNode?: number = undefined;
   timeStart = 0;
 
-  htmlProgressSliderRef?: HTMLDivElement = null;
-  htmlProgressLabelRef?: HTMLDivElement = null;
+  htmlProgressSliderRef?: HTMLDivElement = undefined;
+  htmlProgressLabelRef?: HTMLDivElement = undefined;
 
   constructor() {
     this.createSettings();
   }
 
   // not on setup because this affect the order on settings, I prefer to options at first
-  createSettings = () => {
+  createSettings = (): void => {
     app.ui.settings.addSetting({
       id: this.idShowProgressBar,
       name: this.menuPrefix + 'Show progress bar [menu]',
@@ -39,7 +39,7 @@ class CrystoolsProgressBar {
     });
   };
 
-  showProgressBar = (value: boolean) => {
+  showProgressBar = (value: boolean): void => {
     const container = document.getElementById(this.htmlIdCrystoolsProgressBarContainer);
 
     // validation because this run before setup
@@ -48,7 +48,12 @@ class CrystoolsProgressBar {
     }
   };
 
-  updateDisplay = () => {
+  updateDisplay = (): void => {
+    if (!(this.htmlProgressLabelRef && this.htmlProgressSliderRef)) {
+      console.error('htmlProgressLabelRef or htmlProgressSliderRef is undefined');
+      return;
+    }
+
     if (this.currentStatus === EStatus.executed) {
       // finished
       this.htmlProgressLabelRef.innerHTML = 'cached';
@@ -73,8 +78,12 @@ class CrystoolsProgressBar {
     }
   };
 
-  setup() {
+  setup(): void {
     const parentElement = document.getElementById('queue-button');
+    if (!parentElement) {
+      console.error('queue-button not found');
+      return;
+    }
 
     let ctoolsRoot = document.getElementById(this.htmlIdCrystoolsRoot);
     if (!ctoolsRoot) {
@@ -126,7 +135,7 @@ class CrystoolsProgressBar {
     this.registerListeners();
   }
 
-  registerListeners = () => {
+  registerListeners = (): void => {
     api.addEventListener('status', ({
       detail,
     }: any) => {
@@ -168,7 +177,6 @@ class CrystoolsProgressBar {
     api.addEventListener('execution_start', ({
       _detail,
     }: any) => {
-      console.log('execution_start', _detail);
       this.currentStatus = EStatus.executing;
       this.timeStart = Date.now();
 
@@ -178,14 +186,13 @@ class CrystoolsProgressBar {
     api.addEventListener('execution_error', ({
       _detail,
     }: any) => {
-      console.log('execution_error', _detail);
       this.currentStatus = EStatus.execution_error;
 
       this.updateDisplay();
     }, false);
   };
 
-  centerNode = () => {
+  centerNode = (): void => {
     const id = this.currentNode;
     if (!id) {
       return;

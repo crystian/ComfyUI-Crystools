@@ -61,7 +61,7 @@ class CrystoolsProgressBar {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: null
+            value: undefined
         });
         Object.defineProperty(this, "timeStart", {
             enumerable: true,
@@ -73,13 +73,13 @@ class CrystoolsProgressBar {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: null
+            value: undefined
         });
         Object.defineProperty(this, "htmlProgressLabelRef", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: null
+            value: undefined
         });
         Object.defineProperty(this, "createSettings", {
             enumerable: true,
@@ -111,6 +111,10 @@ class CrystoolsProgressBar {
             configurable: true,
             writable: true,
             value: () => {
+                if (!(this.htmlProgressLabelRef && this.htmlProgressSliderRef)) {
+                    console.error('htmlProgressLabelRef or htmlProgressSliderRef is undefined');
+                    return;
+                }
                 if (this.currentStatus === EStatus.executed) {
                     this.htmlProgressLabelRef.innerHTML = 'cached';
                     const timeElapsed = Date.now() - this.timeStart;
@@ -160,13 +164,11 @@ class CrystoolsProgressBar {
                     this.updateDisplay();
                 }, false);
                 api.addEventListener('execution_start', ({ _detail, }) => {
-                    console.log('execution_start', _detail);
                     this.currentStatus = EStatus.executing;
                     this.timeStart = Date.now();
                     this.updateDisplay();
                 }, false);
                 api.addEventListener('execution_error', ({ _detail, }) => {
-                    console.log('execution_error', _detail);
                     this.currentStatus = EStatus.execution_error;
                     this.updateDisplay();
                 }, false);
@@ -192,6 +194,10 @@ class CrystoolsProgressBar {
     }
     setup() {
         const parentElement = document.getElementById('queue-button');
+        if (!parentElement) {
+            console.error('queue-button not found');
+            return;
+        }
         let ctoolsRoot = document.getElementById(this.htmlIdCrystoolsRoot);
         if (!ctoolsRoot) {
             ctoolsRoot = document.createElement('div');

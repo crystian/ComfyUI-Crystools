@@ -50,14 +50,18 @@ app.registerExtension({
         api.addEventListener('executed', this.fillMetadataWidget, false);
       }
 
-      fillMetadataWidget = () => {
+      fillMetadataWidget = async (): Promise<string> => {
         return app.graphToPrompt()
-        .then(workflow => {
+        .then((workflow): string => {
           let result = 'inactive';
+          if(this.widgets?.length !== 4) {
+            console.error('Something is wrong with the widgets, should be 4!');
+            return 'error';
+          }
           const output = this.widgets[0];
-          const active = this.widgets[1].value;
-          const parsed = this.widgets[2].value;
-          let what = this.widgets[3].value.toLowerCase();
+          const active = this.widgets[1]?.value;
+          const parsed = this.widgets[2]?.value;
+          let what = this.widgets[3]?.value.toLowerCase();
 
           if (active) {
             what = what === 'prompt' ? 'output' : what; // little fix for better understanding
@@ -69,8 +73,13 @@ app.registerExtension({
               result = JSON.stringify(result);
             }
           }
-
-          output.value = result;
+          if (output) {
+            output.value = result;
+          } else {
+            console.error('Something is wrong with the widgets, output is undefined!');
+            return 'error';
+          }
+          return result;
         });
       };
     }

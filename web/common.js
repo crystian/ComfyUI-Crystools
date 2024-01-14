@@ -6,7 +6,7 @@ export function displayContext(nodeType, appFromArg, index = 0, serialize_widget
             const pos = this.widgets.findIndex((w) => w.name === 'text');
             if (pos !== -1) {
                 for (let i = pos; i < this.widgets.length; i++) {
-                    this.widgets[i].onRemove?.();
+                    this.widgets[i]?.onRemove?.();
                 }
                 this.widgets.length = pos;
             }
@@ -20,7 +20,7 @@ export function displayContext(nodeType, appFromArg, index = 0, serialize_widget
         ], appFromArg).widget;
         widget.inputEl.readOnly = true;
         widget.inputEl.style.opacity = 0.6;
-        if (Array.isArray(text)) {
+        if (Array.isArray(text) && index !== undefined && text[index] !== undefined) {
             text = text[index];
         }
         widget.value = text || '';

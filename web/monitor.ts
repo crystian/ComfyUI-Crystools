@@ -2,35 +2,6 @@ import { app } from '/scripts/app.js';
 import { api } from '/scripts/api.js';
 import { commonPrefix } from './common.js';
 
-type TGpuStatData = {
-  gpu_utilization: number,
-  vram_total: number,
-  vram_used: number,
-  vram_used_percent: number,
-}
-
-type TStatsData = {
-  cpu_utilization: number,
-  device: string,
-  gpus: TGpuStatData[],
-  hdd_total: number,
-  hdd_used: number,
-  hdd_used_percent: number,
-  ram_total: number,
-  ram_used: number,
-  ram_used_percent: number,
-}
-
-type TStatsSettings = {
-  rate?: number,
-  switchCPU?: boolean,
-  switchGPU?: boolean,
-  switchHDD?: boolean,
-  switchRAM?: boolean,
-  switchVRAM?: boolean,
-  whichHDD?: string,
-}
-
 class CrystoolsMonitor {
   idExtensionName = 'Crystools.monitor';
   menuPrefix = commonPrefix;
@@ -44,33 +15,33 @@ class CrystoolsMonitor {
     // CPU Variables
   idSwitchCPU = 'Crystools.switchCPU';
   defaultSwitchCPU = true;
-  htmlMonitorCPURef: HTMLDivElement = null;
-  htmlMonitorCPUSliderRef: HTMLDivElement = null;
-  htmlMonitorCPULabelRef: HTMLDivElement = null;
+  htmlMonitorCPURef?: HTMLDivElement = undefined;
+  htmlMonitorCPUSliderRef?: HTMLDivElement = undefined;
+  htmlMonitorCPULabelRef?: HTMLDivElement = undefined;
   cssColorCPU = '#0AA015';
 
   // RAM Variables
   idSwitchRAM = 'Crystools.switchRAM';
   defaultSwitchRAM = true;
-  htmlMonitorRAMRef: HTMLDivElement = null;
-  htmlMonitorRAMSliderRef: HTMLDivElement = null;
-  htmlMonitorRAMLabelRef: HTMLDivElement = null;
+  htmlMonitorRAMRef?: HTMLDivElement = undefined;
+  htmlMonitorRAMSliderRef?: HTMLDivElement = undefined;
+  htmlMonitorRAMLabelRef?: HTMLDivElement = undefined;
   cssColorRAM = '#07630D';
 
   // GPU Variables
   idSwitchGPU = 'Crystools.switchGPU';
   defaultSwitchGPU = true;
-  htmlMonitorGPURef: HTMLDivElement = null;
-  htmlMonitorGPUSliderRef: HTMLDivElement = null;
-  htmlMonitorGPULabelRef: HTMLDivElement = null;
+  htmlMonitorGPURef?: HTMLDivElement = undefined;
+  htmlMonitorGPUSliderRef?: HTMLDivElement = undefined;
+  htmlMonitorGPULabelRef?: HTMLDivElement = undefined;
   cssColorGPU = '#0C86F4';
 
   // VRAM Variables
   idSwitchVRAM = 'Crystools.switchVRAM';
   defaultSwitchVRAM = true;
-  htmlMonitorVRAMRef: HTMLDivElement = null;
-  htmlMonitorVRAMSliderRef: HTMLDivElement = null;
-  htmlMonitorVRAMLabelRef: HTMLDivElement = null;
+  htmlMonitorVRAMRef?: HTMLDivElement = undefined;
+  htmlMonitorVRAMSliderRef?: HTMLDivElement = undefined;
+  htmlMonitorVRAMLabelRef?: HTMLDivElement = undefined;
   cssColorVRAM = '#176EC7';
 
   // HDD Variables
@@ -78,23 +49,23 @@ class CrystoolsMonitor {
   idWhichHDD = 'Crystools.whichHDD';
   defaultWhichHDD = 'C:\\';
   defaultSwitchHDD = false;
-  htmlMonitorHDDRef: HTMLDivElement = null;
-  htmlMonitorHDDSliderRef: HTMLDivElement = null;
-  htmlMonitorHDDLabelRef: HTMLDivElement = null;
+  htmlMonitorHDDRef?: HTMLDivElement = undefined;
+  htmlMonitorHDDSliderRef?: HTMLDivElement = undefined;
+  htmlMonitorHDDLabelRef?: HTMLDivElement = undefined;
   cssColorHDD = '#730F92';
 
   constructor() {
     this.createSettings();
   }
 
-  createSettings = () => {
+  createSettings = (): void => {
     app.ui.settings.addSetting({
       id: this.idSwitchCPU,
       name: this.menuPrefix + 'Display CPU monitor [menu]',
       type: 'boolean',
       defaultValue: this.defaultSwitchCPU,
       onChange: async(value: boolean) => {
-        this.updateWidget(this.htmlMonitorCPURef, value);
+        this.updateWidget(value, this.htmlMonitorCPURef);
         await this.updateServer({
           switchCPU: value,
         });
@@ -106,7 +77,7 @@ class CrystoolsMonitor {
       type: 'boolean',
       defaultValue: this.defaultSwitchRAM,
       onChange: async(value: boolean) => {
-        this.updateWidget(this.htmlMonitorRAMRef, value);
+        this.updateWidget(value, this.htmlMonitorRAMRef);
         await this.updateServer({
           switchRAM: value,
         });
@@ -118,7 +89,7 @@ class CrystoolsMonitor {
       type: 'boolean',
       defaultValue: this.defaultSwitchGPU,
       onChange: async(value: boolean) => {
-        this.updateWidget(this.htmlMonitorGPURef, value);
+        this.updateWidget(value, this.htmlMonitorGPURef);
         await this.updateServer({
           switchGPU: value,
         });
@@ -130,7 +101,7 @@ class CrystoolsMonitor {
       type: 'boolean',
       defaultValue: this.defaultSwitchVRAM,
       onChange: async(value: boolean) => {
-        this.updateWidget(this.htmlMonitorVRAMRef, value);
+        this.updateWidget(value, this.htmlMonitorVRAMRef);
         await this.updateServer({
           switchVRAM: value,
         });
@@ -138,12 +109,11 @@ class CrystoolsMonitor {
     });
     app.ui.settings.addSetting({
       id: this.idSwitchHDD,
-      name: this.menuPrefix + 'Display Hard disk monitor [menu]',
-      tooltip: 'Only the drive where the comfyUI is installed',
+      name: this.menuPrefix + 'Display partition disk monitor (HDD) [menu]',
       type: 'boolean',
       defaultValue: this.defaultSwitchHDD,
       onChange: async(value: boolean) => {
-        this.updateWidget(this.htmlMonitorHDDRef, value);
+        this.updateWidget(value, this.htmlMonitorHDDRef);
         await this.updateServer({
           switchHDD: value,
         });
@@ -155,7 +125,7 @@ class CrystoolsMonitor {
 
       app.ui.settings.addSetting({
         id: this.idWhichHDD,
-        name: this.menuPrefix + 'HDD to show:',
+        name: this.menuPrefix + 'Partition to show (HDD)',
         type: 'combo',
         defaultValue: this.defaultWhichHDD,
         options: (value: string) =>
@@ -183,6 +153,7 @@ class CrystoolsMonitor {
         step: 0.25,
       },
       defaultValue: this.defaultRate,
+      // eslint-disable-next-line complexity
       onChange: async(value: string) => {
         let valueNumber: number;
 
@@ -226,7 +197,12 @@ class CrystoolsMonitor {
           });
         }
 
-        if (this.htmlMonitorCPUSliderRef) { // validation because this run before setup
+        if (this.htmlMonitorCPUSliderRef
+            && this.htmlMonitorGPUSliderRef
+            && this.htmlMonitorHDDSliderRef
+            && this.htmlMonitorRAMSliderRef
+            && this.htmlMonitorVRAMSliderRef
+        ) { // validation because this run before setup
           value = valueNumber.toFixed(1);
           const animationConfig = `width ${value}s`;
           this.htmlMonitorCPUSliderRef.style.transition = animationConfig;
@@ -244,7 +220,7 @@ class CrystoolsMonitor {
     });
   };
 
-  updateServer = async(data: TStatsSettings) => {
+  updateServer = async(data: TStatsSettings): Promise<string> => {
     const resp = await api.fetchApi('/crystools/monitor', {
       method: 'PATCH',
       body: JSON.stringify(data),
@@ -267,24 +243,27 @@ class CrystoolsMonitor {
     throw new Error(resp.statusText);
   };
 
-  updateAllWidget = () => {
-    this.updateWidget(this.htmlMonitorCPURef, app.ui.settings.getSettingValue(this.idSwitchCPU, this.defaultSwitchCPU));
-    this.updateWidget(this.htmlMonitorGPURef, app.ui.settings.getSettingValue(this.idSwitchGPU, this.defaultSwitchGPU));
-    this.updateWidget(this.htmlMonitorHDDRef, app.ui.settings.getSettingValue(this.idSwitchHDD, this.defaultSwitchHDD));
-    this.updateWidget(this.htmlMonitorRAMRef, app.ui.settings.getSettingValue(this.idSwitchRAM, this.defaultSwitchRAM));
-    this.updateWidget(this.htmlMonitorVRAMRef, app.ui.settings.getSettingValue(this.idSwitchVRAM,
-      this.defaultSwitchVRAM));
+  updateAllWidget = (): void => {
+    this.updateWidget(app.ui.settings.getSettingValue(this.idSwitchCPU, this.defaultSwitchCPU), this.htmlMonitorCPURef);
+    this.updateWidget(app.ui.settings.getSettingValue(this.idSwitchGPU, this.defaultSwitchGPU), this.htmlMonitorGPURef);
+    this.updateWidget(app.ui.settings.getSettingValue(this.idSwitchHDD, this.defaultSwitchHDD), this.htmlMonitorHDDRef);
+    this.updateWidget(app.ui.settings.getSettingValue(this.idSwitchRAM, this.defaultSwitchRAM), this.htmlMonitorRAMRef);
+    this.updateWidget(app.ui.settings.getSettingValue(this.idSwitchVRAM,
+      this.defaultSwitchVRAM), this.htmlMonitorVRAMRef);
   };
 
-  updateWidget = (container: HTMLDivElement, value: boolean) => {
+  updateWidget = (value: boolean, container?: HTMLDivElement): void => {
     if (container) {
       container.style.display = value ? 'flex' : 'none';
     }
   };
 
-  updateDisplay = (data: TStatsData) => {
+  // eslint-disable-next-line complexity
+  updateDisplay = (data: TStatsData): void => {
     // console.log('updateDisplay', data);
-    if (!this.htmlMonitorCPULabelRef) {
+    if (!(this.htmlMonitorCPULabelRef
+          && this.htmlMonitorCPUSliderRef
+    )) {
       return;
     }
     this.htmlMonitorCPULabelRef.innerHTML = `${Math.floor(data.cpu_utilization)}%`;
@@ -292,22 +271,39 @@ class CrystoolsMonitor {
 
     const gpu = data.gpus[0];
     if (gpu) {
-      this.htmlMonitorGPULabelRef.innerHTML = `${Math.floor(gpu.gpu_utilization)}%`;
-      this.htmlMonitorGPUSliderRef.style.width = this.htmlMonitorGPULabelRef.innerHTML;
-      this.htmlMonitorVRAMLabelRef.innerHTML = `${Math.floor(gpu.vram_used_percent)}%`;
-      this.htmlMonitorVRAMSliderRef.style.width = this.htmlMonitorVRAMLabelRef.innerHTML;
+      if (this.htmlMonitorGPULabelRef
+          && this.htmlMonitorGPUSliderRef
+          && this.htmlMonitorVRAMLabelRef
+          && this.htmlMonitorVRAMSliderRef) {
+
+        this.htmlMonitorGPULabelRef.innerHTML = `${Math.floor(gpu.gpu_utilization)}%`;
+        this.htmlMonitorGPUSliderRef.style.width = this.htmlMonitorGPULabelRef.innerHTML;
+        this.htmlMonitorVRAMLabelRef.innerHTML = `${Math.floor(gpu.vram_used_percent)}%`;
+        this.htmlMonitorVRAMSliderRef.style.width = this.htmlMonitorVRAMLabelRef.innerHTML;
+      }
     } else {
       console.error('no gpu found');
     }
 
-    this.htmlMonitorHDDLabelRef.innerHTML = `${Math.floor(data.hdd_used_percent)}%`;
-    this.htmlMonitorHDDSliderRef.style.width = this.htmlMonitorHDDLabelRef.innerHTML;
+    if (this.htmlMonitorHDDLabelRef
+        && this.htmlMonitorHDDSliderRef
+    ) {
+      this.htmlMonitorHDDLabelRef.innerHTML = `${Math.floor(data.hdd_used_percent)}%`;
+      this.htmlMonitorHDDSliderRef.style.width = this.htmlMonitorHDDLabelRef.innerHTML;
+    }
 
-    this.htmlMonitorRAMLabelRef.innerHTML = `${Math.floor(data.ram_used_percent)}%`;
-    this.htmlMonitorRAMSliderRef.style.width = this.htmlMonitorRAMLabelRef.innerHTML;
+    if (this.htmlMonitorHDDLabelRef
+        && this.htmlMonitorHDDSliderRef
+        && this.htmlMonitorRAMLabelRef
+        && this.htmlMonitorRAMSliderRef
+    ) {
+      this.htmlMonitorRAMLabelRef.innerHTML = `${Math.floor(data.ram_used_percent)}%`;
+      this.htmlMonitorRAMSliderRef.style.width = this.htmlMonitorRAMLabelRef.innerHTML;
+    }
+
   };
 
-  setup() {
+  setup(): void {
     const parentElement = document.getElementById('queue-button');
 
     let ctoolsRoot = document.getElementById(this.htmlIdCrystoolsRoot);
@@ -317,7 +313,7 @@ class CrystoolsMonitor {
       ctoolsRoot.style.display = 'flex';
       ctoolsRoot.style.width = '100%';
       ctoolsRoot.style.flexDirection = 'column';
-      parentElement.insertAdjacentElement('afterend', ctoolsRoot);
+      parentElement?.insertAdjacentElement('afterend', ctoolsRoot);
     }
 
     const htmlContainer = document.createElement('div');
@@ -338,15 +334,11 @@ class CrystoolsMonitor {
     this.registerListeners();
   }
 
-  createMonitor = (id: string, label: string, color: string) => {
-    const option: {
-      rootRef?: HTMLDivElement,
-      sliderRef?: HTMLDivElement,
-      labelRef?: HTMLDivElement,
-    } = {
-      rootRef: null,
-      sliderRef: null,
-      labelRef: null,
+  createMonitor = (id: string, label: string, color: string): TMonitorRefs => {
+    const option: TMonitorRefs = {
+      rootRef: undefined,
+      sliderRef: undefined,
+      labelRef: undefined,
     };
 
     const htmlMain = document.createElement('div');
@@ -393,8 +385,8 @@ class CrystoolsMonitor {
     return option;
   };
 
-  createMonitorCPU = () => {
-    const options = this.createMonitor('crystools-monitor-cpu', 'CPU', this.cssColorCPU);
+  createMonitorCPU = (): HTMLDivElement => {
+    const options = this.createMonitor('crystools-monitor-cpu', 'CPU', this.cssColorCPU) as Required<TMonitorRefs>;
 
     this.htmlMonitorCPURef = options.rootRef;
     this.htmlMonitorCPUSliderRef = options.sliderRef;
@@ -402,8 +394,8 @@ class CrystoolsMonitor {
     return this.htmlMonitorCPURef;
   };
 
-  createMonitorRAM = () => {
-    const options = this.createMonitor('crystools-monitor-ram', 'RAM', this.cssColorRAM);
+  createMonitorRAM = (): HTMLDivElement => {
+    const options = this.createMonitor('crystools-monitor-ram', 'RAM', this.cssColorRAM) as Required<TMonitorRefs>;
 
     this.htmlMonitorRAMRef = options.rootRef;
     this.htmlMonitorRAMSliderRef = options.sliderRef;
@@ -411,8 +403,8 @@ class CrystoolsMonitor {
     return this.htmlMonitorRAMRef;
   };
 
-  createMonitorGPU = () => {
-    const options = this.createMonitor('crystools-monitor-gpu', 'GPU', this.cssColorGPU);
+  createMonitorGPU = (): HTMLDivElement => {
+    const options = this.createMonitor('crystools-monitor-gpu', 'GPU', this.cssColorGPU) as Required<TMonitorRefs>;
 
     this.htmlMonitorGPURef = options.rootRef;
     this.htmlMonitorGPUSliderRef = options.sliderRef;
@@ -420,8 +412,8 @@ class CrystoolsMonitor {
     return this.htmlMonitorGPURef;
   };
 
-  createMonitorVRAM = () => {
-    const options = this.createMonitor('crystools-monitor-vram', 'VRAM', this.cssColorVRAM);
+  createMonitorVRAM = (): HTMLDivElement => {
+    const options = this.createMonitor('crystools-monitor-vram', 'VRAM', this.cssColorVRAM) as Required<TMonitorRefs>;
 
     this.htmlMonitorVRAMRef = options.rootRef;
     this.htmlMonitorVRAMSliderRef = options.sliderRef;
@@ -429,8 +421,8 @@ class CrystoolsMonitor {
     return this.htmlMonitorVRAMRef;
   };
 
-  createMonitorHDD = () => {
-    const options = this.createMonitor('crystools-monitor-hdd', 'HDD', this.cssColorHDD);
+  createMonitorHDD = (): HTMLDivElement => {
+    const options = this.createMonitor('crystools-monitor-hdd', 'HDD', this.cssColorHDD) as Required<TMonitorRefs>;
 
     this.htmlMonitorHDDRef = options.rootRef;
     this.htmlMonitorHDDSliderRef = options.sliderRef;
@@ -438,7 +430,7 @@ class CrystoolsMonitor {
     return this.htmlMonitorHDDRef;
   };
 
-  registerListeners = () => {
+  registerListeners = (): void => {
     api.addEventListener('crystools.monitor', (event: CustomEvent) => {
       if (event?.detail === undefined) {
         return;

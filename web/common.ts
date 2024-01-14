@@ -7,14 +7,14 @@ export function displayContext(
   nodeType: TLGraphNode,
   appFromArg: ComfyApp,
   index = 0, serialize_widgets = false, isVirtualNode = false,
-) {
-  function populate(this: TLGraphNode, text: string | string[]) {
+): void {
+  function populate(this: TLGraphNode, text: string | string[]): void {
     if (this.widgets) {
       const pos = this.widgets.findIndex((w) => w.name === 'text');
       if (pos !== -1) {
         for (let i = pos; i < this.widgets.length; i++) {
 
-          this.widgets[i].onRemove?.();
+          this.widgets[i]?.onRemove?.();
         }
         this.widgets.length = pos;
       }
@@ -31,12 +31,13 @@ export function displayContext(
     ], appFromArg).widget;
     widget.inputEl.readOnly = true;
     widget.inputEl.style.opacity = 0.6;
-    if (Array.isArray(text)) {
+    if (Array.isArray(text) && index !== undefined && text[index] !== undefined) {
+      // @ts-ignore
       text = text[index];
     }
     widget.value = text || '';
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    widget.serializeValue = async() => {}; // just for no serialized to itself!
+    widget.serializeValue = async(): Promise<void> => {}; // just for no serialized to itself!
 
     requestAnimationFrame(() => {
       const sz = this.computeSize();
@@ -55,14 +56,14 @@ export function displayContext(
   // @ts-ignore
   const onExecutedOriginal = nodeType.prototype.onExecuted;
   // @ts-ignore
-  nodeType.prototype.onExecuted = function(message: { text: string }) {
+  nodeType.prototype.onExecuted = function(message: { text: string }): void {
     onExecutedOriginal?.apply(this, arguments);
     populate.call(this, message.text);
   };
 
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const onConfigureOriginal = nodeType.prototype.onConfigure;
-  nodeType.prototype.onConfigure = function() {
+  nodeType.prototype.onConfigure = function(): void {
     // @ts-ignore
     onConfigureOriginal?.apply(this, arguments);
     if (this.widgets_values?.length) {
