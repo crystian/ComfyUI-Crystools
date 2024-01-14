@@ -513,8 +513,17 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### Crystools
 
+### 1.9.0 (14/01/2024)
+- Big refactor on hardwareInfo, gpu was separated on another file
+
+### 1.8.0 (14/01/2024) - internal
+- HDD monitor selector on settings
+
+### 1.7.0 (11/01/2024) - internal
+- Typescript added!
+
 ### 1.6.0 (11/01/2024)
-- Fix issue [#7](https://github.com/crystian/ComfyUI-Crystools/issues/7) to the loop deadlock on concurrency
+- Fix issue [#7](https://github.com/crystian/ComfyUI-Crystools/issues/7) to the thread deadlock on concurrency
 
 ### 1.5.0 (10/01/2024)
 - Improvements on the resources monitor and how handle the threads
@@ -524,10 +533,8 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 - Added in general Resources monitor (CPU, GPU, RAM, VRAM, and space)
 - Added this icon to identify this set of tools: 🪛 
 
-
 ### 1.2.0 (05/01/2024)
 - progress bar added
-
  
 ### 1.1.0 (29/12/2023)
 - Node added: "Save image with extra metadata"

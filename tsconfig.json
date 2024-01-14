@@ -1,0 +1,66 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "typeRoots": [
+      // "./web/ts/typings",
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "/scripts/*": ["../../web/scripts/*"],
+      "/lib/*": ["../../web/lib/*"],
+      "/extensions/*": ["../../web/extensions/*"],
+      "/types/*": ["../../web/types/*"]
+    },
+    // "rootDir": "./web/src",
+    // "rootDir": "../../",
+    // "rootDirs": [
+    //   "../../web",
+    //   "web/src"
+    // ],
+    "preserveSymlinks": true,
+    "checkJs": false,
+    "allowJs": true,
+    // if set this, it makes folders in the output folder...
+    // "outDir": "web/dist",
+    "declaration": true,
+    // "declarationDir": "./web/dist/types",
+
+    "strict": true,
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "strictPropertyInitialization": false,
+    "exactOptionalPropertyTypes": false,
+
+    "noResolve": false,
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "useUnknownInCatchVariables": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "allowUnusedLabels": true,
+    "allowSyntheticDefaultImports": false,
+    "useDefineForClassFields": true,
+    "allowImportingTsExtensions": false,
+    "isolatedModules": true,
+    "removeComments": true,
+    "noEmit": false
+  },
+  "include": [
+    "./web/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

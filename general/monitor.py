@@ -2,7 +2,7 @@ import asyncio
 import server
 import time
 import threading
-from .stats import CStats
+from .hardware import CHardwareInfo
 
 from ..core import logger
 
@@ -13,11 +13,11 @@ class CMonitor:
     monitorThread = None
     threadController = threading.Event()
     rate = 0
-    stats = None
+    hardwareInfo = None
 
     def __init__(self, rate=5, switchCPU=False, switchGPU=False, switchHDD=False, switchRAM=False, switchVRAM=False):
         self.rate = rate
-        self.stats = CStats(switchCPU, switchGPU, switchHDD, switchRAM, switchVRAM)
+        self.hardwareInfo = CHardwareInfo(switchCPU, switchGPU, switchHDD, switchRAM, switchVRAM)
 
         self.startMonitor()
 
@@ -28,7 +28,7 @@ class CMonitor:
 
     def monitorLoop(self):
         while self.rate > 0 and not self.threadController.is_set():
-            data = self.stats.buildStatsData()
+            data = self.hardwareInfo.getStatus()
             # print(data)
             asyncio.run(self.send_message(data))
             time.sleep(self.rate)

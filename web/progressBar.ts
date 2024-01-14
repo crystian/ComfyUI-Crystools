@@ -1,12 +1,12 @@
-import { api } from '../../../scripts/api.js';
-import { app } from '../../../scripts/app.js';
+import { api } from '/scripts/api.js';
+import { app } from '/scripts/app.js';
 import { commonPrefix } from './common.js';
 
-const status = {
-  executing: 'Executing',
-  executed: 'Executed',
-  execution_error: 'Execution error',
-};
+enum EStatus {
+  executing = 'Executing',
+  executed = 'Executed',
+  execution_error = 'Execution error',
+}
 
 class CrystoolsProgressBar {
   idExtensionName = 'Crystools.progressBar';
@@ -16,20 +16,20 @@ class CrystoolsProgressBar {
   htmlIdCrystoolsRoot = 'crystools-root';
   htmlIdCrystoolsProgressBarContainer = 'crystools-progress-bar-container';
 
-  currentStatus = status.executed;
+  currentStatus = EStatus.executed;
   currentProgress = 0;
-  currentNode = null;
+  currentNode?: number = undefined;
   timeStart = 0;
 
-  htmlProgressSliderRef = null;
-  htmlProgressLabelRef = null;
+  htmlProgressSliderRef?: HTMLDivElement = undefined;
+  htmlProgressLabelRef?: HTMLDivElement = undefined;
 
   constructor() {
     this.createSettings();
   }
 
   // not on setup because this affect the order on settings, I prefer to options at first
-  createSettings = () => {
+  createSettings = (): void => {
     app.ui.settings.addSetting({
       id: this.idShowProgressBar,
       name: this.menuPrefix + 'Show progress bar [menu]',
@@ -39,7 +39,7 @@ class CrystoolsProgressBar {
     });
   };
 
-  showProgressBar = (value) => {
+  showProgressBar = (value: boolean): void => {
     const container = document.getElementById(this.htmlIdCrystoolsProgressBarContainer);
 
     // validation because this run before setup
@@ -48,8 +48,13 @@ class CrystoolsProgressBar {
     }
   };
 
-  updateDisplay = () => {
-    if (this.currentStatus === status.executed) {
+  updateDisplay = (): void => {
+    if (!(this.htmlProgressLabelRef && this.htmlProgressSliderRef)) {
+      console.error('htmlProgressLabelRef or htmlProgressSliderRef is undefined');
+      return;
+    }
+
+    if (this.currentStatus === EStatus.executed) {
       // finished
       this.htmlProgressLabelRef.innerHTML = 'cached';
 
@@ -59,13 +64,13 @@ class CrystoolsProgressBar {
       }
       this.htmlProgressSliderRef.style.width = '0';
 
-    } else if (this.currentStatus === status.execution_error) {
+    } else if (this.currentStatus === EStatus.execution_error) {
       // an error occurred
       this.htmlProgressLabelRef.innerHTML = 'ERROR';
       this.htmlProgressSliderRef.style.backgroundColor = 'var(--error-text)';
       console.log('execution_error');
 
-    } else if (this.currentStatus === status.executing) {
+    } else if (this.currentStatus === EStatus.executing) {
       // on going
       this.htmlProgressLabelRef.innerHTML = `${this.currentProgress}%`;
       this.htmlProgressSliderRef.style.width = this.htmlProgressLabelRef.innerHTML;
@@ -73,11 +78,15 @@ class CrystoolsProgressBar {
     }
   };
 
-  setup() {
-    const parentElement= document.getElementById('queue-button');
+  setup(): void {
+    const parentElement = document.getElementById('queue-button');
+    if (!parentElement) {
+      console.error('queue-button not found');
+      return;
+    }
 
     let ctoolsRoot = document.getElementById(this.htmlIdCrystoolsRoot);
-    if(!ctoolsRoot){
+    if (!ctoolsRoot) {
       ctoolsRoot = document.createElement('div');
       ctoolsRoot.setAttribute('id', this.htmlIdCrystoolsRoot);
       ctoolsRoot.style.display = 'flex';
@@ -126,19 +135,25 @@ class CrystoolsProgressBar {
     this.registerListeners();
   }
 
-  registerListeners = () => {
-    api.addEventListener('status', ({detail}) => {
-      this.currentStatus = this.currentStatus === status.execution_error ? status.execution_error : status.executed;
-      let queueRemaining = detail && detail.exec_info.queue_remaining;
+  registerListeners = (): void => {
+    api.addEventListener('status', ({
+      detail,
+    }: any) => {
+      this.currentStatus = this.currentStatus === EStatus.execution_error ? EStatus.execution_error : EStatus.executed;
+      const queueRemaining = detail?.exec_info.queue_remaining;
 
       if (queueRemaining) {
-        this.currentStatus = status.executing;
+        this.currentStatus = EStatus.executing;
       }
       this.updateDisplay();
-    });
+    }, false);
 
-    api.addEventListener('progress', ({detail}) => {
-      const {value, max, node} = detail;
+    api.addEventListener('progress', ({
+      detail,
+    }: any) => {
+      const {
+        value, max, node,
+      } = detail;
       const progress = Math.floor((value / max) * 100);
 
       if (!isNaN(progress) && progress >= 0 && progress <= 100) {
@@ -147,31 +162,37 @@ class CrystoolsProgressBar {
       }
 
       this.updateDisplay();
-    });
+    }, false);
 
-    api.addEventListener('executed', ({detail}) => {
+    api.addEventListener('executed', ({
+      detail,
+    }: any) => {
       if (detail?.node) {
         this.currentNode = detail.node;
       }
 
       this.updateDisplay();
-    });
+    }, false);
 
-    api.addEventListener('execution_start', ({detail}) => {
-      this.currentStatus = status.executing;
+    api.addEventListener('execution_start', ({
+      _detail,
+    }: any) => {
+      this.currentStatus = EStatus.executing;
       this.timeStart = Date.now();
 
       this.updateDisplay();
-    });
+    }, false);
 
-    api.addEventListener('execution_error', ({detail}) => {
-      this.currentStatus = status.execution_error;
+    api.addEventListener('execution_error', ({
+      _detail,
+    }: any) => {
+      this.currentStatus = EStatus.execution_error;
 
       this.updateDisplay();
-    });
+    }, false);
   };
 
-  centerNode = () => {
+  centerNode = (): void => {
     const id = this.currentNode;
     if (!id) {
       return;
@@ -188,4 +209,4 @@ const crystoolsProgressBar = new CrystoolsProgressBar();
 app.registerExtension({
   name: crystoolsProgressBar.idExtensionName,
   setup: crystoolsProgressBar.setup.bind(crystoolsProgressBar),
-})
+});
