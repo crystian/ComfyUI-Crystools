@@ -387,9 +387,6 @@ class CrystoolsMonitor {
                         },
                     });
                 });
-                void this.getGPUsFromServer().then((data) => {
-                    console.log('data', data);
-                });
             }
         });
         Object.defineProperty(this, "updateServer", {
@@ -414,14 +411,6 @@ class CrystoolsMonitor {
             writable: true,
             value: async () => {
                 return this.getDataFromServer('HDD');
-            }
-        });
-        Object.defineProperty(this, "getGPUsFromServer", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: async () => {
-                return this.getDataFromServer('GPU');
             }
         });
         Object.defineProperty(this, "getDataFromServer", {
