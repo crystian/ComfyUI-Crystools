@@ -21,13 +21,14 @@ type TStatsData = {
   ram_used_percent: number,
 }
 
-type TStatsSwitches = {
+type TStatsSettings = {
   rate?: number,
   switchCPU?: boolean,
   switchGPU?: boolean,
   switchHDD?: boolean,
   switchRAM?: boolean,
   switchVRAM?: boolean,
+  whichHDD?: string,
 }
 
 class CrystoolsMonitor {
@@ -74,6 +75,8 @@ class CrystoolsMonitor {
 
   // HDD Variables
   idSwitchHDD = 'Crystools.switchHDD';
+  idWhichHDD = 'Crystools.whichHDD';
+  defaultWhichHDD = 'C:\\';
   defaultSwitchHDD = false;
   htmlMonitorHDDRef: HTMLDivElement = null;
   htmlMonitorHDDSliderRef: HTMLDivElement = null;
@@ -145,6 +148,28 @@ class CrystoolsMonitor {
           switchHDD: value,
         });
       },
+    });
+
+    void this.getHDDsFromServer().then((data: string[]): void => {
+      const which = app.ui.settings.getSettingValue(this.idWhichHDD, this.defaultWhichHDD);
+
+      app.ui.settings.addSetting({
+        id: this.idWhichHDD,
+        name: this.menuPrefix + 'HDD to show:',
+        type: 'combo',
+        defaultValue: this.defaultWhichHDD,
+        options: (value: string) =>
+          data.map((m) => ({
+            value: m,
+            text: m,
+            selected: !value ? m === which : m === value,
+          })),
+        onChange: async(value: string) => {
+          await this.updateServer({
+            whichHDD: value,
+          });
+        },
+      });
     });
 
     app.ui.settings.addSetting({
@@ -219,7 +244,7 @@ class CrystoolsMonitor {
     });
   };
 
-  updateServer = async(data: TStatsSwitches) => {
+  updateServer = async(data: TStatsSettings) => {
     const resp = await api.fetchApi('/crystools/monitor', {
       method: 'PATCH',
       body: JSON.stringify(data),
@@ -229,7 +254,17 @@ class CrystoolsMonitor {
       return await resp.text();
     }
     throw new Error(resp.statusText);
+  };
 
+  getHDDsFromServer = async(): Promise<string[]> => {
+    const resp = await api.fetchApi('/crystools/monitor/HDD', {
+      method: 'GET',
+      cache: 'no-store',
+    });
+    if (resp.status === 200) {
+      return await resp.json();
+    }
+    throw new Error(resp.statusText);
   };
 
   updateAllWidget = () => {

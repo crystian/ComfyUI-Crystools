@@ -24,6 +24,7 @@ class CStats:
     switchHDD = False
     switchRAM = False
     switchVRAM = False
+    whichHDD = 'C:\\'
 
     def __init__(self, switchCPU=False, switchGPU=False, switchHDD=False, switchRAM=False, switchVRAM=False):
         self.switchCPU = switchCPU
@@ -69,7 +70,7 @@ class CStats:
             ramUsedPercent = ram.percent
 
         if self.switchHDD:
-            hdd = psutil.disk_usage('/')
+            hdd = psutil.disk_usage(self.whichHDD)
             hddTotal = hdd.total
             hddUsed = hdd.used
             hddUsedPercent = hdd.percent

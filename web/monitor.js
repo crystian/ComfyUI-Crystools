@@ -189,6 +189,18 @@ class CrystoolsMonitor {
             writable: true,
             value: 'Crystools.switchHDD'
         });
+        Object.defineProperty(this, "idWhichHDD", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: 'Crystools.whichHDD'
+        });
+        Object.defineProperty(this, "defaultWhichHDD", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: 'C:\\'
+        });
         Object.defineProperty(this, "defaultSwitchHDD", {
             enumerable: true,
             configurable: true,
@@ -285,6 +297,25 @@ class CrystoolsMonitor {
                         });
                     },
                 });
+                void this.getHDDsFromServer().then((data) => {
+                    const which = app.ui.settings.getSettingValue(this.idWhichHDD, this.defaultWhichHDD);
+                    app.ui.settings.addSetting({
+                        id: this.idWhichHDD,
+                        name: this.menuPrefix + 'HDD to show:',
+                        type: 'combo',
+                        defaultValue: this.defaultWhichHDD,
+                        options: (value) => data.map((m) => ({
+                            value: m,
+                            text: m,
+                            selected: !value ? m === which : m === value,
+                        })),
+                        onChange: async (value) => {
+                            await this.updateServer({
+                                whichHDD: value,
+                            });
+                        },
+                    });
+                });
                 app.ui.settings.addSetting({
                     id: this.idInputRate,
                     name: this.menuPrefix + 'Monitors refresh rate (in seconds) [menu]',
@@ -367,6 +398,21 @@ class CrystoolsMonitor {
                 });
                 if (resp.status === 200) {
                     return await resp.text();
+                }
+                throw new Error(resp.statusText);
+            }
+        });
+        Object.defineProperty(this, "getHDDsFromServer", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: async () => {
+                const resp = await api.fetchApi('/crystools/monitor/HDD', {
+                    method: 'GET',
+                    cache: 'no-store',
+                });
+                if (resp.status === 200) {
+                    return await resp.json();
                 }
                 throw new Error(resp.statusText);
             }
