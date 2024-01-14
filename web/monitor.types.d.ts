@@ -27,8 +27,18 @@ type TStatsSettings = {
   whichHDD?: string,
 }
 
+type TGpuSettings = {
+  utilization?: boolean,
+  vram?: boolean,
+}
+
 type TMonitorRefs = {
   rootRef?: HTMLDivElement,
   sliderRef?: HTMLDivElement,
   labelRef?: HTMLDivElement,
+}
+
+type TGpuName = {
+  name: string,
+  index: number,
 }

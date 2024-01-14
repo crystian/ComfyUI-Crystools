@@ -9,7 +9,7 @@ class CGPUInfo:
     """
     This class is responsible for getting information from GPU (ONLY).
     """
-    nvidia = False
+    cuda = False
     pynvmlLoaded = False
     cudaAvailable = False
     torchDevice = 'cpu'
@@ -19,7 +19,6 @@ class CGPUInfo:
     switchVRAM = False
 
     def __init__(self):
-        logger.debug('CGPUInfo init')
         try:
             pynvml.nvmlInit()
             self.pynvmlLoaded = True
@@ -29,7 +28,7 @@ class CGPUInfo:
 
         if self.pynvmlLoaded and pynvml.nvmlDeviceGetCount() > 0:
           self.cudaDevicesFound = pynvml.nvmlDeviceGetCount()
-          self.nvidia = True
+          self.cuda = True
           logger.info(
             f'NVIDIA Driver detected - {pynvml.nvmlSystemGetDriverVersion()} - {comfy.model_management.get_torch_device_name(comfy.model_management.get_torch_device())}')
         else:
@@ -43,9 +42,33 @@ class CGPUInfo:
         self.cudaDevice = 'cpu' if self.torchDevice == 'cpu' else 'cuda'
         self.cudaAvailable = torch.cuda.is_available()
 
-        if self.nvidia and self.cudaAvailable and self.torchDevice == 'cpu':
+        if self.cuda and self.cudaAvailable and self.torchDevice == 'cpu':
           logger.warn('CUDA is available, but torch is using CPU.')
 
+
+    def getInfo(self):
+      logger.debug('Getting GPUs info...')
+      gpus = []
+
+      if self.pynvmlLoaded:
+        logger.debug('pynvml is loaded.')
+        print(self.cudaDevicesFound)
+        # print(comfy.model_management.get_torch_device_name(comfy.model_management.get_torch_device()))
+
+        for deviceIndex in range(self.cudaDevicesFound):
+          deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(deviceIndex)
+          gpuName = pynvml.nvmlDeviceGetName(deviceHandle)
+          print(gpuName)
+
+          gpus.append({
+            'index': deviceIndex,
+            'name': gpuName,
+          })
+
+      else:
+        logger.debug('pynvml is not loaded.')
+
+      return gpus
 
     def getStatus(self):
         # logger.debug('CGPUInfo getStatus')
@@ -68,7 +91,7 @@ class CGPUInfo:
         else:
             gpuType = self.cudaDevice
 
-            if self.pynvmlLoaded and self.nvidia and self.cudaAvailable:
+            if self.pynvmlLoaded and self.cuda and self.cudaAvailable:
                 for deviceIndex in range(self.cudaDevicesFound):
                     deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(deviceIndex)
 

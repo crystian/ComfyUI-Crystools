@@ -48,6 +48,9 @@ class CHardwareInfo:
     def getHDDsInfo(self):
       return getDrivesInfo()
 
+    def getGPUInfo(self):
+      return self.GPUInfo.getInfo()
+
     def getStatus(self):
         cpu = -1
         ramTotal = -1

@@ -50,3 +50,10 @@ export function displayContext(nodeType, appFromArg, index = 0, serialize_widget
         }
     };
 }
+const style = document.createElement('style');
+style.innerHTML = `
+  #comfy-settings-dialog label[for^=Crystools-] {
+    white-space: pre-line;
+  }
+`;
+document.head.appendChild(style);

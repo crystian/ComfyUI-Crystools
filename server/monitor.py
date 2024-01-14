@@ -102,7 +102,21 @@ def getHDDs(request):
 @PromptServer.instance.routes.get("/crystools/monitor/GPU")
 def getGPUs(request):
     try:
-        return web.json_response({})
+        gpuInfo = cmonitor.hardwareInfo.getGPUInfo()
+        print(gpuInfo)
+        return web.json_response(gpuInfo)
     except Exception as e:
         logger.error(e)
         return web.Response(status=400, text=str(e))
+
+@PromptServer.instance.routes.patch("/crystools/monitor/GPU/{index}")
+async def getGPUs(request):
+  try:
+    index = request.match_info["index"]
+    settings = await request.json()
+    print(settings)
+    # cmonitor.hardwareInfo.getGPUInfo()
+    return web.Response(status=200)
+  except Exception as e:
+    logger.error(e)
+    return web.Response(status=400, text=str(e))

@@ -61,7 +61,7 @@ class CrystoolsMonitor {
   createSettings = (): void => {
     app.ui.settings.addSetting({
       id: this.idSwitchCPU,
-      name: this.menuPrefix + 'Display CPU monitor [menu]',
+      name: this.menuPrefix + '[menu] Display CPU monitor',
       type: 'boolean',
       defaultValue: this.defaultSwitchCPU,
       onChange: async(value: boolean) => {
@@ -73,7 +73,7 @@ class CrystoolsMonitor {
     });
     app.ui.settings.addSetting({
       id: this.idSwitchRAM,
-      name: this.menuPrefix + 'Display RAM monitor [menu]',
+      name: this.menuPrefix + '[menu] Display RAM monitor',
       type: 'boolean',
       defaultValue: this.defaultSwitchRAM,
       onChange: async(value: boolean) => {
@@ -85,7 +85,7 @@ class CrystoolsMonitor {
     });
     app.ui.settings.addSetting({
       id: this.idSwitchGPU,
-      name: this.menuPrefix + 'Display GPU monitor [menu]',
+      name: this.menuPrefix + '[menu] Display GPU monitor',
       type: 'boolean',
       defaultValue: this.defaultSwitchGPU,
       onChange: async(value: boolean) => {
@@ -97,7 +97,7 @@ class CrystoolsMonitor {
     });
     app.ui.settings.addSetting({
       id: this.idSwitchVRAM,
-      name: this.menuPrefix + 'Display Video RAM monitor [menu]',
+      name: this.menuPrefix + '[menu] Display Video RAM monitor',
       type: 'boolean',
       defaultValue: this.defaultSwitchVRAM,
       onChange: async(value: boolean) => {
@@ -109,7 +109,7 @@ class CrystoolsMonitor {
     });
     app.ui.settings.addSetting({
       id: this.idSwitchHDD,
-      name: this.menuPrefix + 'Display partition disk monitor (HDD) [menu]',
+      name: this.menuPrefix + '[menu] Display partition disk monitor (HDD)',
       type: 'boolean',
       defaultValue: this.defaultSwitchHDD,
       onChange: async(value: boolean) => {
@@ -122,7 +122,7 @@ class CrystoolsMonitor {
 
     app.ui.settings.addSetting({
       id: this.idInputRate,
-      name: this.menuPrefix + 'Monitors refresh rate (in seconds) [menu]',
+      name: this.menuPrefix + '[menu] Monitors refresh rate (in seconds)',
       tooltip: 'This is the time between each update of the monitors, 0 means no refresh',
       type: 'slider',
       attrs: {
@@ -220,28 +220,26 @@ class CrystoolsMonitor {
     });
 
 
-    // void this.getGPUsFromServer().then((data: string[]): void => {
-    //   console.log('data', data);
-    //   // const which = app.ui.settings.getSettingValue(this.idWhichHDD, this.defaultWhichHDD);
-    //   // app.ui.settings.addSetting({
-    //   //   id: this.idWhichHDD+2,
-    //   //   name: this.menuPrefix + 'Partition to show (HDD)',
-    //   //   type: 'combo',
-    //   //   defaultValue: this.defaultWhichHDD,
-    //   //   options: (value: string) =>
-    //   //     data.map((m) => ({
-    //   //     //   value: m,
-    //   //     //   text: m,
-    //   //     //   selected: !value ? m === which : m === value,
-    //   //     })),
-    //   //   onChange: async(value: string) => {
-    //   //     console.log('value', value);
-    //   //     // await this.updateServer({
-    //   //     //   whichHDD: value,
-    //   //     // });
-    //   //   },
-    //   // });
-    // });
+    void this.getGPUsFromServer().then((gpus: TGpuName[]): void => {
+      console.log(gpus);
+      gpus?.forEach(({
+        name, index
+      }) => {
+        const id = this.idSwitchGPU + index;
+        app.ui.settings.addSetting({
+          id,
+          name: this.menuPrefix + `[menu] Display GPU monitor\r\n[${index}] ${name}`,
+          type: 'boolean',
+          defaultValue: this.defaultSwitchGPU,
+          onChange: async(value: boolean)=> {
+            // this.updateWidget(value, this.htmlMonitorGPURef);
+            void await this.updateServerGPU(index,{
+              utilization: value
+            });
+          },
+        });
+      });
+    });
   };
 
   updateServer = async(data: TStatsSettings): Promise<string> => {
@@ -256,15 +254,28 @@ class CrystoolsMonitor {
     throw new Error(resp.statusText);
   };
 
+  updateServerGPU = async(index: number, data: TGpuSettings): Promise<string> => {
+    console.log('updateServerGPU', index, data);
+    const resp = await api.fetchApi(`/crystools/monitor/GPU/${index}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+      cache: 'no-store',
+    });
+    if (resp.status === 200) {
+      return await resp.text();
+    }
+    throw new Error(resp.statusText);
+  };
+
   getHDDsFromServer = async(): Promise<string[]> => {
     return this.getDataFromServer('HDD');
   };
 
-  // getGPUsFromServer = async(): Promise<string[]> => {
-  //   return this.getDataFromServer('GPU');
-  // };
+  getGPUsFromServer = async(): Promise<TGpuName[]> => {
+    return this.getDataFromServer<TGpuName>('GPU');
+  };
 
-  getDataFromServer = async(what: string): Promise<string[]> => {
+  getDataFromServer = async<T>(what: string): Promise<T[]> => {
     const resp = await api.fetchApi(`/crystools/monitor/${what}`, {
       method: 'GET',
       cache: 'no-store',
@@ -322,6 +333,8 @@ class CrystoolsMonitor {
     ) {
       this.htmlMonitorHDDLabelRef.innerHTML = `${Math.floor(data.hdd_used_percent)}%`;
       this.htmlMonitorHDDSliderRef.style.width = this.htmlMonitorHDDLabelRef.innerHTML;
+      this.htmlMonitorHDDLabelRef.title =
+        `Drive: ${app.ui.settings.getSettingValue(this.idWhichHDD, this.defaultWhichHDD)}`;
     }
 
     if (this.htmlMonitorHDDLabelRef
