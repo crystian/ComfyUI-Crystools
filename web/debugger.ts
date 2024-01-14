@@ -21,7 +21,6 @@ app.registerExtension({
     class MetadataNode extends TLGraphNode {
       constructor() {
         super(`Show Metadata ${commonPrefix}`);
-        // this.
         this.serialize_widgets = false;
         this.isVirtualNode = true;
 
