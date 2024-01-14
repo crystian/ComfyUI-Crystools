@@ -10,7 +10,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -153,3 +152,4 @@ cython_debug/
 *.pyc
 
 .idea
+/node_modules

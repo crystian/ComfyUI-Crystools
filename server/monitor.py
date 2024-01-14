@@ -1,3 +1,4 @@
+import psutil
 from server import PromptServer
 from aiohttp import web
 from ..core import logger
@@ -55,6 +56,14 @@ async def newSettings(request):
 
             cmonitor.stats.switchVRAM = switchVRAM
 
+        if 'whichHDD' in settings is not None:
+            whichHDD = settings['whichHDD']
+            if type(whichHDD) is not str:
+                raise Exception('whichHDD must be an string.')
+
+            cmonitor.stats.whichHDD = whichHDD
+
+
         return web.Response(status=200)
     except Exception as e:
         logger.error(e)
@@ -77,6 +86,20 @@ async def monitorSwitch(request):
                 cmonitor.stopMonitor()
 
         return web.Response(status=200)
+    except Exception as e:
+        logger.error(e)
+        return web.Response(status=400, text=str(e))
+
+
+@PromptServer.instance.routes.get("/crystools/monitor/HDD")
+async def getHDDs(request):
+    try:
+        hdds = []
+
+        for partition in psutil.disk_partitions():
+            hdds.append(partition.mountpoint)
+
+        return web.json_response(hdds)
     except Exception as e:
         logger.error(e)
         return web.Response(status=400, text=str(e))

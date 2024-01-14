@@ -129,9 +129,11 @@ class CImagePreviewFromMetadata(PreviewImage):
             }
         }
 
-        # TODO define snakecase?
-        if metadata_raw is not None:
-            promptFromImage = metadata_raw["prompt"]
+        if metadata_raw is not None and metadata_raw != '':
+            promptFromImage = {}
+            if "prompt" in metadata_raw:
+              promptFromImage = metadata_raw["prompt"]
+
             title = "Source: Metadata RAW\n"
             text += buildPreviewText(metadata_raw)
             text += f"Prompt from image:\n"
@@ -176,7 +178,7 @@ class CImagePreviewFromMetadata(PreviewImage):
                 common = os.path.commonpath([image_input_folder_abs, image_path_abs])
 
                 if common != image_input_folder:
-                    raise Exception("Path invalid (input)")
+                    raise Exception("Path invalid (should be in the input folder)")
 
                 relative = os.path.normpath(os.path.relpath(image_path_abs, image_input_folder_abs))
 

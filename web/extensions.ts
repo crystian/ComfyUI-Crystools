@@ -1,7 +1,9 @@
-import { app } from '../../../scripts/app.js';
+import { app } from '/scripts/app.js';
 import { displayContext } from './common.js';
+import type { ComfyNode, ComfyApp } from './liteGraph.types';
+import { TLGraphNode } from './liteGraph';
 
-let crystoolsExtensions = {
+const crystoolsExtensions: Record<string, string> = {
   'Get resolution [Crystools]': 'Crystools.Image.GetResolution',
   'Preview from image [Crystools]': 'Crystools.Image.PreviewFromImage',
   'Preview from metadata [Crystools]': 'Crystools.Image.PreviewFromMetadata',
@@ -13,9 +15,9 @@ let crystoolsExtensions = {
 Object.keys(crystoolsExtensions).forEach(key => {
   app.registerExtension({
     name: crystoolsExtensions[key],
-    async beforeRegisterNodeDef(nodeType, nodeData, app) {
+    beforeRegisterNodeDef(nodeType: ComfyNode, nodeData: TLGraphNode, appFromArg: ComfyApp) {
       if (nodeData.name === key) {
-        displayContext(nodeType, app, 0);
+        displayContext(nodeType, appFromArg, 0);
       }
     },
   });

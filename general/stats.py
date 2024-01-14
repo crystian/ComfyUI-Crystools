@@ -3,11 +3,16 @@ import cpuinfo
 import psutil
 import torch
 import pynvml
-from comfy.model_management import get_torch_device_name, get_torch_device
+import comfy.model_management
 
 from ..core import logger
 
+
 class CStats:
+    """
+    This is only class to get information from hardware.
+    Specially for share it to other software.
+    """
     nvidia = False
     pynvmlLoaded = False
     cudaAvailable = False
@@ -19,6 +24,7 @@ class CStats:
     switchHDD = False
     switchRAM = False
     switchVRAM = False
+    whichHDD = 'C:\\'
 
     def __init__(self, switchCPU=False, switchGPU=False, switchHDD=False, switchRAM=False, switchVRAM=False):
         self.switchCPU = switchCPU
@@ -64,7 +70,7 @@ class CStats:
             ramUsedPercent = ram.percent
 
         if self.switchHDD:
-            hdd = psutil.disk_usage('/')
+            hdd = psutil.disk_usage(self.whichHDD)
             hddTotal = hdd.total
             hddUsed = hdd.used
             hddUsedPercent = hdd.percent
@@ -127,12 +133,12 @@ class CStats:
         if self.pynvmlLoaded and pynvml.nvmlDeviceGetCount() > 0:
             self.cudaDevicesFound = pynvml.nvmlDeviceGetCount()
             self.nvidia = True
-            logger.info(f'NVIDIA Driver detected - {pynvml.nvmlSystemGetDriverVersion()} - {get_torch_device_name(get_torch_device())}')
+            logger.info(f'NVIDIA Driver detected - {pynvml.nvmlSystemGetDriverVersion()} - {comfy.model_management.get_torch_device_name(comfy.model_management.get_torch_device())}')
         else:
             logger.warn('No NVIDIA GPU detected.')
 
         try:
-            self.torchDevice = get_torch_device_name(get_torch_device())
+            self.torchDevice = comfy.model_management.get_torch_device_name(comfy.model_management.get_torch_device())
         except Exception as e:
             logger.error('Could not pick default device.' + str(e))
 

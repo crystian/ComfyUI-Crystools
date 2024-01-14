@@ -1,6 +1,32 @@
 #!/bin/bash
-python .others/version.py
 
-git add __init__.py core/version.py
+cd ../comfyUI/ComfyUI
+rm ./custom_nodes/ComfyUI-Crystools/web/*.js -f
 
-exit 0
+LOCAL_COMMAND="npm --prefix ./custom_nodes/ComfyUI-Crystools run validate"
+OUTPUT=$($LOCAL_COMMAND 2>&1)
+EXIT_CODE=$?
+
+if [ $EXIT_CODE -eq 0 ]; then
+    echo "Validate ok"
+    cd ../../ComfyUI-Crystools
+else
+    echo "Validate KO!"
+    echo $OUTPUT
+    exit 1
+fi
+
+LOCAL_COMMAND="python .others/version.py"
+
+OUTPUT=$($LOCAL_COMMAND 2>&1)
+EXIT_CODE=$?
+
+if [ $EXIT_CODE -eq 0 ]; then
+    echo "Version changed"
+else
+    echo "Can't change the version! check the .other/version.py"
+    echo $OUTPUT
+    exit 1
+fi
+
+git add __init__.py core/version.py  web/*.js
