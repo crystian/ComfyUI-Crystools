@@ -5,11 +5,6 @@ import comfy.model_management
 from ..core import logger
 
 
-def getGPUsInfo():
-  gpus = []
-
-  return gpus
-
 class CGPUInfo:
     """
     This class is responsible for getting information from GPU (ONLY).

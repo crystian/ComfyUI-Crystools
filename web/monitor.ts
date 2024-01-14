@@ -221,8 +221,8 @@ class CrystoolsMonitor {
 
 
     // void this.getGPUsFromServer().then((data: string[]): void => {
+    //   console.log('data', data);
     //   // const which = app.ui.settings.getSettingValue(this.idWhichHDD, this.defaultWhichHDD);
-    //   // console.log('data', data);
     //   // app.ui.settings.addSetting({
     //   //   id: this.idWhichHDD+2,
     //   //   name: this.menuPrefix + 'Partition to show (HDD)',
