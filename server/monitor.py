@@ -7,6 +7,7 @@ from ..general import cmonitor
 async def newSettings(request):
     try:
         settings = await request.json()
+        # print(settings)
 
         if 'rate' in settings is not None:
             rate = settings['rate']
@@ -102,7 +103,26 @@ def getHDDs(request):
 @PromptServer.instance.routes.get("/crystools/monitor/GPU")
 def getGPUs(request):
     try:
-        return web.json_response({})
+        gpuInfo = cmonitor.hardwareInfo.getGPUInfo()
+        print(gpuInfo)
+        return web.json_response(gpuInfo)
     except Exception as e:
         logger.error(e)
         return web.Response(status=400, text=str(e))
+
+
+@PromptServer.instance.routes.patch("/crystools/monitor/GPU/{index}")
+async def getGPUs(request):
+  try:
+    index = request.match_info["index"]
+    settings = await request.json()
+    if 'utilization' in settings is not None:
+      if type(settings['utilization']) is not bool:
+        raise Exception('utilization must be an boolean.')
+
+      cmonitor.hardwareInfo.GPUInfo.gpusUtilization[int(index)] = settings['utilization']
+
+    return web.Response(status=200)
+  except Exception as e:
+    logger.error(e)
+    return web.Response(status=400, text=str(e))
