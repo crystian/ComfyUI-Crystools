@@ -32,9 +32,11 @@ Total VRAM 12287 MB, total RAM 130996 MB
 Set vram state to: NORMAL_VRAM
 ```
 ```
-[Crystools INFO] Crystools version: 1.9.0
+[Crystools INFO] Crystools version: 1.9.2
 [Crystools INFO] CPU: AMD Ryzen 9 5950X 16-Core Processor - Arch: AMD64 - OS: Windows 10
-[Crystools INFO] NVIDIA Driver detected - 546.33 - cuda:0 NVIDIA GeForce RTX 3080 Ti : cudaMallocAsync
+[Crystools INFO] GPU/s:
+[Crystools INFO] 0) NVIDIA GeForce RTX 3080 Ti
+[Crystools INFO] NVIDIA Driver: 546.33
 ```
 ```
 ### Loading: ComfyUI-Manager (V1.25.3)
