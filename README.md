@@ -571,6 +571,18 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 Search for `crystools` in the [manager](https://github.com/ltdrdata/ComfyUI-Manager.git) and install it.
 
+### Using on Google Colab
+
+You can use it on Google Colab, but you need to install it manually:
+
+[Google Colab](https://colab.research.google.com/drive/1xiTiPmZkcIqNOsLQPO1UNCdJZqgK3U5k?usp=sharing)
+
+* Run the first cell to install ComfyUI and launch the server
+* After it finishes, use the link to open the a new tab, looking a line like this:
+```
+This is the URL to access ComfyUI: https://identifying-complications-fw-some.trycloudflare.com    
+```
+
 ---
 
 ## Use
