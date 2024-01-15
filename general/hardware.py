@@ -15,7 +15,7 @@ class CHardwareInfo:
     switchCPU = False
     switchHDD = False
     switchRAM = False
-    whichHDD = 'C:\\'
+    whichHDD = '/' # breaks linux
 
     @property
     def switchGPU(self):
@@ -47,6 +47,9 @@ class CHardwareInfo:
 
     def getHDDsInfo(self):
       return getDrivesInfo()
+
+    def getGPUInfo(self):
+      return self.GPUInfo.getInfo()
 
     def getStatus(self):
         cpu = -1
