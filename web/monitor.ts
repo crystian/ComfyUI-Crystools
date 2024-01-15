@@ -248,7 +248,6 @@ class CrystoolsMonitor {
   };
 
   updateServerGPU = async(index: number, data: TGpuSettings): Promise<string> => {
-    console.log('updateServerGPU', index, data);
     const resp = await api.fetchApi(`/crystools/monitor/GPU/${index}`, {
       method: 'PATCH',
       body: JSON.stringify(data),

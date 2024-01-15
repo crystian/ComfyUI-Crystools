@@ -294,7 +294,6 @@ class CrystoolsMonitor {
             configurable: true,
             writable: true,
             value: async (index, data) => {
-                console.log('updateServerGPU', index, data);
                 const resp = await api.fetchApi(`/crystools/monitor/GPU/${index}`, {
                     method: 'PATCH',
                     body: JSON.stringify(data),

@@ -15,8 +15,8 @@ class CGPUInfo:
   torchDevice = 'cpu'
   cudaDevice = 'cpu'
   cudaDevicesFound = 0
-  switchGPU = False
-  switchVRAM = False
+  switchGPU = True
+  switchVRAM = True
   gpus = []
   gpusUtilization = []
   gpusVRAM = []
@@ -44,8 +44,8 @@ class CGPUInfo:
         })
 
         # same index as gpus, with default values
-        self.gpusUtilization.append(False)
-        self.gpusVRAM.append(False)
+        self.gpusUtilization.append(True)
+        self.gpusVRAM.append(True)
 
       self.cuda = True
       logger.info(f'NVIDIA Driver: {pynvml.nvmlSystemGetDriverVersion()}')
@@ -94,13 +94,13 @@ class CGPUInfo:
 
           # GPU Utilization
           if self.switchGPU and self.gpusUtilization[deviceIndex]:
-            print('switchGPU', deviceIndex)
+            print('monitoring GPU of', deviceIndex)
             utilization = pynvml.nvmlDeviceGetUtilizationRates(deviceHandle)
             gpuUtilization = utilization.gpu
 
           # VRAM
           if self.switchVRAM and self.gpusVRAM[deviceIndex]:
-            print('switchVRAM', deviceIndex)
+            print('monitoring VRAM of', deviceIndex)
             # Torch or pynvml?, pynvml is more accurate with the system, torch is more accurate with comfyUI
             memory = pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
             vramUsed = memory.used
