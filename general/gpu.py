@@ -80,10 +80,10 @@ class CGPUInfo:
     if self.cudaDevice == 'cpu':
       gpuType = 'cpu'
       gpus.append({
-        'gpu_utilization': -1,
-        'vram_total': -1,
-        'vram_used': -1,
-        'vram_used_percent': -1,
+        'gpu_utilization': 0,
+        'vram_total': 0,
+        'vram_used': 0,
+        'vram_used_percent': 0,
       })
     else:
       gpuType = self.cudaDevice

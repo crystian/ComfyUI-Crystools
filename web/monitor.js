@@ -381,26 +381,22 @@ class CrystoolsMonitor {
                     if (data.gpus[index]) {
                         const gpu = data.gpus[index];
                         if (gpu === undefined) {
-                            console.error('UpdateAllMonitors: no GPU data for index', index);
                             return;
                         }
                         this.updateMonitor(monitorSettings, gpu.gpu_utilization);
                     }
                     else {
-                        console.error('UpdateAllMonitors: no GPU data for index', index);
                     }
                 });
                 this.monitorVRAMSettings.forEach((monitorSettings, index) => {
                     if (data.gpus[index]) {
                         const gpu = data.gpus[index];
                         if (gpu === undefined) {
-                            console.error('UpdateAllMonitors: no GPU VRAM data for index', index);
                             return;
                         }
                         this.updateMonitor(monitorSettings, gpu.vram_used_percent);
                     }
                     else {
-                        console.error('UpdateAllMonitors: no GPU VRAM data for index', index);
                     }
                 });
             }
