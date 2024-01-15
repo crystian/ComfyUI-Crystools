@@ -15,7 +15,7 @@ class CHardwareInfo:
     switchCPU = False
     switchHDD = False
     switchRAM = False
-    whichHDD = 'C:\\'
+    whichHDD = '/' # breaks linux
 
     @property
     def switchGPU(self):

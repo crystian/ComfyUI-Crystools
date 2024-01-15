@@ -49,7 +49,7 @@ class CrystoolsMonitor {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: 'C:\\'
+            value: '/'
         });
         Object.defineProperty(this, "monitorCPUElement", {
             enumerable: true,

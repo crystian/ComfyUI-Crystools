@@ -95,7 +95,6 @@ class CGPUInfo:
           # GPU Utilization
           # if self.switchGPU and self.gpusUtilization[deviceIndex]:
           if self.switchGPU:
-            print('switchGPU')
             utilization = pynvml.nvmlDeviceGetUtilizationRates(deviceHandle)
             gpuUtilization = utilization.gpu
 

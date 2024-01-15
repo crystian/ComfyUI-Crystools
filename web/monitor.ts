@@ -11,7 +11,7 @@ class CrystoolsMonitor {
   idInputRate = 'Crystools.inputRate';
   defaultRate = .5;
   idWhichHDD = 'Crystools.whichHDD';
-  defaultWhichHDD = 'C:\\';
+  defaultWhichHDD = '/';
 
   // CPU Variables
   monitorCPUElement: TMonitorSettings = {
@@ -180,7 +180,6 @@ class CrystoolsMonitor {
 
     void this.getHDDsFromServer().then((data: string[]): void => {
       const which = app.ui.settings.getSettingValue(this.idWhichHDD, this.defaultWhichHDD);
-
       app.ui.settings.addSetting({
         id: this.idWhichHDD,
         name: this.menuPrefix + 'Partition to show (HDD)',
