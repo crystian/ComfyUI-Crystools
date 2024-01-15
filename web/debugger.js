@@ -15,7 +15,7 @@ app.registerExtension({
     registerCustomNodes() {
         class MetadataNode extends TLGraphNode {
             constructor() {
-                super(`Show Metadata ${commonPrefix}`);
+                super(`${commonPrefix} Show Metadata `);
                 Object.defineProperty(this, "fillMetadataWidget", {
                     enumerable: true,
                     configurable: true,
@@ -82,5 +82,6 @@ app.registerExtension({
         LiteGraph.registerNodeType('Show Metadata [Crystools]', MetadataNode);
         MetadataNode.category = `crystools ${commonPrefix}/Debugger`;
         MetadataNode.shape = LiteGraph.BOX_SHAPE;
+        MetadataNode.title = `${commonPrefix} Show Metadata`;
     },
 });
