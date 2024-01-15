@@ -7,6 +7,7 @@ from ..general import cmonitor
 async def newSettings(request):
     try:
         settings = await request.json()
+        print(settings)
 
         if 'rate' in settings is not None:
             rate = settings['rate']

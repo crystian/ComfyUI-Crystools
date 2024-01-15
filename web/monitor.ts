@@ -10,115 +10,115 @@ class CrystoolsMonitor {
 
   idInputRate = 'Crystools.inputRate';
   defaultRate = .5;
-
-  /** MONITORS */
-    // CPU Variables
-  idSwitchCPU = 'Crystools.switchCPU';
-  defaultSwitchCPU = true;
-  htmlMonitorCPURef?: HTMLDivElement = undefined;
-  htmlMonitorCPUSliderRef?: HTMLDivElement = undefined;
-  htmlMonitorCPULabelRef?: HTMLDivElement = undefined;
-  cssColorCPU = '#0AA015';
-
-  // RAM Variables
-  idSwitchRAM = 'Crystools.switchRAM';
-  defaultSwitchRAM = true;
-  htmlMonitorRAMRef?: HTMLDivElement = undefined;
-  htmlMonitorRAMSliderRef?: HTMLDivElement = undefined;
-  htmlMonitorRAMLabelRef?: HTMLDivElement = undefined;
-  cssColorRAM = '#07630D';
-
-  // GPU Variables
-  idSwitchGPU = 'Crystools.switchGPU';
-  defaultSwitchGPU = true;
-  htmlMonitorGPURef?: HTMLDivElement = undefined;
-  htmlMonitorGPUSliderRef?: HTMLDivElement = undefined;
-  htmlMonitorGPULabelRef?: HTMLDivElement = undefined;
-  cssColorGPU = '#0C86F4';
-
-  // VRAM Variables
-  idSwitchVRAM = 'Crystools.switchVRAM';
-  defaultSwitchVRAM = true;
-  htmlMonitorVRAMRef?: HTMLDivElement = undefined;
-  htmlMonitorVRAMSliderRef?: HTMLDivElement = undefined;
-  htmlMonitorVRAMLabelRef?: HTMLDivElement = undefined;
-  cssColorVRAM = '#176EC7';
-
-  // HDD Variables
-  idSwitchHDD = 'Crystools.switchHDD';
   idWhichHDD = 'Crystools.whichHDD';
   defaultWhichHDD = 'C:\\';
-  defaultSwitchHDD = false;
-  htmlMonitorHDDRef?: HTMLDivElement = undefined;
-  htmlMonitorHDDSliderRef?: HTMLDivElement = undefined;
-  htmlMonitorHDDLabelRef?: HTMLDivElement = undefined;
-  cssColorHDD = '#730F92';
+
+  // CPU Variables
+  monitorCPUElement: TMonitorSettings = {
+    id: 'Crystools.switchCPU',
+    name: this.menuPrefix + '[menu] Display CPU monitor',
+    type: 'boolean',
+    label: 'CPU',
+    defaultValue: true,
+    htmlMonitorRef: undefined,
+    htmlMonitorSliderRef: undefined,
+    htmlMonitorLabelRef: undefined,
+    cssColor: '#0AA015',
+    onChange: async(value: boolean) => {
+      this.updateWidget(this.monitorCPUElement);
+      await this.updateServer({
+        switchCPU: value,
+      });
+    },
+  };
+
+  // RAM Variables
+  monitorRAMElement: TMonitorSettings = {
+    id: 'Crystools.switchRAM',
+    name: this.menuPrefix + '[menu] Display RAM monitor',
+    type: 'boolean',
+    label: 'RAM',
+    defaultValue: true,
+    htmlMonitorRef: undefined,
+    htmlMonitorSliderRef: undefined,
+    htmlMonitorLabelRef: undefined,
+    cssColor: '#07630D',
+    onChange: async(value: boolean) => {
+      this.updateWidget(this.monitorRAMElement);
+      await this.updateServer({
+        switchRAM: value,
+      });
+    },
+  };
+
+  // HDD Variables
+  monitorHDDElement: TMonitorSettings = {
+    id: 'Crystools.switchHDD',
+    name: this.menuPrefix + '[menu] Display partition disk monitor (HDD)',
+    type: 'boolean',
+    label: 'HDD',
+    tooltip: `Drive: ${app.ui.settings.getSettingValue(this.idWhichHDD, this.defaultWhichHDD)}`,
+    defaultValue: true,
+    htmlMonitorRef: undefined,
+    htmlMonitorSliderRef: undefined,
+    htmlMonitorLabelRef: undefined,
+    cssColor: '#730F92',
+    onChange: async(value: boolean) => {
+      this.updateWidget(this.monitorHDDElement);
+      await this.updateServer({
+        switchHDD: value,
+      });
+    },
+  };
+
+  // GPU Variables
+  monitorGPUElement: TMonitorSettings = {
+    id: 'Crystools.switchGPU',
+    name: this.menuPrefix + '[menu] Display GPU monitor',
+    type: 'boolean',
+    label: 'GPU',
+    defaultValue: true,
+    htmlMonitorRef: undefined,
+    htmlMonitorSliderRef: undefined,
+    htmlMonitorLabelRef: undefined,
+    cssColor: '#0C86F4',
+    onChange: async(value: boolean) => {
+      this.updateWidget(this.monitorGPUElement);
+      await this.updateServer({
+        switchGPU: value,
+      });
+    },
+  };
+
+  // VRAM Variables
+  monitorVRAMElement: TMonitorSettings = {
+    id: 'Crystools.switchVRAM',
+    name: this.menuPrefix + '[menu] Display Video RAM monitor',
+    type: 'boolean',
+    label: 'VRAM',
+    defaultValue: true,
+    htmlMonitorRef: undefined,
+    htmlMonitorSliderRef: undefined,
+    htmlMonitorLabelRef: undefined,
+    cssColor: '#176EC7',
+    onChange: async(value: boolean) => {
+      this.updateWidget(this.monitorVRAMElement);
+      await this.updateServer({
+        switchVRAM: value,
+      });
+    },
+  };
 
   constructor() {
     this.createSettings();
   }
 
   createSettings = (): void => {
-    app.ui.settings.addSetting({
-      id: this.idSwitchCPU,
-      name: this.menuPrefix + '[menu] Display CPU monitor',
-      type: 'boolean',
-      defaultValue: this.defaultSwitchCPU,
-      onChange: async(value: boolean) => {
-        this.updateWidget(value, this.htmlMonitorCPURef);
-        await this.updateServer({
-          switchCPU: value,
-        });
-      },
-    });
-    app.ui.settings.addSetting({
-      id: this.idSwitchRAM,
-      name: this.menuPrefix + '[menu] Display RAM monitor',
-      type: 'boolean',
-      defaultValue: this.defaultSwitchRAM,
-      onChange: async(value: boolean) => {
-        this.updateWidget(value, this.htmlMonitorRAMRef);
-        await this.updateServer({
-          switchRAM: value,
-        });
-      },
-    });
-    app.ui.settings.addSetting({
-      id: this.idSwitchGPU,
-      name: this.menuPrefix + '[menu] Display GPU monitor',
-      type: 'boolean',
-      defaultValue: this.defaultSwitchGPU,
-      onChange: async(value: boolean) => {
-        this.updateWidget(value, this.htmlMonitorGPURef);
-        await this.updateServer({
-          switchGPU: value,
-        });
-      },
-    });
-    app.ui.settings.addSetting({
-      id: this.idSwitchVRAM,
-      name: this.menuPrefix + '[menu] Display Video RAM monitor',
-      type: 'boolean',
-      defaultValue: this.defaultSwitchVRAM,
-      onChange: async(value: boolean) => {
-        this.updateWidget(value, this.htmlMonitorVRAMRef);
-        await this.updateServer({
-          switchVRAM: value,
-        });
-      },
-    });
-    app.ui.settings.addSetting({
-      id: this.idSwitchHDD,
-      name: this.menuPrefix + '[menu] Display partition disk monitor (HDD)',
-      type: 'boolean',
-      defaultValue: this.defaultSwitchHDD,
-      onChange: async(value: boolean) => {
-        this.updateWidget(value, this.htmlMonitorHDDRef);
-        await this.updateServer({
-          switchHDD: value,
-        });
-      },
-    });
+    app.ui.settings.addSetting(this.monitorCPUElement);
+    app.ui.settings.addSetting(this.monitorRAMElement);
+    app.ui.settings.addSetting(this.monitorGPUElement);
+    app.ui.settings.addSetting(this.monitorVRAMElement);
+    app.ui.settings.addSetting(this.monitorHDDElement);
 
     app.ui.settings.addSetting({
       id: this.idInputRate,
@@ -131,7 +131,6 @@ class CrystoolsMonitor {
         step: 0.25,
       },
       defaultValue: this.defaultRate,
-      // eslint-disable-next-line complexity
       onChange: async(value: string) => {
         let valueNumber: number;
 
@@ -154,7 +153,7 @@ class CrystoolsMonitor {
         }
 
         if (valueNumber === 0) {
-          this.updateDisplay({
+          this.updateAllMonitors({
             cpu_utilization: 0,
             device: 'cpu',
 
@@ -175,25 +174,7 @@ class CrystoolsMonitor {
           });
         }
 
-        if (this.htmlMonitorCPUSliderRef
-            && this.htmlMonitorGPUSliderRef
-            && this.htmlMonitorHDDSliderRef
-            && this.htmlMonitorRAMSliderRef
-            && this.htmlMonitorVRAMSliderRef
-        ) { // validation because this run before setup
-          value = valueNumber.toFixed(1);
-          const animationConfig = `width ${value}s`;
-          this.htmlMonitorCPUSliderRef.style.transition = animationConfig;
-          this.htmlMonitorGPUSliderRef.style.transition = animationConfig;
-          this.htmlMonitorHDDSliderRef.style.transition = animationConfig;
-          this.htmlMonitorRAMSliderRef.style.transition = animationConfig;
-          this.htmlMonitorVRAMSliderRef.style.transition = animationConfig;
-          this.htmlMonitorCPUSliderRef.style.width = value;
-          this.htmlMonitorGPUSliderRef.style.width = value;
-          this.htmlMonitorHDDSliderRef.style.width = value;
-          this.htmlMonitorRAMSliderRef.style.width = value;
-          this.htmlMonitorVRAMSliderRef.style.width = value;
-        }
+        this.updateAllAnimationDuration(valueNumber);
       },
     });
 
@@ -220,27 +201,28 @@ class CrystoolsMonitor {
     });
 
 
-    void this.getGPUsFromServer().then((gpus: TGpuName[]): void => {
-      console.log(gpus);
-      gpus?.forEach(({
-        name, index
-      }) => {
-        const id = this.idSwitchGPU + index;
-        app.ui.settings.addSetting({
-          id,
-          name: this.menuPrefix + `[menu] Display GPU monitor\r\n[${index}] ${name}`,
-          type: 'boolean',
-          defaultValue: this.defaultSwitchGPU,
-          onChange: async(value: boolean)=> {
-            // this.updateWidget(value, this.htmlMonitorGPURef);
-            void await this.updateServerGPU(index,{
-              utilization: value
-            });
-          },
-        });
-      });
-    });
+    // void this.getGPUsFromServer().then((gpus: TGpuName[]): void => {
+    //   console.log(gpus);
+    //   gpus?.forEach(({
+    //     name, index
+    //   }) => {
+    //     const id = this.idSwitchGPU + index;
+    //     app.ui.settings.addSetting({
+    //       id,
+    //       name: this.menuPrefix + `[menu] Display GPU monitor\r\n[${index}] ${name}`,
+    //       type: 'boolean',
+    //       defaultValue: this.defaultSwitchGPU,
+    //       onChange: async(value: boolean)=> {
+    //         // this.updateWidget(value, this.htmlMonitorGPURef);
+    //         void await this.updateServerGPU(index,{
+    //           utilization: value
+    //         });
+    //       },
+    //     });
+    //   });
+    // });
   };
+
 
   updateServer = async(data: TStatsSettings): Promise<string> => {
     const resp = await api.fetchApi('/crystools/monitor', {
@@ -254,26 +236,26 @@ class CrystoolsMonitor {
     throw new Error(resp.statusText);
   };
 
-  updateServerGPU = async(index: number, data: TGpuSettings): Promise<string> => {
-    console.log('updateServerGPU', index, data);
-    const resp = await api.fetchApi(`/crystools/monitor/GPU/${index}`, {
-      method: 'PATCH',
-      body: JSON.stringify(data),
-      cache: 'no-store',
-    });
-    if (resp.status === 200) {
-      return await resp.text();
-    }
-    throw new Error(resp.statusText);
-  };
+  // updateServerGPU = async(index: number, data: TGpuSettings): Promise<string> => {
+  //   console.log('updateServerGPU', index, data);
+  //   const resp = await api.fetchApi(`/crystools/monitor/GPU/${index}`, {
+  //     method: 'PATCH',
+  //     body: JSON.stringify(data),
+  //     cache: 'no-store',
+  //   });
+  //   if (resp.status === 200) {
+  //     return await resp.text();
+  //   }
+  //   throw new Error(resp.statusText);
+  // };
 
   getHDDsFromServer = async(): Promise<string[]> => {
     return this.getDataFromServer('HDD');
   };
 
-  getGPUsFromServer = async(): Promise<TGpuName[]> => {
-    return this.getDataFromServer<TGpuName>('GPU');
-  };
+  // getGPUsFromServer = async(): Promise<TGpuName[]> => {
+  //   return this.getDataFromServer<TGpuName>('GPU');
+  // };
 
   getDataFromServer = async<T>(what: string): Promise<T[]> => {
     const resp = await api.fetchApi(`/crystools/monitor/${what}`, {
@@ -287,65 +269,69 @@ class CrystoolsMonitor {
   };
 
   updateAllWidget = (): void => {
-    this.updateWidget(app.ui.settings.getSettingValue(this.idSwitchCPU, this.defaultSwitchCPU), this.htmlMonitorCPURef);
-    this.updateWidget(app.ui.settings.getSettingValue(this.idSwitchGPU, this.defaultSwitchGPU), this.htmlMonitorGPURef);
-    this.updateWidget(app.ui.settings.getSettingValue(this.idSwitchHDD, this.defaultSwitchHDD), this.htmlMonitorHDDRef);
-    this.updateWidget(app.ui.settings.getSettingValue(this.idSwitchRAM, this.defaultSwitchRAM), this.htmlMonitorRAMRef);
-    this.updateWidget(app.ui.settings.getSettingValue(this.idSwitchVRAM,
-      this.defaultSwitchVRAM), this.htmlMonitorVRAMRef);
+    this.updateWidget(this.monitorCPUElement);
+    this.updateWidget(this.monitorRAMElement);
+    this.updateWidget(this.monitorGPUElement);
+    this.updateWidget(this.monitorVRAMElement);
+    this.updateWidget(this.monitorHDDElement);
   };
 
-  updateWidget = (value: boolean, container?: HTMLDivElement): void => {
-    if (container) {
-      container.style.display = value ? 'flex' : 'none';
+  updateWidget = (monitorSettings: TMonitorSettings): void => {
+    const value = app.ui.settings.getSettingValue(monitorSettings.id, monitorSettings.defaultValue);
+    if (monitorSettings.htmlMonitorRef) {
+      monitorSettings.htmlMonitorRef.style.display = value ? 'flex' : 'none';
     }
   };
 
-  // eslint-disable-next-line complexity
-  updateDisplay = (data: TStatsData): void => {
-    // console.log('updateDisplay', data);
-    if (!(this.htmlMonitorCPULabelRef
-          && this.htmlMonitorCPUSliderRef
-    )) {
+  updateAllMonitors = (data: TStatsData): void => {
+    // console.log('updateAllMonitors', data);
+    this.updateMonitor(this.monitorCPUElement, data.cpu_utilization);
+    this.updateMonitor(this.monitorRAMElement, data.ram_used_percent);
+    this.updateMonitor(this.monitorHDDElement, data.hdd_used_percent);
+
+    if (data.gpus === undefined || data.gpus.length === 0) {
+      console.warn('UpdateAllMonitors: no GPU data');
       return;
     }
-    this.htmlMonitorCPULabelRef.innerHTML = `${Math.floor(data.cpu_utilization)}%`;
-    this.htmlMonitorCPUSliderRef.style.width = this.htmlMonitorCPULabelRef.innerHTML;
 
-    const gpu = data.gpus[0];
-    if (gpu) {
-      if (this.htmlMonitorGPULabelRef
-          && this.htmlMonitorGPUSliderRef
-          && this.htmlMonitorVRAMLabelRef
-          && this.htmlMonitorVRAMSliderRef) {
+    const gpu = data.gpus[0] ? data.gpus[0] : {
+      gpu_utilization: 0, vram_used_percent: 0,
+    };
 
-        this.htmlMonitorGPULabelRef.innerHTML = `${Math.floor(gpu.gpu_utilization)}%`;
-        this.htmlMonitorGPUSliderRef.style.width = this.htmlMonitorGPULabelRef.innerHTML;
-        this.htmlMonitorVRAMLabelRef.innerHTML = `${Math.floor(gpu.vram_used_percent)}%`;
-        this.htmlMonitorVRAMSliderRef.style.width = this.htmlMonitorVRAMLabelRef.innerHTML;
-      }
-    } else {
-      console.error('no gpu found');
+    const gpu_utilization = gpu.gpu_utilization;
+    const vram_used_percent = gpu.vram_used_percent;
+
+    this.updateMonitor(this.monitorGPUElement, gpu_utilization);
+    this.updateMonitor(this.monitorVRAMElement, vram_used_percent);
+  };
+
+  updateMonitor = (monitorSettings: TMonitorSettings, percent: number): void => {
+    if (!(monitorSettings.htmlMonitorSliderRef && monitorSettings.htmlMonitorLabelRef)) {
+      return;
     }
 
-    if (this.htmlMonitorHDDLabelRef
-        && this.htmlMonitorHDDSliderRef
-    ) {
-      this.htmlMonitorHDDLabelRef.innerHTML = `${Math.floor(data.hdd_used_percent)}%`;
-      this.htmlMonitorHDDSliderRef.style.width = this.htmlMonitorHDDLabelRef.innerHTML;
-      this.htmlMonitorHDDLabelRef.title =
-        `Drive: ${app.ui.settings.getSettingValue(this.idWhichHDD, this.defaultWhichHDD)}`;
+    monitorSettings.htmlMonitorLabelRef.innerHTML = `${Math.floor(percent)}%`;
+    monitorSettings.htmlMonitorSliderRef.style.width = monitorSettings.htmlMonitorLabelRef.innerHTML;
+    if (monitorSettings.tooltip) {
+      monitorSettings.htmlMonitorLabelRef.title = monitorSettings.tooltip;
+    }
+  };
+
+  updateAllAnimationDuration = (value: number): void => {
+    this.updatedAnimationDuration(this.monitorCPUElement, value);
+    this.updatedAnimationDuration(this.monitorRAMElement, value);
+    this.updatedAnimationDuration(this.monitorGPUElement, value);
+    this.updatedAnimationDuration(this.monitorVRAMElement, value);
+    this.updatedAnimationDuration(this.monitorHDDElement, value);
+  };
+
+  updatedAnimationDuration = (monitorSettings: TMonitorSettings, value: number): void => {
+    const slider = monitorSettings.htmlMonitorSliderRef;
+    if (!slider) {
+      return;
     }
 
-    if (this.htmlMonitorHDDLabelRef
-        && this.htmlMonitorHDDSliderRef
-        && this.htmlMonitorRAMLabelRef
-        && this.htmlMonitorRAMSliderRef
-    ) {
-      this.htmlMonitorRAMLabelRef.innerHTML = `${Math.floor(data.ram_used_percent)}%`;
-      this.htmlMonitorRAMSliderRef.style.width = this.htmlMonitorRAMLabelRef.innerHTML;
-    }
-
+    slider.style.transition = `width ${value.toFixed(1)}s`;
   };
 
   setup(): void {
@@ -369,37 +355,33 @@ class CrystoolsMonitor {
     htmlContainer.style.margin = '4px 0';
     ctoolsRoot.append(htmlContainer);
 
-    htmlContainer.append(this.createMonitorCPU());
-    htmlContainer.append(this.createMonitorRAM());
-    htmlContainer.append(this.createMonitorGPU());
-    htmlContainer.append(this.createMonitorVRAM());
-    htmlContainer.append(this.createMonitorHDD());
+    htmlContainer.append(this.createMonitor(this.monitorCPUElement));
+    htmlContainer.append(this.createMonitor(this.monitorRAMElement));
+    htmlContainer.append(this.createMonitor(this.monitorGPUElement));
+    htmlContainer.append(this.createMonitor(this.monitorVRAMElement));
+    htmlContainer.append(this.createMonitor(this.monitorHDDElement));
 
+    const currentRate = parseFloat(app.ui.settings.getSettingValue(this.idInputRate, this.defaultRate));
+    this.updateAllAnimationDuration(currentRate);
     this.updateAllWidget();
     this.registerListeners();
   }
 
-  createMonitor = (id: string, label: string, color: string): TMonitorRefs => {
-    const option: TMonitorRefs = {
-      rootRef: undefined,
-      sliderRef: undefined,
-      labelRef: undefined,
-    };
-
+  createMonitor = (monitorSettings: TMonitorSettings): HTMLDivElement => {
     const htmlMain = document.createElement('div');
-    htmlMain.setAttribute('id', id);
+    htmlMain.setAttribute('id', monitorSettings.id);
     htmlMain.style.margin = '2px 10px';
     htmlMain.style.height = '12px';
     htmlMain.style.position = 'relative';
     htmlMain.style.display = 'flex';
     htmlMain.style.alignItems = 'center';
     htmlMain.style.flexDirection = 'row';
-    option.rootRef = htmlMain;
+    monitorSettings.htmlMonitorRef = htmlMain;
 
     const htmlMonitorText = document.createElement('div');
     htmlMonitorText.style.width = '35px';
     htmlMonitorText.style.fontSize = '10px';
-    htmlMonitorText.innerHTML = label;
+    htmlMonitorText.innerHTML = monitorSettings.label;
     htmlMain.append(htmlMonitorText);
 
     const htmlMonitorContent = document.createElement('div');
@@ -413,9 +395,9 @@ class CrystoolsMonitor {
     htmlMonitorSlider.style.position = 'absolute';
     htmlMonitorSlider.style.height = '100%';
     htmlMonitorSlider.style.width = '0';
-    htmlMonitorSlider.style.backgroundColor = color;
-    htmlMonitorSlider.style.transition = 'width 0.5s';
-    option.sliderRef = htmlMonitorSlider;
+    htmlMonitorSlider.style.backgroundColor = monitorSettings.cssColor;
+    // htmlMonitorSlider.style.transition = 'width 0.5s';
+    monitorSettings.htmlMonitorSliderRef = htmlMonitorSlider;
     htmlMonitorContent.append(htmlMonitorSlider);
 
     const htmlMonitorLabel = document.createElement('div');
@@ -424,55 +406,10 @@ class CrystoolsMonitor {
     htmlMonitorLabel.style.color = 'var(--drag-text)';
     htmlMonitorLabel.style.fontSize = '10px';
     htmlMonitorLabel.innerHTML = '0%';
-    option.labelRef = htmlMonitorLabel;
+    monitorSettings.htmlMonitorLabelRef = htmlMonitorLabel;
     htmlMonitorContent.append(htmlMonitorLabel);
 
-    return option;
-  };
-
-  createMonitorCPU = (): HTMLDivElement => {
-    const options = this.createMonitor('crystools-monitor-cpu', 'CPU', this.cssColorCPU) as Required<TMonitorRefs>;
-
-    this.htmlMonitorCPURef = options.rootRef;
-    this.htmlMonitorCPUSliderRef = options.sliderRef;
-    this.htmlMonitorCPULabelRef = options.labelRef;
-    return this.htmlMonitorCPURef;
-  };
-
-  createMonitorRAM = (): HTMLDivElement => {
-    const options = this.createMonitor('crystools-monitor-ram', 'RAM', this.cssColorRAM) as Required<TMonitorRefs>;
-
-    this.htmlMonitorRAMRef = options.rootRef;
-    this.htmlMonitorRAMSliderRef = options.sliderRef;
-    this.htmlMonitorRAMLabelRef = options.labelRef;
-    return this.htmlMonitorRAMRef;
-  };
-
-  createMonitorGPU = (): HTMLDivElement => {
-    const options = this.createMonitor('crystools-monitor-gpu', 'GPU', this.cssColorGPU) as Required<TMonitorRefs>;
-
-    this.htmlMonitorGPURef = options.rootRef;
-    this.htmlMonitorGPUSliderRef = options.sliderRef;
-    this.htmlMonitorGPULabelRef = options.labelRef;
-    return this.htmlMonitorGPURef;
-  };
-
-  createMonitorVRAM = (): HTMLDivElement => {
-    const options = this.createMonitor('crystools-monitor-vram', 'VRAM', this.cssColorVRAM) as Required<TMonitorRefs>;
-
-    this.htmlMonitorVRAMRef = options.rootRef;
-    this.htmlMonitorVRAMSliderRef = options.sliderRef;
-    this.htmlMonitorVRAMLabelRef = options.labelRef;
-    return this.htmlMonitorVRAMRef;
-  };
-
-  createMonitorHDD = (): HTMLDivElement => {
-    const options = this.createMonitor('crystools-monitor-hdd', 'HDD', this.cssColorHDD) as Required<TMonitorRefs>;
-
-    this.htmlMonitorHDDRef = options.rootRef;
-    this.htmlMonitorHDDSliderRef = options.sliderRef;
-    this.htmlMonitorHDDLabelRef = options.labelRef;
-    return this.htmlMonitorHDDRef;
+    return monitorSettings.htmlMonitorRef;
   };
 
   registerListeners = (): void => {
@@ -480,7 +417,7 @@ class CrystoolsMonitor {
       if (event?.detail === undefined) {
         return;
       }
-      this.updateDisplay(event.detail);
+      this.updateAllMonitors(event.detail);
     }, false);
   };
 }

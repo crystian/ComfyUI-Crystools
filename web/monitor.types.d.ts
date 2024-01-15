@@ -5,6 +5,16 @@ type TGpuStatData = {
   vram_used_percent: number,
 }
 
+type TGpuSettings = {
+  utilization?: boolean,
+  vram?: boolean,
+}
+
+type TGpuName = {
+  name: string,
+  index: number,
+}
+
 type TStatsData = {
   cpu_utilization: number,
   device: string,
@@ -27,18 +37,16 @@ type TStatsSettings = {
   whichHDD?: string,
 }
 
-type TGpuSettings = {
-  utilization?: boolean,
-  vram?: boolean,
-}
-
-type TMonitorRefs = {
-  rootRef?: HTMLDivElement,
-  sliderRef?: HTMLDivElement,
-  labelRef?: HTMLDivElement,
-}
-
-type TGpuName = {
+type TMonitorSettings = {
+  id: string,
   name: string,
-  index: number,
+  label: string, // on monitor
+  tooltip?: string,
+  type: 'boolean' | 'number' | 'string',
+  defaultValue: boolean,
+  onChange: (value: boolean) => Promise<void>,
+  htmlMonitorRef?: HTMLDivElement,
+  htmlMonitorSliderRef?: HTMLDivElement,
+  htmlMonitorLabelRef?: HTMLDivElement,
+  cssColor: string,
 }
