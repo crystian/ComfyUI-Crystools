@@ -28,13 +28,6 @@ async def newSettings(request):
 
             cmonitor.hardwareInfo.switchCPU = switchCPU
 
-        if 'switchGPU' in settings is not None:
-            switchGPU = settings['switchGPU']
-            if type(switchGPU) is not bool:
-                raise Exception('switchGPU must be an boolean.')
-
-            cmonitor.hardwareInfo.switchGPU = switchGPU
-
         if 'switchHDD' in settings is not None:
             switchHDD = settings['switchHDD']
             if type(switchHDD) is not bool:
@@ -48,13 +41,6 @@ async def newSettings(request):
                 raise Exception('switchRAM must be an boolean.')
 
             cmonitor.hardwareInfo.switchRAM = switchRAM
-
-        if 'switchVRAM' in settings is not None:
-            switchVRAM = settings['switchVRAM']
-            if type(switchVRAM) is not bool:
-                raise Exception('switchVRAM must be an boolean.')
-
-            cmonitor.hardwareInfo.switchVRAM = switchVRAM
 
         if 'whichHDD' in settings is not None:
             whichHDD = settings['whichHDD']
@@ -121,6 +107,12 @@ async def getGPUs(request):
         raise Exception('utilization must be an boolean.')
 
       cmonitor.hardwareInfo.GPUInfo.gpusUtilization[int(index)] = settings['utilization']
+
+    if 'vram' in settings is not None:
+      if type(settings['vram']) is not bool:
+        raise Exception('vram must be an boolean.')
+
+      cmonitor.hardwareInfo.GPUInfo.gpusVRAM[int(index)] = settings['vram']
 
     return web.Response(status=200)
   except Exception as e:

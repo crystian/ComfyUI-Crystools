@@ -93,13 +93,14 @@ class CGPUInfo:
           deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(deviceIndex)
 
           # GPU Utilization
-          # if self.switchGPU and self.gpusUtilization[deviceIndex]:
-          if self.switchGPU:
+          if self.switchGPU and self.gpusUtilization[deviceIndex]:
+            print('switchGPU', deviceIndex)
             utilization = pynvml.nvmlDeviceGetUtilizationRates(deviceHandle)
             gpuUtilization = utilization.gpu
 
           # VRAM
-          if self.switchVRAM:
+          if self.switchVRAM and self.gpusVRAM[deviceIndex]:
+            print('switchVRAM', deviceIndex)
             # Torch or pynvml?, pynvml is more accurate with the system, torch is more accurate with comfyUI
             memory = pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
             vramUsed = memory.used
