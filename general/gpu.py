@@ -95,8 +95,18 @@ class CGPUInfo:
           # GPU Utilization
           # if self.switchGPU and self.gpusUtilization[deviceIndex]:
           if self.switchGPU:
-            utilization = pynvml.nvmlDeviceGetUtilizationRates(deviceHandle)
-            gpuUtilization = utilization.gpu
+            gpuUtilization = 0
+            try:
+              utilization = pynvml.nvmlDeviceGetUtilizationRates(deviceHandle)
+              gpuUtilization = utilization.gpu
+            except Exception as e:
+              if str(e) == "Unknown Error":
+                logger.error('For some reason, pynvml is not working in a laptop with only battery, try to connect and turn on the monitor')
+              else:
+                logger.error('Could not get GPU utilization.' + str(e))
+
+              logger.error('Monitor of GPU is turning off (not on UI!)')
+              self.switchGPU = False
 
           # VRAM
           if self.switchVRAM:

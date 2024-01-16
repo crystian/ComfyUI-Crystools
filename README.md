@@ -38,6 +38,7 @@ You can configure the refresh rate which resources to show:
 > **Notes:**
 > - The GPU data is only available when you use CUDA (only NVIDIA cards, sorry AMD users).
 > - It is not perfect, but it is a good approximation.
+> - The cost of the monitor is low (0.1 to 0.5% of utilization), you can disable it from settings (`Refres rate` to `0`).
 > - Data comes from these libraries:
 >   - [psutil](https://pypi.org/project/psutil/)
 >   - [torch](https://pytorch.org/)
