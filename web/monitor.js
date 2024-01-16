@@ -445,6 +445,9 @@ class CrystoolsMonitor {
             configurable: true,
             writable: true,
             value: (monitorSettings) => {
+                if (!monitorSettings) {
+                    return document.createElement('div');
+                }
                 const htmlMain = document.createElement('div');
                 htmlMain.setAttribute('id', monitorSettings.id);
                 htmlMain.style.margin = '2px 10px';
@@ -521,11 +524,9 @@ class CrystoolsMonitor {
         ctoolsRoot.append(htmlContainer);
         htmlContainer.append(this.createMonitor(this.monitorCPUElement));
         htmlContainer.append(this.createMonitor(this.monitorRAMElement));
-        this.monitorGPUSettings.forEach((monitorSettings) => {
-            monitorSettings && htmlContainer.append(this.createMonitor(monitorSettings));
-        });
-        this.monitorVRAMSettings.forEach((monitorSettings) => {
-            monitorSettings && htmlContainer.append(this.createMonitor(monitorSettings));
+        this.monitorGPUSettings.forEach((_monitorSettings, index) => {
+            this.monitorGPUSettings[index] && htmlContainer.append(this.createMonitor(this.monitorGPUSettings[index]));
+            this.monitorVRAMSettings[index] && htmlContainer.append(this.createMonitor(this.monitorVRAMSettings[index]));
         });
         htmlContainer.append(this.createMonitor(this.monitorHDDElement));
         const currentRate = parseFloat(app.ui.settings.getSettingValue(this.idInputRate, this.defaultRate));

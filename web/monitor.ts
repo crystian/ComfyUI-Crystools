@@ -392,12 +392,21 @@ class CrystoolsMonitor {
 
     htmlContainer.append(this.createMonitor(this.monitorCPUElement));
     htmlContainer.append(this.createMonitor(this.monitorRAMElement));
-    this.monitorGPUSettings.forEach((monitorSettings) => {
-      monitorSettings && htmlContainer.append(this.createMonitor(monitorSettings));
+
+    // gpu0 > gpu1 > vram0 > vram1
+    // this.monitorGPUSettings.forEach((monitorSettings) => {
+    //   monitorSettings && htmlContainer.append(this.createMonitor(monitorSettings));
+    // });
+    // this.monitorVRAMSettings.forEach((monitorSettings) => {
+    //   monitorSettings && htmlContainer.append(this.createMonitor(monitorSettings));
+    // });
+
+    // gpu0 > vram0 > gpu1 > vram1
+    this.monitorGPUSettings.forEach((_monitorSettings, index) => {
+      this.monitorGPUSettings[index] && htmlContainer.append(this.createMonitor(this.monitorGPUSettings[index]));
+      this.monitorVRAMSettings[index] && htmlContainer.append(this.createMonitor(this.monitorVRAMSettings[index]));
     });
-    this.monitorVRAMSettings.forEach((monitorSettings) => {
-      monitorSettings && htmlContainer.append(this.createMonitor(monitorSettings));
-    });
+
     htmlContainer.append(this.createMonitor(this.monitorHDDElement));
 
     const currentRate = parseFloat(app.ui.settings.getSettingValue(this.idInputRate, this.defaultRate));
@@ -406,7 +415,11 @@ class CrystoolsMonitor {
     this.registerListeners();
   }
 
-  createMonitor = (monitorSettings: TMonitorSettings): HTMLDivElement => {
+  createMonitor = (monitorSettings?: TMonitorSettings): HTMLDivElement => {
+    if (!monitorSettings) {
+      // just for typescript
+      return document.createElement('div');
+    }
     const htmlMain = document.createElement('div');
     htmlMain.setAttribute('id', monitorSettings.id);
     htmlMain.style.margin = '2px 10px';

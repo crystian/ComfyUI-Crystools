@@ -31,11 +31,17 @@ class CGPUInfo:
 
     if self.pynvmlLoaded and pynvml.nvmlDeviceGetCount() > 0:
       self.cudaDevicesFound = pynvml.nvmlDeviceGetCount()
+
+      logger.info(f"GPU/s:")
+
+      # for simulate multiple GPUs (for testing) interchange these comments:
+      # for deviceIndex in range(3):
+      #   deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(0)
       for deviceIndex in range(self.cudaDevicesFound):
         deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(deviceIndex)
+
         gpuName = pynvml.nvmlDeviceGetName(deviceHandle)
 
-        logger.info(f"GPU/s:")
         logger.info(f"{deviceIndex}) {gpuName}")
 
         self.gpus.append({
@@ -89,6 +95,10 @@ class CGPUInfo:
       gpuType = self.cudaDevice
 
       if self.pynvmlLoaded and self.cuda and self.cudaAvailable:
+
+        # for simulate multiple GPUs (for testing) interchange these comments:
+        # for deviceIndex in range(3):
+        #   deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(0)
         for deviceIndex in range(self.cudaDevicesFound):
           deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(deviceIndex)
 
