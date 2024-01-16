@@ -69,7 +69,7 @@ class CrystoolsMonitor {
             writable: true,
             value: {
                 id: 'Crystools.switchCPU',
-                name: this.menuPrefix + '[menu] Display CPU monitor',
+                name: this.menuPrefix + ' [monitor] CPU Usage',
                 type: 'boolean',
                 label: 'CPU',
                 defaultValue: true,
@@ -91,7 +91,7 @@ class CrystoolsMonitor {
             writable: true,
             value: {
                 id: 'Crystools.switchRAM',
-                name: this.menuPrefix + '[menu] Display RAM monitor',
+                name: this.menuPrefix + ' [monitor] RAM Used',
                 type: 'boolean',
                 label: 'RAM',
                 defaultValue: true,
@@ -113,10 +113,10 @@ class CrystoolsMonitor {
             writable: true,
             value: {
                 id: 'Crystools.switchHDD',
-                name: this.menuPrefix + '[menu] Display partition disk monitor (HDD)',
+                name: this.menuPrefix + ' [monitor] HDD Used',
                 type: 'boolean',
                 label: 'HDD',
-                title: `Drive: ${app.ui.settings.getSettingValue(this.idWhichHDD, this.defaultWhichHDD)}`,
+                tooltip: 'See Partition to show (HDD)',
                 defaultValue: true,
                 htmlMonitorRef: undefined,
                 htmlMonitorSliderRef: undefined,
@@ -140,8 +140,8 @@ class CrystoolsMonitor {
                 app.ui.settings.addSetting(this.monitorHDDElement);
                 app.ui.settings.addSetting({
                     id: this.idInputRate,
-                    name: this.menuPrefix + '[menu] Monitors refresh rate (in seconds)',
-                    tooltip: 'This is the time between each update of the monitors, 0 means no refresh',
+                    name: this.menuPrefix + '[monitor] Refresh rate',
+                    tooltip: 'This is the time (in seconds) between each update of the monitors, 0 means no refresh',
                     type: 'slider',
                     attrs: {
                         min: 0,
@@ -197,7 +197,7 @@ class CrystoolsMonitor {
                     const which = app.ui.settings.getSettingValue(this.idWhichHDD, this.defaultWhichHDD);
                     app.ui.settings.addSetting({
                         id: this.idWhichHDD,
-                        name: this.menuPrefix + 'Partition to show (HDD)',
+                        name: this.menuPrefix + '[monitor] Partition to show',
                         type: 'combo',
                         defaultValue: this.defaultWhichHDD,
                         options: (value) => data.map((m) => ({
