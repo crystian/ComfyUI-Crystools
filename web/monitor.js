@@ -213,7 +213,6 @@ class CrystoolsMonitor {
                     });
                 });
                 void this.getGPUsFromServer().then((gpus) => {
-                    console.log(gpus);
                     let moreThanOneGPU = false;
                     if (gpus.length > 1) {
                         moreThanOneGPU = true;
@@ -368,7 +367,6 @@ class CrystoolsMonitor {
             configurable: true,
             writable: true,
             value: (data) => {
-                console.log('updateAllMonitors', data);
                 this.updateMonitor(this.monitorCPUElement, data.cpu_utilization);
                 this.updateMonitor(this.monitorRAMElement, data.ram_used_percent);
                 this.updateMonitor(this.monitorHDDElement, data.hdd_used_percent);

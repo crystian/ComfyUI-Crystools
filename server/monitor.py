@@ -90,7 +90,6 @@ def getHDDs(request):
 def getGPUs(request):
     try:
         gpuInfo = cmonitor.hardwareInfo.getGPUInfo()
-        print(gpuInfo)
         return web.json_response(gpuInfo)
     except Exception as e:
         logger.error(e)
