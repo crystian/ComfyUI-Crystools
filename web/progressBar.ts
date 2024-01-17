@@ -68,7 +68,6 @@ class CrystoolsProgressBar {
       // an error occurred
       this.htmlProgressLabelRef.innerHTML = 'ERROR';
       this.htmlProgressSliderRef.style.backgroundColor = 'var(--error-text)';
-      console.log('execution_error');
 
     } else if (this.currentStatus === EStatus.executing) {
       // on going
