@@ -1,4 +1,4 @@
-# ComfyUI-Crystools [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fcrystian%2FComfyUI-Crystools&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com) [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://paypal.me/crystian77)
+# ComfyUI-Crystools [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fcrystian%2FComfyUI-Crystools&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com) [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://paypal.me/crystian77) <a src="https://colab.research.google.com/assets/colab-badge.svg" href="https://colab.research.google.com/drive/1xiTiPmZkcIqNOsLQPO1UNCdJZqgK3U5k?usp=sharing"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"></a>
 
 **_🪛 A powerful set of tools for your belt when you work with ComfyUI 🪛_**
 
@@ -38,6 +38,7 @@ You can configure the refresh rate which resources to show:
 > **Notes:**
 > - The GPU data is only available when you use CUDA (only NVIDIA cards, sorry AMD users).
 > - It is not perfect, but it is a good approximation.
+> - The cost of the monitor is low (0.1 to 0.5% of utilization), you can disable it from settings (`Refres rate` to `0`).
 > - Data comes from these libraries:
 >   - [psutil](https://pypi.org/project/psutil/)
 >   - [torch](https://pytorch.org/)

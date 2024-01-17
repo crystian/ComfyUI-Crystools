@@ -1,1 +1,1 @@
-version = "1.10.2-gpu"
+version = "1.10.0"

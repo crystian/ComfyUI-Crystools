@@ -104,13 +104,21 @@ class CGPUInfo:
 
           # GPU Utilization
           if self.switchGPU and self.gpusUtilization[deviceIndex]:
-            print('monitoring GPU of', deviceIndex)
-            utilization = pynvml.nvmlDeviceGetUtilizationRates(deviceHandle)
-            gpuUtilization = utilization.gpu
+            gpuUtilization = 0
+            try:
+              utilization = pynvml.nvmlDeviceGetUtilizationRates(deviceHandle)
+              gpuUtilization = utilization.gpu
+            except Exception as e:
+              if str(e) == "Unknown Error":
+                logger.error('For some reason, pynvml is not working in a laptop with only battery, try to connect and turn on the monitor')
+              else:
+                logger.error('Could not get GPU utilization.' + str(e))
+
+              logger.error('Monitor of GPU is turning off (not on UI!)')
+              self.switchGPU = False
 
           # VRAM
           if self.switchVRAM and self.gpusVRAM[deviceIndex]:
-            print('monitoring VRAM of', deviceIndex)
             # Torch or pynvml?, pynvml is more accurate with the system, torch is more accurate with comfyUI
             memory = pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
             vramUsed = memory.used
