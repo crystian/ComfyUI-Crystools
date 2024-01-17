@@ -126,7 +126,6 @@ class CrystoolsProgressBar {
                 else if (this.currentStatus === EStatus.execution_error) {
                     this.htmlProgressLabelRef.innerHTML = 'ERROR';
                     this.htmlProgressSliderRef.style.backgroundColor = 'var(--error-text)';
-                    console.log('execution_error');
                 }
                 else if (this.currentStatus === EStatus.executing) {
                     this.htmlProgressLabelRef.innerHTML = `${this.currentProgress}%`;

@@ -15,8 +15,8 @@ class CGPUInfo:
   torchDevice = 'cpu'
   cudaDevice = 'cpu'
   cudaDevicesFound = 0
-  switchGPU = False
-  switchVRAM = False
+  switchGPU = True
+  switchVRAM = True
   gpus = []
   gpusUtilization = []
   gpusVRAM = []
@@ -31,11 +31,17 @@ class CGPUInfo:
 
     if self.pynvmlLoaded and pynvml.nvmlDeviceGetCount() > 0:
       self.cudaDevicesFound = pynvml.nvmlDeviceGetCount()
+
+      logger.info(f"GPU/s:")
+
+      # for simulate multiple GPUs (for testing) interchange these comments:
+      # for deviceIndex in range(3):
+      #   deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(0)
       for deviceIndex in range(self.cudaDevicesFound):
         deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(deviceIndex)
+
         gpuName = pynvml.nvmlDeviceGetName(deviceHandle)
 
-        logger.info(f"GPU/s:")
         logger.info(f"{deviceIndex}) {gpuName}")
 
         self.gpus.append({
@@ -44,8 +50,8 @@ class CGPUInfo:
         })
 
         # same index as gpus, with default values
-        self.gpusUtilization.append(False)
-        self.gpusVRAM.append(False)
+        self.gpusUtilization.append(True)
+        self.gpusVRAM.append(True)
 
       self.cuda = True
       logger.info(f'NVIDIA Driver: {pynvml.nvmlSystemGetDriverVersion()}')
@@ -80,21 +86,24 @@ class CGPUInfo:
     if self.cudaDevice == 'cpu':
       gpuType = 'cpu'
       gpus.append({
-        'gpu_utilization': -1,
-        'vram_total': -1,
-        'vram_used': -1,
-        'vram_used_percent': -1,
+        'gpu_utilization': 0,
+        'vram_total': 0,
+        'vram_used': 0,
+        'vram_used_percent': 0,
       })
     else:
       gpuType = self.cudaDevice
 
       if self.pynvmlLoaded and self.cuda and self.cudaAvailable:
+
+        # for simulate multiple GPUs (for testing) interchange these comments:
+        # for deviceIndex in range(3):
+        #   deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(0)
         for deviceIndex in range(self.cudaDevicesFound):
           deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(deviceIndex)
 
           # GPU Utilization
-          # if self.switchGPU and self.gpusUtilization[deviceIndex]:
-          if self.switchGPU:
+          if self.switchGPU and self.gpusUtilization[deviceIndex]:
             gpuUtilization = 0
             try:
               utilization = pynvml.nvmlDeviceGetUtilizationRates(deviceHandle)
@@ -109,7 +118,7 @@ class CGPUInfo:
               self.switchGPU = False
 
           # VRAM
-          if self.switchVRAM:
+          if self.switchVRAM and self.gpusVRAM[deviceIndex]:
             # Torch or pynvml?, pynvml is more accurate with the system, torch is more accurate with comfyUI
             memory = pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
             vramUsed = memory.used

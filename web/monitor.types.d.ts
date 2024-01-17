@@ -41,7 +41,8 @@ type TMonitorSettings = {
   id: string,
   name: string,
   label: string, // on monitor
-  tooltip?: string,
+  title?: string, // on monitor
+  tooltip?: string, // on settings
   type: 'boolean' | 'number' | 'string',
   defaultValue: boolean,
   onChange: (value: boolean) => Promise<void>,
