@@ -512,6 +512,9 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### Crystools
 
+### 1.10.0 (17/01/2024)
+- Multi-gpu added
+
 ### 1.9.2 (15/01/2024)
 - Big refactor on hardwareInfo and monitor.ts, gpu was separated on another file, preparing for multi-gpu support
 
