@@ -522,9 +522,11 @@ class CrystoolsMonitor {
         ctoolsRoot.append(htmlContainer);
         htmlContainer.append(this.createMonitor(this.monitorCPUElement));
         htmlContainer.append(this.createMonitor(this.monitorRAMElement));
-        this.monitorGPUSettings.forEach((_monitorSettings, index) => {
-            this.monitorGPUSettings[index] && htmlContainer.append(this.createMonitor(this.monitorGPUSettings[index]));
-            this.monitorVRAMSettings[index] && htmlContainer.append(this.createMonitor(this.monitorVRAMSettings[index]));
+        this.monitorGPUSettings.forEach((monitorSettings) => {
+            monitorSettings && htmlContainer.append(this.createMonitor(monitorSettings));
+        });
+        this.monitorVRAMSettings.forEach((monitorSettings) => {
+            monitorSettings && htmlContainer.append(this.createMonitor(monitorSettings));
         });
         htmlContainer.append(this.createMonitor(this.monitorHDDElement));
         const currentRate = parseFloat(app.ui.settings.getSettingValue(this.idInputRate, this.defaultRate));

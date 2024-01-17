@@ -393,18 +393,18 @@ class CrystoolsMonitor {
     htmlContainer.append(this.createMonitor(this.monitorRAMElement));
 
     // gpu0 > gpu1 > vram0 > vram1
-    // this.monitorGPUSettings.forEach((monitorSettings) => {
-    //   monitorSettings && htmlContainer.append(this.createMonitor(monitorSettings));
-    // });
-    // this.monitorVRAMSettings.forEach((monitorSettings) => {
-    //   monitorSettings && htmlContainer.append(this.createMonitor(monitorSettings));
-    // });
+    this.monitorGPUSettings.forEach((monitorSettings) => {
+      monitorSettings && htmlContainer.append(this.createMonitor(monitorSettings));
+    });
+    this.monitorVRAMSettings.forEach((monitorSettings) => {
+      monitorSettings && htmlContainer.append(this.createMonitor(monitorSettings));
+    });
 
     // gpu0 > vram0 > gpu1 > vram1
-    this.monitorGPUSettings.forEach((_monitorSettings, index) => {
-      this.monitorGPUSettings[index] && htmlContainer.append(this.createMonitor(this.monitorGPUSettings[index]));
-      this.monitorVRAMSettings[index] && htmlContainer.append(this.createMonitor(this.monitorVRAMSettings[index]));
-    });
+    // this.monitorGPUSettings.forEach((_monitorSettings, index) => {
+    //   this.monitorGPUSettings[index] && htmlContainer.append(this.createMonitor(this.monitorGPUSettings[index]));
+    //   this.monitorVRAMSettings[index] && htmlContainer.append(this.createMonitor(this.monitorVRAMSettings[index]));
+    // });
 
     htmlContainer.append(this.createMonitor(this.monitorHDDElement));
 

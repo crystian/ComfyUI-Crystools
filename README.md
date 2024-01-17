@@ -37,14 +37,12 @@ You can configure the refresh rate which resources to show:
 
 > **Notes:**
 > - The GPU data is only available when you use CUDA (only NVIDIA cards, sorry AMD users).
-> - It is not perfect, but it is a good approximation.
+> - This extension needs ComfyUI 1915 (or higher).
 > - The cost of the monitor is low (0.1 to 0.5% of utilization), you can disable it from settings (`Refres rate` to `0`).
 > - Data comes from these libraries:
 >   - [psutil](https://pypi.org/project/psutil/)
 >   - [torch](https://pytorch.org/)
 >   - [pynvml](https://pypi.org/project/pynvml/) (official NVIDIA library)
-> - This is a beta version, so please report any issue you find.
-
 
 
 ### Progress bar
