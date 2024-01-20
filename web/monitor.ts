@@ -147,6 +147,7 @@ class CrystoolsMonitor {
         name: this.menuPrefix + '[monitor] Partition to show',
         type: 'combo',
         defaultValue: this.defaultWhichHDD,
+        // @ts-ignore bad definition from comfyUI: `options?: undefined;`??
         options: (value: string) =>
           data.map((m) => ({
             value: m,
@@ -296,6 +297,7 @@ class CrystoolsMonitor {
       monitorSettings.htmlMonitorRef.style.display = value ? 'flex' : 'none';
     }
   };
+
 
   updateAllMonitors = (data: TStatsData): void => {
     // console.log('updateAllMonitors', data);
