@@ -2,7 +2,7 @@
 @author: Crystian
 @title: Crystools
 @nickname: Crystools
-@version: 1.10.1
+@version: 1.11.0
 @project: "https://github.com/crystian/ComfyUI-Crystools",
 @description: Plugins for multiples uses, mainly for debugging, you need them! IG: https://www.instagram.com/crystian.ia
 """
@@ -13,7 +13,7 @@ logger.info(f'Crystools version: {version}')
 from .nodes._names import CLASSES
 from .nodes.primitive import CBoolean, CText, CTextML, CInteger, CFloat
 from .nodes.switch import CSwitchBooleanAny, CSwitchBooleanLatent, CSwitchBooleanConditioning, CSwitchBooleanImage, \
-    CSwitchBooleanString
+  CSwitchBooleanString, CSwitchBooleanMask
 from .nodes.debugger import CConsoleAny, CConsoleAnyToJson
 from .nodes.image import CImagePreviewFromImage, CImageLoadWithMetadata, CImageGetResolution, CImagePreviewFromMetadata, \
     CImageSaveWithExtraMetadata
@@ -41,6 +41,7 @@ NODE_CLASS_MAPPINGS = {
     CLASSES.CSWITCH_LATENT_NAME.value: CSwitchBooleanLatent,
     CLASSES.CSWITCH_CONDITIONING_NAME.value: CSwitchBooleanConditioning,
     CLASSES.CSWITCH_IMAGE_NAME.value: CSwitchBooleanImage,
+    CLASSES.CSWITCH_MASK_NAME.value: CSwitchBooleanMask,
     CLASSES.CSWITCH_STRING_NAME.value: CSwitchBooleanString,
 
     CLASSES.CPIPE_TO_ANY_NAME.value: CPipeToAny,
@@ -75,6 +76,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     CLASSES.CSWITCH_LATENT_NAME.value: CLASSES.CSWITCH_LATENT_DESC.value,
     CLASSES.CSWITCH_CONDITIONING_NAME.value: CLASSES.CSWITCH_CONDITIONING_DESC.value,
     CLASSES.CSWITCH_IMAGE_NAME.value: CLASSES.CSWITCH_IMAGE_DESC.value,
+    CLASSES.CSWITCH_MASK_NAME.value: CLASSES.CSWITCH_MASK_DESC.value,
     CLASSES.CSWITCH_STRING_NAME.value: CLASSES.CSWITCH_STRING_DESC.value,
 
     CLASSES.CPIPE_TO_ANY_NAME.value: CLASSES.CPIPE_TO_ANY_DESC.value,
