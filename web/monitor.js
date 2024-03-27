@@ -63,6 +63,12 @@ class CrystoolsMonitor {
             writable: true,
             value: []
         });
+        Object.defineProperty(this, "monitorTemperatureSettings", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: []
+        });
         Object.defineProperty(this, "monitorCPUElement", {
             enumerable: true,
             configurable: true,
@@ -72,6 +78,7 @@ class CrystoolsMonitor {
                 name: this.menuPrefix + ' [monitor] CPU Usage',
                 type: 'boolean',
                 label: 'CPU',
+                symbol: '%',
                 defaultValue: true,
                 htmlMonitorRef: undefined,
                 htmlMonitorSliderRef: undefined,
@@ -94,6 +101,7 @@ class CrystoolsMonitor {
                 name: this.menuPrefix + ' [monitor] RAM Used',
                 type: 'boolean',
                 label: 'RAM',
+                symbol: '%',
                 defaultValue: true,
                 htmlMonitorRef: undefined,
                 htmlMonitorSliderRef: undefined,
@@ -116,6 +124,7 @@ class CrystoolsMonitor {
                 name: this.menuPrefix + ' [monitor] HDD Used',
                 type: 'boolean',
                 label: 'HDD',
+                symbol: '%',
                 tooltip: 'See Partition to show (HDD)',
                 defaultValue: true,
                 htmlMonitorRef: undefined,
@@ -177,6 +186,7 @@ class CrystoolsMonitor {
                                 gpus: [
                                     {
                                         gpu_utilization: 0,
+                                        gpu_temperature: 0,
                                         vram_total: 0,
                                         vram_used: 0,
                                         vram_used_percent: 0,
@@ -224,15 +234,18 @@ class CrystoolsMonitor {
                         }
                         let label = 'GPU';
                         let labelVRAM = 'VRAM';
+                        let labelTemperature = 'Temp';
                         if (moreThanOneGPU) {
                             label = 'GPU ' + index;
                             labelVRAM = 'VRAM' + index;
+                            labelTemperature = 'Temp ' + index;
                         }
                         const monitorGPUNElement = {
                             id: 'Crystools.switchGPU' + index,
-                            name: this.menuPrefix + `[menu] Display GPU monitor\r\n[${index}] ${name}`,
+                            name: this.menuPrefix + `[menu] Display GPU\r\n[${index}] ${name}`,
                             type: 'boolean',
                             label,
+                            symbol: '%',
                             title: `${index}: ${name}`,
                             defaultValue: true,
                             htmlMonitorRef: undefined,
@@ -248,9 +261,10 @@ class CrystoolsMonitor {
                         };
                         const monitorVRAMNElement = {
                             id: 'Crystools.switchVRAM' + index,
-                            name: this.menuPrefix + `[menu] Display GPU VRAM monitor\r\n[${index}] ${name}`,
+                            name: this.menuPrefix + `[menu] Display GPU VRAM\r\n[${index}] ${name}`,
                             type: 'boolean',
                             label: labelVRAM,
+                            symbol: '%',
                             title: `${index}: ${name}`,
                             defaultValue: true,
                             htmlMonitorRef: undefined,
@@ -264,10 +278,32 @@ class CrystoolsMonitor {
                                 });
                             },
                         };
+                        const monitorTemperatureNElement = {
+                            id: 'Crystools.switchTemperature' + index,
+                            name: this.menuPrefix + `[menu] Display GPU Temperature\r\n[${index}] ${name}`,
+                            type: 'boolean',
+                            label: labelTemperature,
+                            symbol: '°',
+                            title: `${index}: ${name}`,
+                            defaultValue: true,
+                            htmlMonitorRef: undefined,
+                            htmlMonitorSliderRef: undefined,
+                            htmlMonitorLabelRef: undefined,
+                            cssColor: '#00ff00',
+                            cssColorFinal: '#ff0000',
+                            onChange: async (value) => {
+                                this.updateWidget(monitorTemperatureNElement);
+                                void await this.updateServerGPU(index, {
+                                    temperature: value
+                                });
+                            },
+                        };
                         this.monitorGPUSettings[index] = monitorGPUNElement;
                         this.monitorVRAMSettings[index] = monitorVRAMNElement;
+                        this.monitorTemperatureSettings[index] = monitorTemperatureNElement;
                         app.ui.settings.addSetting(this.monitorGPUSettings[index]);
                         app.ui.settings.addSetting(this.monitorVRAMSettings[index]);
+                        app.ui.settings.addSetting(this.monitorTemperatureSettings[index]);
                     });
                 });
             }
@@ -349,6 +385,9 @@ class CrystoolsMonitor {
                 this.monitorVRAMSettings.forEach((monitorSettings) => {
                     monitorSettings && this.updateWidget(monitorSettings);
                 });
+                this.monitorTemperatureSettings.forEach((monitorSettings) => {
+                    monitorSettings && this.updateWidget(monitorSettings);
+                });
             }
         });
         Object.defineProperty(this, "updateWidget", {
@@ -396,6 +435,21 @@ class CrystoolsMonitor {
                     else {
                     }
                 });
+                this.monitorTemperatureSettings.forEach((monitorSettings, index) => {
+                    if (data.gpus[index]) {
+                        const gpu = data.gpus[index];
+                        if (gpu === undefined) {
+                            return;
+                        }
+                        this.updateMonitor(monitorSettings, gpu.gpu_temperature);
+                        if (monitorSettings.cssColorFinal && monitorSettings.htmlMonitorSliderRef) {
+                            monitorSettings.htmlMonitorSliderRef.style.backgroundColor =
+                                `color-mix(in srgb, ${monitorSettings.cssColorFinal} ${gpu.gpu_temperature}%, ${monitorSettings.cssColor})`;
+                        }
+                    }
+                    else {
+                    }
+                });
             }
         });
         Object.defineProperty(this, "updateMonitor", {
@@ -406,8 +460,8 @@ class CrystoolsMonitor {
                 if (!(monitorSettings.htmlMonitorSliderRef && monitorSettings.htmlMonitorLabelRef)) {
                     return;
                 }
-                monitorSettings.htmlMonitorLabelRef.innerHTML = `${Math.floor(percent)}%`;
-                monitorSettings.htmlMonitorSliderRef.style.width = monitorSettings.htmlMonitorLabelRef.innerHTML;
+                monitorSettings.htmlMonitorLabelRef.innerHTML = `${Math.floor(percent)}${monitorSettings.symbol}`;
+                monitorSettings.htmlMonitorSliderRef.style.width = `${Math.floor(percent)}%`;
             }
         });
         Object.defineProperty(this, "updateAllAnimationDuration", {
@@ -422,6 +476,9 @@ class CrystoolsMonitor {
                     monitorSettings && this.updatedAnimationDuration(monitorSettings, value);
                 });
                 this.monitorVRAMSettings.forEach((monitorSettings) => {
+                    monitorSettings && this.updatedAnimationDuration(monitorSettings, value);
+                });
+                this.monitorTemperatureSettings.forEach((monitorSettings) => {
                     monitorSettings && this.updatedAnimationDuration(monitorSettings, value);
                 });
             }
@@ -473,7 +530,13 @@ class CrystoolsMonitor {
                 htmlMonitorSlider.style.position = 'absolute';
                 htmlMonitorSlider.style.height = '100%';
                 htmlMonitorSlider.style.width = '0';
-                htmlMonitorSlider.style.backgroundColor = monitorSettings.cssColor;
+                if (monitorSettings.cssColorFinal) {
+                    htmlMonitorSlider.style.backgroundColor =
+                        `color-mix(in srgb, ${monitorSettings.cssColorFinal} 0%, ${monitorSettings.cssColor})`;
+                }
+                else {
+                    htmlMonitorSlider.style.backgroundColor = monitorSettings.cssColor;
+                }
                 monitorSettings.htmlMonitorSliderRef = htmlMonitorSlider;
                 htmlMonitorContent.append(htmlMonitorSlider);
                 const htmlMonitorLabel = document.createElement('div');
@@ -522,11 +585,11 @@ class CrystoolsMonitor {
         ctoolsRoot.append(htmlContainer);
         htmlContainer.append(this.createMonitor(this.monitorCPUElement));
         htmlContainer.append(this.createMonitor(this.monitorRAMElement));
-        this.monitorGPUSettings.forEach((monitorSettings) => {
-            monitorSettings && htmlContainer.append(this.createMonitor(monitorSettings));
-        });
-        this.monitorVRAMSettings.forEach((monitorSettings) => {
-            monitorSettings && htmlContainer.append(this.createMonitor(monitorSettings));
+        this.monitorGPUSettings.forEach((_monitorSettings, index) => {
+            this.monitorGPUSettings[index] && htmlContainer.append(this.createMonitor(this.monitorGPUSettings[index]));
+            this.monitorVRAMSettings[index] && htmlContainer.append(this.createMonitor(this.monitorVRAMSettings[index]));
+            this.monitorTemperatureSettings[index] &&
+                htmlContainer.append(this.createMonitor(this.monitorTemperatureSettings[index]));
         });
         htmlContainer.append(this.createMonitor(this.monitorHDDElement));
         const currentRate = parseFloat(app.ui.settings.getSettingValue(this.idInputRate, this.defaultRate));

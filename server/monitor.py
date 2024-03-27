@@ -113,6 +113,12 @@ async def getGPUs(request):
 
       cmonitor.hardwareInfo.GPUInfo.gpusVRAM[int(index)] = settings['vram']
 
+    if 'temperature' in settings is not None:
+      if type(settings['temperature']) is not bool:
+        raise Exception('temperature must be an boolean.')
+
+      cmonitor.hardwareInfo.GPUInfo.gpusTemperature[int(index)] = settings['temperature']
+
     return web.Response(status=200)
   except Exception as e:
     logger.error(e)

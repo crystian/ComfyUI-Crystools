@@ -17,9 +17,11 @@ class CGPUInfo:
   cudaDevicesFound = 0
   switchGPU = True
   switchVRAM = True
+  switchTemperature = True
   gpus = []
   gpusUtilization = []
   gpusVRAM = []
+  gpusTemperature = []
 
   def __init__(self):
     try:
@@ -52,6 +54,7 @@ class CGPUInfo:
         # same index as gpus, with default values
         self.gpusUtilization.append(True)
         self.gpusVRAM.append(True)
+        self.gpusTemperature.append(True)
 
       self.cuda = True
       logger.info(f'NVIDIA Driver: {pynvml.nvmlSystemGetDriverVersion()}')
@@ -76,6 +79,7 @@ class CGPUInfo:
   def getStatus(self):
     # logger.debug('CGPUInfo getStatus')
     gpuUtilization = -1
+    gpuTemperature = -1
     vramUsed = -1
     vramTotal = -1
     vramPercent = -1
@@ -87,6 +91,7 @@ class CGPUInfo:
       gpuType = 'cpu'
       gpus.append({
         'gpu_utilization': 0,
+        'gpu_temperature': 0,
         'vram_total': 0,
         'vram_used': 0,
         'vram_used_percent': 0,
@@ -102,9 +107,14 @@ class CGPUInfo:
         for deviceIndex in range(self.cudaDevicesFound):
           deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(deviceIndex)
 
+          gpuUtilization = 0
+          vramPercent = 0
+          vramUsed = 0
+          vramTotal = 0
+          gpuTemperature = 0
+
           # GPU Utilization
           if self.switchGPU and self.gpusUtilization[deviceIndex]:
-            gpuUtilization = 0
             try:
               utilization = pynvml.nvmlDeviceGetUtilizationRates(deviceHandle)
               gpuUtilization = utilization.gpu
@@ -130,8 +140,17 @@ class CGPUInfo:
 
             vramPercent = vramUsed / vramTotal * 100
 
+          # Temperature
+          if self.switchTemperature and self.gpusTemperature[deviceIndex]:
+            try:
+              gpuTemperature = pynvml.nvmlDeviceGetTemperature(deviceHandle, 0)
+            except Exception as e:
+              logger.error('Could not get GPU temperature. Turning off this feature. ' + str(e))
+              self.switchTemperature = False
+
           gpus.append({
             'gpu_utilization': gpuUtilization,
+            'gpu_temperature': gpuTemperature,
             'vram_total': vramTotal,
             'vram_used': vramUsed,
             'vram_used_percent': vramPercent,
