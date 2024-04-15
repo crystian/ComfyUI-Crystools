@@ -75,6 +75,9 @@ class CGPUInfo:
       logger.info(f'NVIDIA Driver: {pynvml.nvmlSystemGetDriverVersion()}')
     # for AMD GPUs
     elif self.pyrsmiLoaded and rocml.smi_get_device_count() > 0:
+      # pyrsmi has no temp monitor
+      self.switchTemperature = False
+      
       self.cudaDevicesFound = rocml.smi_get_device_count()
 
       logger.info(f"GPU/s:")
@@ -208,24 +211,17 @@ class CGPUInfo:
             # GPU Utilization
             if self.switchGPU and self.gpusUtilization[deviceIndex]:
               try:
-                #utilization = pynvml.nvmlDeviceGetUtilizationRates(deviceHandle)
-                utilization = rocml.smi_get_device_utilization(deviceIndex)
-                gpuUtilization = utilization.gpu
+                gpuUtilization = rocml.smi_get_device_utilization(deviceIndex)
               except Exception as e:
-                if str(e) == "Unknown Error":
-                  logger.error('For some reason, pynvml is not working in a laptop with only battery, try to connect and turn on the monitor')
-                else:
-                  logger.error('Could not get GPU utilization.' + str(e))
-
+                logger.error('Could not get GPU utilization.' + str(e))
                 logger.error('Monitor of GPU is turning off (not on UI!)')
                 self.switchGPU = False
 
             # VRAM
             if self.switchVRAM and self.gpusVRAM[deviceIndex]:
               # Torch or pynvml?, pynvml is more accurate with the system, torch is more accurate with comfyUI
-              memory = pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
-              vramUsed = memory.used
-              vramTotal = memory.total
+              vramUsed = rocml.smi_get_device_memory_used(deviceIndex)
+              vramTotal = rocml.smi_get_device_memory_total(deviceIndex)
 
               # device = torch.device(gpuType)
               # vramUsed = torch.cuda.memory_allocated(device)
@@ -233,13 +229,9 @@ class CGPUInfo:
 
               vramPercent = vramUsed / vramTotal * 100
 
-            # Temperature
+            # Temperature monitor doesn't exist in current version of pyrsmi
             if self.switchTemperature and self.gpusTemperature[deviceIndex]:
-              try:
-                gpuTemperature = pynvml.nvmlDeviceGetTemperature(deviceHandle, 0)
-              except Exception as e:
-                logger.error('Could not get GPU temperature. Turning off this feature. ' + str(e))
-                self.switchTemperature = False
+              self.switchTemperature = False
 
             gpus.append({
               'gpu_utilization': gpuUtilization,
