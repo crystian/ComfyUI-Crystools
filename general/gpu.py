@@ -86,7 +86,9 @@ class CGPUInfo:
       # for deviceIndex in range(3):
       #   deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(0)
       for deviceIndex in range(self.cudaDevicesFound):
-        gpuName = rocml.smi_get_device_name(deviceIndex)
+        # torch naming seems more accurate than pyrsmi
+        #gpuName = rocml.smi_get_device_name(deviceIndex)
+        gpuName = torch.cuda.get_device_name(deviceIndex)
 
         logger.info(f"{deviceIndex}) {gpuName}")
 
