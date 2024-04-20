@@ -4,4 +4,4 @@ numpy
 Pillow>=9.5.0
 pynvml
 py-cpuinfo
-pyrsmi # amd fallback module, amdsmi preferred
+pyrsmi
