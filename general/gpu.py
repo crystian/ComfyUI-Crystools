@@ -261,7 +261,7 @@ class CGPUInfo:
     if self.pynvmlLoaded:
       return pynvml.nvmlDeviceGetTemperature(deviceHandle, pynvml.NVML_TEMPERATURE_GPU)
     elif self.amdsmiLoaded:
-      return amdsmi.amdsmi_get_temp_metric(deviceHandle, amdsmi.AmdSmiTemperatureType.EDGE, amdsmi.AmdSmiTemperatureMetric.CURRENT)
+      return amdsmi.amdsmi_get_temp_metric(deviceHandle, amdsmi.AmdSmiTemperatureType.JUNCTION, amdsmi.AmdSmiTemperatureMetric.CURRENT)
     else: # pyrsmi not supported
       return 0
 
