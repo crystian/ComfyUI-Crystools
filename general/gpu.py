@@ -1,9 +1,9 @@
 import torch
 import pynvml
+import pyamdgpuinfo
 import comfy.model_management
 
 from ..core import logger
-from pyrsmi import rocml
 
 # could not put amdsmi in requirements.txt, user need to install it manually
 from importlib.util import find_spec
@@ -17,7 +17,7 @@ class CGPUInfo:
   cuda = False
   pynvmlLoaded = False
   amdsmiLoaded = False
-  pyrsmiLoaded = False
+  pyamdLoaded = False
   anygpuLoaded = False
   needRefresh = False
   cudaAvailable = False
@@ -51,13 +51,17 @@ class CGPUInfo:
 
     if not self.pynvmlLoaded and not self.amdsmiLoaded:
       try:
-        rocml.smi_initialize()
-        self.pyrsmiLoaded = True
-        logger.info('pyrsmi initialized.')
+        count = pyamdgpuinfo.detect_gpus()
+        if count > 0:
+          self.pyamdLoaded = True
+          logger.info('pyamdgpuinfo initialized.')
+        else:
+          # throw error
+          raise AssertionError('No AMD GPUs found.')
       except Exception as e:
-        logger.error('Could not init pyrsmi.' + str(e))
+        logger.error('Could not init pyamdgpuinfo.' + str(e))
 
-    self.anygpuLoaded = self.pynvmlLoaded or self.amdsmiLoaded or self.pyrsmiLoaded
+    self.anygpuLoaded = self.pynvmlLoaded or self.amdsmiLoaded or self.pyamdLoaded
 
     if self.anygpuLoaded and self.deviceGetCount() > 0:
       self.cudaDevicesFound = self.deviceGetCount()
@@ -167,7 +171,9 @@ class CGPUInfo:
             # vramUsed = torch.cuda.memory_allocated(device)
             # vramTotal = torch.cuda.get_device_properties(device).total_memory
 
-            vramPercent = vramUsed / vramTotal * 100
+            # check if vramTotal is not zero or None
+            if vramTotal and vramTotal != 0:
+              vramPercent = vramUsed / vramTotal * 100
 
           # Temperature
           if self.switchTemperature and self.gpusTemperature[deviceIndex]:
@@ -195,8 +201,8 @@ class CGPUInfo:
       return pynvml.nvmlDeviceGetCount()
     elif self.amdsmiLoaded:
       return len(amdsmi.amdsmi_get_processor_handles())
-    elif self.pyrsmiLoaded:
-      return rocml.smi_get_device_count()
+    elif self.pyamdLoaded:
+      return pyamdgpuinfo.detect_gpus()
     else:
       return 0
 
@@ -205,19 +211,19 @@ class CGPUInfo:
       return pynvml.nvmlDeviceGetHandleByIndex(index)
     elif self.amdsmiLoaded:
       return amdsmi.amdsmi_get_processor_handles()[index]
-    elif self.pyrsmiLoaded:
-      return index
+    elif self.pyamdLoaded:
+      return pyamdgpuinfo.get_gpu(index)
     else:
       return 0
 
   def deviceGetName(self, deviceHandle, deviceIndex):
     if self.pynvmlLoaded:
       return pynvml.nvmlDeviceGetName(deviceHandle)
-    # amdsmi and pyrsmi give no specific device name for AMD non-enterprise cards (only "NAVI22"), get from torch while it might be wrong
+    # amdsmi give no specific device name for AMD non-enterprise cards (only "NAVI22"), get from torch while it might be wrong
     elif self.amdsmiLoaded:
       return torch.cuda.get_device_name(deviceIndex)
-    elif self.pyrsmiLoaded:
-      return torch.cuda.get_device_name(deviceHandle)
+    elif self.pyamdLoaded:
+      return deviceHandle.name if deviceHandle else 'Generic AMD GPU'
     else:
       return ''
 
@@ -227,8 +233,8 @@ class CGPUInfo:
     elif self.amdsmiLoaded:
       device = amdsmi.amdsmi_get_processor_handles()[0]
       return f"AMD Driver: {amdsmi.amdsmi_get_gpu_driver_info(device)['driver_version']}"
-    elif self.pyrsmiLoaded:
-      return f'AMD Driver: unknown' # pyrsmi not supported
+    elif self.pyamdLoaded:
+      return f'AMD Driver: unknown' # pyamdgpuinfo not supported
     else:
       return 'Driver unknown'
     
@@ -237,8 +243,8 @@ class CGPUInfo:
       return pynvml.nvmlDeviceGetUtilizationRates(deviceHandle).gpu
     elif self.amdsmiLoaded:
       return amdsmi.amdsmi_get_gpu_activity(deviceHandle)['gfx_activity']
-    elif self.pyrsmiLoaded:
-      return rocml.smi_get_device_utilization(deviceHandle)
+    elif self.pyamdLoaded:
+      return deviceHandle.query_load() * 100
     else:
       return 0
 
@@ -250,9 +256,9 @@ class CGPUInfo:
       mem_used = amdsmi.amdsmi_get_gpu_memory_usage(deviceHandle, amdsmi.AmdSmiMemoryType.VRAM)
       mem_total = amdsmi.amdsmi_get_gpu_memory_total(deviceHandle, amdsmi.AmdSmiMemoryType.VRAM)
       return {'total': mem_total, 'used': mem_used}
-    elif self.pyrsmiLoaded:
-      mem_used = rocml.smi_get_device_memory_used(deviceHandle)
-      mem_total = rocml.smi_get_device_memory_total(deviceHandle)
+    elif self.pyamdLoaded:
+      mem_used = deviceHandle.query_vram_usage()
+      mem_total = deviceHandle.memory_info["vram_size"]
       return {'total': mem_total, 'used': mem_used}
     else:
       return {'total': 1, 'used': 1}
@@ -262,7 +268,9 @@ class CGPUInfo:
       return pynvml.nvmlDeviceGetTemperature(deviceHandle, pynvml.NVML_TEMPERATURE_GPU)
     elif self.amdsmiLoaded:
       return amdsmi.amdsmi_get_temp_metric(deviceHandle, amdsmi.AmdSmiTemperatureType.JUNCTION, amdsmi.AmdSmiTemperatureMetric.CURRENT)
-    else: # pyrsmi not supported
+    elif self.pyamdLoaded:
+      return deviceHandle.query_temperature()
+    else:
       return 0
 
   def reInit(self):
@@ -272,6 +280,3 @@ class CGPUInfo:
     elif self.amdsmiLoaded:
       amdsmi.amdsmi_shut_down()
       amdsmi.amdsmi_init()
-    elif self.pyrsmiLoaded:
-      rocml.smi_shutdown()
-      rocml.smi_initialize()
