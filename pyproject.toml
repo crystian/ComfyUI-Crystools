@@ -1,0 +1,15 @@
+[project]
+name = "comfyui-crystools"
+description = ""
+version = "1.0.0"
+license = "LICENSE"
+dependencies = ["deepdiff", "torch", "numpy", "Pillow>=9.5.0", "pynvml", "py-cpuinfo"]
+
+[project.urls]
+Repository = "https://github.com/crystian/ComfyUI-Crystools"
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "ComfyUI-Crystools"
+Icon = ""
+Models = [{location = "/checkpoints/model.safetensor", model_url = "https://example.com/model.zip"}]
