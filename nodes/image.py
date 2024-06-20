@@ -262,7 +262,13 @@ class CImageLoadWithMetadata:
     def execute(self, image):
         image_path = folder_paths.get_annotated_filepath(image)
 
-        img, prompt, metadata = buildMetadata(image_path)
+        img = Image.open(image_path)
+        if img.format == 'WEBP':
+            # Use piexif to extract EXIF data from WebP image
+            exif_data = piexif.load(image_path)
+            prompt, metadata = self.process_exif_data(exif_data)
+        else:
+            img, prompt, metadata = buildMetadata(image_path)
 
         img = ImageOps.exif_transpose(img)
         image = img.convert("RGB")
@@ -275,22 +281,33 @@ class CImageLoadWithMetadata:
             mask = torch.zeros((64, 64), dtype=torch.float32, device="cpu")
 
         return image, mask.unsqueeze(0), prompt, metadata
+        
+    def process_exif_data(self, exif_data):
+        metadata = {}
+        # 检查 '0th' 键下的 271 值，提取 Prompt 信息
+        if '0th' in exif_data and 271 in exif_data['0th']:
+            prompt_data = exif_data['0th'][271].decode('utf-8')
+            # 移除可能的前缀 'Prompt:'
+            prompt_data = prompt_data.replace('Prompt:', '', 1)
+            # 假设 prompt_data 是一个字符串，尝试将其转换为 JSON 对象
+            try:
+                metadata['prompt'] = json.loads(prompt_data)
+            except json.JSONDecodeError:
+                metadata['prompt'] = prompt_data
 
-    @classmethod
-    def IS_CHANGED(cls, image):
-        image_path = folder_paths.get_annotated_filepath(image)
-        m = hashlib.sha256()
-        with open(image_path, 'rb') as f:
-            m.update(f.read())
-        return m.digest().hex()
-
-    @classmethod
-    def VALIDATE_INPUTS(cls, image):
-        if not folder_paths.exists_annotated_filepath(image):
-            return "Invalid image file: {}".format(image)
-
-        return True
-
+        # 检查 '0th' 键下的 270 值，提取 Workflow 信息
+        if '0th' in exif_data and 270 in exif_data['0th']:
+            workflow_data = exif_data['0th'][270].decode('utf-8')
+            # 移除可能的前缀 'Workflow:'
+            workflow_data = workflow_data.replace('Workflow:', '', 1)
+            try:
+                # 尝试将字节字符串转换为 JSON 对象
+                metadata['workflow'] = json.loads(workflow_data)
+            except json.JSONDecodeError:
+                # 如果转换失败，则将原始字符串存储在 metadata 中
+                metadata['workflow'] = workflow_data
+        metadata.update(exif_data)
+        return metadata
 
 class CImageSaveWithExtraMetadata(SaveImage):
     def __init__(self):
