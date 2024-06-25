@@ -1,5 +1,6 @@
 type TGpuStatData = {
   gpu_utilization: number,
+  gpu_temperature: number,
   vram_total: number,
   vram_used: number,
   vram_used_percent: number,
@@ -8,6 +9,7 @@ type TGpuStatData = {
 type TGpuSettings = {
   utilization?: boolean,
   vram?: boolean,
+  temperature?: boolean,
 }
 
 type TGpuName = {
@@ -41,6 +43,7 @@ type TMonitorSettings = {
   id: string,
   name: string,
   label: string, // on monitor
+  symbol: string, // on monitor
   title?: string, // on monitor
   tooltip?: string, // on settings
   type: 'boolean' | 'number' | 'string',
@@ -50,4 +53,5 @@ type TMonitorSettings = {
   htmlMonitorSliderRef?: HTMLDivElement,
   htmlMonitorLabelRef?: HTMLDivElement,
   cssColor: string,
+  cssColorFinal?: string,
 }

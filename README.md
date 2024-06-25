@@ -25,7 +25,7 @@ This provides better nodes to load/save images, previews, etc, and see "hidden" 
 
 ### Resources monitor
 
-**🎉Finally, you can see the resources used by ComfyUI (CPU, GPU, RAM, VRAM, and space) on the menu in real-time!**
+**🎉Finally, you can see the resources used by ComfyUI (CPU, GPU, RAM, VRAM, GPU Temp and space) on the menu in real-time!**
 
 ![Monitors](./docs/monitor.webp)
 
@@ -511,6 +511,9 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 ## Changelog
 
 ### Crystools
+
+### 1.12.0 (27/03/2024)
+- GPU Temperature added
 
 ### 1.10.0 (17/01/2024)
 - Multi-gpu added

@@ -36,6 +36,8 @@ class CLASSES(Enum):
     CSWITCH_CONDITIONING_DESC = prefix + 'Switch conditioning'
     CSWITCH_IMAGE_NAME = 'Switch image [Crystools]'
     CSWITCH_IMAGE_DESC = prefix + 'Switch image'
+    CSWITCH_MASK_NAME = 'Switch mask [Crystools]'
+    CSWITCH_MASK_DESC = prefix + 'Switch mask'
     CSWITCH_LATENT_NAME = 'Switch latent [Crystools]'
     CSWITCH_LATENT_DESC = prefix + 'Switch latent'
 

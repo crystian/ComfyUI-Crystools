@@ -115,7 +115,6 @@ class CSwitchBooleanImage:
         else:
             return (on_false,)
 
-
 class CSwitchBooleanLatent:
     def __init__(self):
         pass
@@ -138,6 +137,35 @@ class CSwitchBooleanLatent:
 
     def execute(self, on_true, on_false, boolean=True):
         logger.debug("Latent switch: " + str(boolean))
+
+        if boolean:
+            return (on_true,)
+        else:
+            return (on_false,)
+
+
+class CSwitchBooleanMask:
+    def __init__(self):
+        pass
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "on_true": ("MASK",),
+                "on_false": ("MASK",),
+                "boolean": BOOLEAN,
+            }
+        }
+
+    CATEGORY = CATEGORY.MAIN.value + CATEGORY.SWITCH.value
+    RETURN_TYPES = ("MASK",)
+    RETURN_NAMES = ("mask",)
+
+    FUNCTION = "execute"
+
+    def execute(self, on_true, on_false, boolean=True):
+        logger.debug("Mask switch: " + str(boolean))
 
         if boolean:
             return (on_true,)

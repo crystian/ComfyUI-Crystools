@@ -22,16 +22,20 @@ class CMonitor:
         self.startMonitor()
 
     async def send_message(self, data) -> None:
-        # I'm not sure if it is ok, but works ¯\_(ツ)_/¯
-        # I tried to use async with send_json, but eventually that don't send the message
-        server.PromptServer.instance.send_sync('crystools.monitor', data)
+      # I'm not sure if it is ok, but works ¯\_(ツ)_/¯
+      # I tried to use async with send_json, but eventually that don't send the message
+      server.PromptServer.instance.send_sync('crystools.monitor', data)
 
-    def monitorLoop(self):
+    def startMonitorLoop(self):
+      # logger.debug('Starting monitor loop...')
+      asyncio.run(self.MonitorLoop())
+
+    async def MonitorLoop(self):
         while self.rate > 0 and not self.threadController.is_set():
             data = self.hardwareInfo.getStatus()
-            # print(data)
-            asyncio.run(self.send_message(data))
-            time.sleep(self.rate)
+            # logger.debug('data to send' + str(data))
+            await self.send_message(data)
+            await asyncio.sleep(self.rate)
 
     def startMonitor(self):
         if self.monitorThread is not None:
@@ -48,7 +52,7 @@ class CMonitor:
 
         if self.monitorThread is None or not self.monitorThread.is_alive():
             lock.acquire()
-            self.monitorThread = threading.Thread(target=self.monitorLoop)
+            self.monitorThread = threading.Thread(target=self.startMonitorLoop)
             lock.release()
             self.monitorThread.daemon = True
             self.monitorThread.start()
