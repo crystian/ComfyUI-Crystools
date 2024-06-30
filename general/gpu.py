@@ -39,9 +39,15 @@ class CGPUInfo:
             #   deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(0)
             for deviceIndex in range(self.cudaDevicesFound):
                 deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(deviceIndex)
+                gpuName = 'Unknown GPU'
 
                 try:
-                    gpuName = pynvml.nvmlDeviceGetName(deviceHandle).decode('utf-8', errors='ignore')
+                    gpuName = pynvml.nvmlDeviceGetName(deviceHandle)
+                    try:
+                        gpuName = gpuName.decode('utf-8', errors='ignore')
+                    except AttributeError as e:
+                        pass
+
                 except UnicodeDecodeError as e:
                     gpuName = 'Unknown GPU (decoding error)'
                     print(f"UnicodeDecodeError: {e}")

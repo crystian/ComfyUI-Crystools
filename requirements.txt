@@ -4,3 +4,4 @@ numpy
 Pillow>=9.5.0
 pynvml
 py-cpuinfo
+piexif

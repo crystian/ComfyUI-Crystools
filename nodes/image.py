@@ -2,6 +2,7 @@ import os
 import random
 import sys
 import json
+import piexif
 import hashlib
 from datetime import datetime
 import torch
@@ -262,13 +263,15 @@ class CImageLoadWithMetadata:
     def execute(self, image):
         image_path = folder_paths.get_annotated_filepath(image)
 
-        img = Image.open(image_path)
-        if img.format == 'WEBP':
+        imgF = Image.open(image_path)
+        img, prompt, metadata = buildMetadata(image_path)
+        if imgF.format == 'WEBP':
             # Use piexif to extract EXIF data from WebP image
-            exif_data = piexif.load(image_path)
-            prompt, metadata = self.process_exif_data(exif_data)
-        else:
-            img, prompt, metadata = buildMetadata(image_path)
+            try:
+              exif_data = piexif.load(image_path)
+              prompt, metadata = self.process_exif_data(exif_data)
+            except ValueError:
+              prompt = {}
 
         img = ImageOps.exif_transpose(img)
         image = img.convert("RGB")
@@ -281,7 +284,7 @@ class CImageLoadWithMetadata:
             mask = torch.zeros((64, 64), dtype=torch.float32, device="cpu")
 
         return image, mask.unsqueeze(0), prompt, metadata
-        
+
     def process_exif_data(self, exif_data):
         metadata = {}
         # 检查 '0th' 键下的 271 值，提取 Prompt 信息
@@ -306,8 +309,25 @@ class CImageLoadWithMetadata:
             except json.JSONDecodeError:
                 # 如果转换失败，则将原始字符串存储在 metadata 中
                 metadata['workflow'] = workflow_data
+
         metadata.update(exif_data)
         return metadata
+
+    @classmethod
+    def IS_CHANGED(cls, image):
+        image_path = folder_paths.get_annotated_filepath(image)
+        m = hashlib.sha256()
+        with open(image_path, 'rb') as f:
+            m.update(f.read())
+        return m.digest().hex()
+
+    @classmethod
+    def VALIDATE_INPUTS(cls, image):
+        if not folder_paths.exists_annotated_filepath(image):
+            return "Invalid image file: {}".format(image)
+
+        return True
+
 
 class CImageSaveWithExtraMetadata(SaveImage):
     def __init__(self):
@@ -371,7 +391,8 @@ class CImageSaveWithExtraMetadata(SaveImage):
 
             if metadata_extra is not None and metadata_extra != 'undefined':
                 try:
-                    metadata_extra = json.loads(f"{{{metadata_extra}}}")
+                    # metadata_extra = json.loads(f"{{{metadata_extra}}}") // a fix?
+                    metadata_extra = json.loads(metadata_extra)
                 except Exception as e:
                     logger.error(f"Error parsing metadata_extra (it will send as string), error: {e}")
                     metadata_extra = {"extra": str(metadata_extra)}
