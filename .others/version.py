@@ -38,3 +38,23 @@ print(f"> File2 {file2}")
 with open(file2, "w") as f2:
     f2.writelines([f"version = \"{version}\"\n"])
 
+
+# modify pyproject.toml file with @version
+file3 = os.path.join(os.path.dirname(__file__), "../pyproject.toml")
+print(f"> File3: {file3}")
+
+file3VersionFound = False
+# lines = None
+with open(file3, "r") as f:
+    lines = f.readlines()
+    for line in lines:
+
+        if "version = " in line:
+            file3VersionFound = True
+            lines[lines.index(line)] = f"version = \"{version}\"\n"
+
+if not file3VersionFound:
+    raise RuntimeError(f"Version label not found in file: {file3}")
+
+with open(file3, "w") as f3:
+    f3.writelines(lines)
