@@ -18,7 +18,6 @@ class CGPUInfo:
     amdsmiLoaded = False
     pyamdLoaded = False
     anygpuLoaded = False
-    needRefresh = False
     cudaAvailable = False
     torchDevice = 'cpu'
     cudaDevice = 'cpu'
@@ -43,7 +42,6 @@ class CGPUInfo:
             try:
                 amdsmi.amdsmi_init()
                 self.amdsmiLoaded = True
-                self.needRefresh = True # bug in amdsmi
                 logger.info('amdsmi initialized.')
             except Exception as e:
                 logger.error('Could not init amdsmi.' + str(e))
@@ -131,9 +129,6 @@ class CGPUInfo:
             gpuType = self.cudaDevice
 
             if self.anygpuLoaded and self.cuda and self.cudaAvailable:
-                if self.needRefresh:
-                    self.reInit()
-
                 # for simulate multiple GPUs (for testing) interchange these comments:
                 # for deviceIndex in range(3):
                 #     deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(0)
@@ -231,9 +226,11 @@ class CGPUInfo:
                 print(f"UnicodeDecodeError: {e}")
 
             return gpuName
-        # amdsmi give no specific device name for AMD non-enterprise cards (only "NAVI22"), get from torch while it might be wrong
         elif self.amdsmiLoaded:
-            return torch.cuda.get_device_name(deviceIndex)
+        	# amdsmi give no specific device name for AMD non-enterprise cards (only "NAVI22"), steal it from pyamdgpuinfo
+            #return torch.cuda.get_device_name(deviceIndex)
+            currentGPU = pyamdgpuinfo.get_gpu(deviceIndex)
+            return currentGPU.name if currentGPU else 'Generic AMD GPU'
         elif self.pyamdLoaded:
             return deviceHandle.name if deviceHandle else 'Generic AMD GPU'
         else:
@@ -284,11 +281,3 @@ class CGPUInfo:
             return deviceHandle.query_temperature()
         else:
             return 0
-
-    def reInit(self):
-        if self.pynvmlLoaded:
-            pynvml.nvmlShutdown()
-            pynvml.nvmlInit()
-        elif self.amdsmiLoaded:
-            amdsmi.amdsmi_shut_down()
-            amdsmi.amdsmi_init()
