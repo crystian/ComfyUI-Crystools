@@ -2,7 +2,6 @@ import torch
 import pynvml
 import pyamdgpuinfo
 import comfy.model_management
-
 from ..core import logger
 
 # could not put amdsmi in requirements.txt, user need to install it manually
@@ -218,7 +217,20 @@ class CGPUInfo:
 
     def deviceGetName(self, deviceHandle, deviceIndex):
         if self.pynvmlLoaded:
-            return pynvml.nvmlDeviceGetName(deviceHandle)
+            gpuName = 'Unknown GPU'
+
+            try:
+                gpuName = pynvml.nvmlDeviceGetName(deviceHandle)
+                try:
+                    gpuName = gpuName.decode('utf-8', errors='ignore')
+                except AttributeError as e:
+                    pass
+
+            except UnicodeDecodeError as e:
+                gpuName = 'Unknown GPU (decoding error)'
+                print(f"UnicodeDecodeError: {e}")
+
+            return gpuName
         # amdsmi give no specific device name for AMD non-enterprise cards (only "NAVI22"), get from torch while it might be wrong
         elif self.amdsmiLoaded:
             return torch.cuda.get_device_name(deviceIndex)

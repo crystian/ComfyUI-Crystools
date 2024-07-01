@@ -1,4 +1,5 @@
 #!/bin/bash
+# REMEMBER TO COPY THIS FILE INTO .git/hooks/pre-commit
 
 cd ../comfyUI/ComfyUI
 rm ./custom_nodes/ComfyUI-Crystools/web/*.js -f
@@ -29,4 +30,4 @@ else
     exit 1
 fi
 
-git add __init__.py core/version.py  web/*.js
+git add version pyproject.toml __init__.py core/version.py web/*.js
