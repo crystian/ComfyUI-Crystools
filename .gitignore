@@ -153,3 +153,4 @@ cython_debug/
 
 .idea
 /node_modules
+/node.zip
