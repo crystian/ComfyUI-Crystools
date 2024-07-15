@@ -3,5 +3,5 @@ torch
 numpy
 Pillow>=9.5.0
 pynvml
-py-cpuinfo
+py-cpuinfo>=9.0.0
 piexif
