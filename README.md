@@ -512,6 +512,14 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### Crystools
 
+### 1.14.0 (15/07/2024)
+- Tried to use AMD info, but it breaks installation on windows, so I removed it ¯\_(ツ)_/¯
+- AMD Branch added, if you use AMD and Linux, you can try it (not tested for me)
+
+### 1.13.0 (01/07/2024)
+- Integrate with new ecosystem of ComfyUI
+- Webp support added on load image with metadata node
+
 ### 1.12.0 (27/03/2024)
 - GPU Temperature added
 
@@ -571,6 +579,13 @@ You have predefined switches (string, latent, image, conditioning) but you can u
     pip install -r requirements.txt
     ```
 3. Start up ComfyUI.
+
+#### For AMD users
+If you are an AMD user with Linux, you can try the AMD branch:
+(replace the clone command of step 2 with this one)
+```
+git clone -b AMD https://github.com/crystian/ComfyUI-Crystools.git
+```
 
 ### Install from manager
 
