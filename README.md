@@ -512,6 +512,9 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### Crystools
 
+### 1.15.0 (21/07/2024)
+- AMD Branch merged to the main branch, should work for AMD users on **Linux**
+
 ### 1.14.0 (15/07/2024)
 - Tried to use AMD info, but it breaks installation on windows, so I removed it ¯\_(ツ)_/¯
 - AMD Branch added, if you use AMD and Linux, you can try it (not tested for me)

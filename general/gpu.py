@@ -29,17 +29,17 @@ class CGPUInfo:
         try:
             pynvml.nvmlInit()
             self.pynvmlLoaded = True
-            logger.info('pynvml initialized.')
+            logger.info('Pynvml (Nvidia) initialized.')
         except Exception as e:
-            logger.error('Could not init pynvml.' + str(e))
+            logger.error('Could not init pynvml (Nvidia).' + str(e))
 
         if not self.pynvmlLoaded:
             try:
                 rocml.smi_initialize()
                 self.pyamdLoaded = True
-                logger.info('pyrsmi initialized.')
+                logger.info('Pyrsmi (AMD) initialized.')
             except Exception as e:
-                logger.error('Could not init pyrsmi.' + str(e))
+                logger.error('Could not init pyrsmi (AMD).' + str(e))
 
         self.anygpuLoaded = self.pynvmlLoaded or self.pyamdLoaded
 
@@ -114,7 +114,7 @@ class CGPUInfo:
             if self.anygpuLoaded and self.cuda and self.cudaAvailable:
                 # for simulate multiple GPUs (for testing) interchange these comments:
                 # for deviceIndex in range(3):
-                #     deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(0)
+                #     deviceHandle = self.deviceGetHandleByIndex(0)
                 for deviceIndex in range(self.cudaDevicesFound):
                     deviceHandle = self.deviceGetHandleByIndex(deviceIndex)
 
