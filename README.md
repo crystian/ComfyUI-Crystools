@@ -36,7 +36,7 @@ You can configure the refresh rate which resources to show:
 ![Monitors](./docs/monitor-settings.png)
 
 > **Notes:**
-> - The GPU data is only available when you use CUDA (only NVIDIA cards, sorry AMD users).
+> - The GPU data is only available when you use CUDA (only NVIDIA cards, partial support of AMD users on linux).
 > - This extension needs ComfyUI 1915 (or higher).
 > - The cost of the monitor is low (0.1 to 0.5% of utilization), you can disable it from settings (`Refres rate` to `0`).
 > - Data comes from these libraries:
@@ -512,6 +512,9 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### Crystools
 
+### 1.15.0 (21/07/2024)
+- AMD Branch merged to the main branch, should work for AMD users on **Linux**
+
 ### 1.14.0 (15/07/2024)
 - Tried to use AMD info, but it breaks installation on windows, so I removed it ¯\_(ツ)_/¯
 - AMD Branch added, if you use AMD and Linux, you can try it (not tested for me)
@@ -579,13 +582,6 @@ You have predefined switches (string, latent, image, conditioning) but you can u
     pip install -r requirements.txt
     ```
 3. Start up ComfyUI.
-
-#### For AMD users
-If you are an AMD user with Linux, you can try the AMD branch:
-(replace the clone command of step 2 with this one)
-```
-git clone -b AMD https://github.com/crystian/ComfyUI-Crystools.git
-```
 
 ### Install from manager
 
