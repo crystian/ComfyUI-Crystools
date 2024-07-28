@@ -4,5 +4,6 @@ numpy
 Pillow>=9.5.0
 pynvml
 py-cpuinfo>=9.0.0
-pyrsmi
 piexif
+--extra-index-url https://test.pypi.org/simple
+pyrsmi==0.0.6
