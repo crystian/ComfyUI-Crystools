@@ -48,8 +48,8 @@ class CGPUInfo:
         except Exception as e:
             logger.error('Could not pick default device.' + str(e))
 
-        # ZLUDA Check, self.torchDevice has '[ZLUDA]' in it.
-        if '[ZLUDA]' in self.torchDevice:
+        # ZLUDA Check, self.torchDevice has 'ZLUDA' in it.
+        if 'zluda' in self.torchDevice or 'ZLUDA' in self.torchDevice or 'Zluda' in self.torchDevice:
             logger.error('ZLUDA detected. GPU monitoring will be disabled.')
             self.anygpuLoaded = False
             self.pyamdLoaded = False
