@@ -43,6 +43,18 @@ class CGPUInfo:
 
         self.anygpuLoaded = self.pynvmlLoaded or self.pyamdLoaded
 
+        try:
+            self.torchDevice = comfy.model_management.get_torch_device_name(comfy.model_management.get_torch_device())
+        except Exception as e:
+            logger.error('Could not pick default device.' + str(e))
+
+        # ZLUDA Check, self.torchDevice has '[ZLUDA]' in it.
+        if '[ZLUDA]' in self.torchDevice:
+            logger.error('ZLUDA detected. GPU monitoring will be disabled.')
+            self.anygpuLoaded = False
+            self.pyamdLoaded = False
+            self.pynvmlLoaded = False
+
         if self.anygpuLoaded and self.deviceGetCount() > 0:
             self.cudaDevicesFound = self.deviceGetCount()
 
@@ -72,11 +84,6 @@ class CGPUInfo:
             logger.info(self.systemGetDriverVersion())
         else:
             logger.warn('No GPU with CUDA detected.')
-
-        try:
-            self.torchDevice = comfy.model_management.get_torch_device_name(comfy.model_management.get_torch_device())
-        except Exception as e:
-            logger.error('Could not pick default device.' + str(e))
 
         self.cudaDevice = 'cpu' if self.torchDevice == 'cpu' else 'cuda'
         self.cudaAvailable = torch.cuda.is_available()
