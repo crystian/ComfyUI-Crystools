@@ -45,7 +45,6 @@ class CGPUInfo:
 
         try:
             self.torchDevice = comfy.model_management.get_torch_device_name(comfy.model_management.get_torch_device())
-            self.torchDevice += 'zluda'
         except Exception as e:
             logger.error('Could not pick default device.' + str(e))
 
