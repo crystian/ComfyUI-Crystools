@@ -1,12 +1,8 @@
 import { api } from '/scripts/api.js';
 import { app } from '/scripts/app.js';
 import { commonPrefix } from './common.js';
-var EStatus;
-(function (EStatus) {
-    EStatus["executing"] = "Executing";
-    EStatus["executed"] = "Executed";
-    EStatus["execution_error"] = "Execution error";
-})(EStatus || (EStatus = {}));
+import { EStatus } from './types.js';
+import { ProgressBarVertical } from './progressBarVertical.js';
 class CrystoolsProgressBar {
     constructor() {
         Object.defineProperty(this, "idExtensionName", {
@@ -81,6 +77,12 @@ class CrystoolsProgressBar {
             writable: true,
             value: undefined
         });
+        Object.defineProperty(this, "progressBarVertical", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         Object.defineProperty(this, "createSettings", {
             enumerable: true,
             configurable: true,
@@ -111,27 +113,7 @@ class CrystoolsProgressBar {
             configurable: true,
             writable: true,
             value: () => {
-                if (!(this.htmlProgressLabelRef && this.htmlProgressSliderRef)) {
-                    console.error('htmlProgressLabelRef or htmlProgressSliderRef is undefined');
-                    return;
-                }
-                if (this.currentStatus === EStatus.executed) {
-                    this.htmlProgressLabelRef.innerHTML = 'cached';
-                    const timeElapsed = Date.now() - this.timeStart;
-                    if (this.timeStart > 0 && timeElapsed > 0) {
-                        this.htmlProgressLabelRef.innerHTML = new Date(timeElapsed).toISOString().substr(11, 8);
-                    }
-                    this.htmlProgressSliderRef.style.width = '0';
-                }
-                else if (this.currentStatus === EStatus.execution_error) {
-                    this.htmlProgressLabelRef.innerHTML = 'ERROR';
-                    this.htmlProgressSliderRef.style.backgroundColor = 'var(--error-text)';
-                }
-                else if (this.currentStatus === EStatus.executing) {
-                    this.htmlProgressLabelRef.innerHTML = `${this.currentProgress}%`;
-                    this.htmlProgressSliderRef.style.width = this.htmlProgressLabelRef.innerHTML;
-                    this.htmlProgressSliderRef.style.backgroundColor = 'green';
-                }
+                this.progressBarVertical.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
             }
         });
         Object.defineProperty(this, "registerListeners", {
@@ -192,52 +174,9 @@ class CrystoolsProgressBar {
         this.createSettings();
     }
     setup() {
-        const parentElement = document.getElementById('queue-button');
-        if (!parentElement) {
-            console.error('queue-button not found');
-            return;
-        }
-        let ctoolsRoot = document.getElementById(this.htmlIdCrystoolsRoot);
-        if (!ctoolsRoot) {
-            ctoolsRoot = document.createElement('div');
-            ctoolsRoot.setAttribute('id', this.htmlIdCrystoolsRoot);
-            ctoolsRoot.style.display = 'flex';
-            ctoolsRoot.style.width = '100%';
-            ctoolsRoot.style.flexDirection = 'column';
-            parentElement.insertAdjacentElement('afterend', ctoolsRoot);
-        }
-        const htmlContainer = document.createElement('div');
-        htmlContainer.setAttribute('id', this.htmlIdCrystoolsProgressBarContainer);
-        htmlContainer.setAttribute('title', 'click to see the current working node');
-        htmlContainer.style.margin = '4px 0';
-        htmlContainer.style.width = '100%';
-        htmlContainer.style.cursor = 'pointer';
-        htmlContainer.style.order = '1';
-        htmlContainer.addEventListener('click', this.centerNode);
-        ctoolsRoot.append(htmlContainer);
-        const progressBar = document.createElement('div');
-        progressBar.style.margin = '0 10px';
-        progressBar.style.height = '18px';
-        progressBar.style.position = 'relative';
-        progressBar.style.backgroundColor = 'var(--bg-color)';
-        htmlContainer.append(progressBar);
-        const progressSlider = document.createElement('div');
-        progressSlider.style.position = 'absolute';
-        progressSlider.style.height = '100%';
-        progressSlider.style.width = '0';
-        progressSlider.style.transition = 'width 0.2s';
-        progressSlider.style.backgroundColor = 'green';
-        this.htmlProgressSliderRef = progressSlider;
-        progressBar.append(this.htmlProgressSliderRef);
-        const progressLabel = document.createElement('div');
-        progressLabel.style.position = 'absolute';
-        progressLabel.style.margin = 'auto 0';
-        progressLabel.style.width = '100%';
-        progressLabel.style.color = 'var(--drag-text)';
-        progressLabel.style.fontSize = '14px';
-        progressLabel.innerHTML = '0%';
-        this.htmlProgressLabelRef = progressLabel;
-        progressBar.append(this.htmlProgressLabelRef);
+        this.progressBarVertical = new ProgressBarVertical(this.htmlIdCrystoolsRoot, this.htmlIdCrystoolsProgressBarContainer, this.centerNode);
+        this.htmlProgressSliderRef = this.progressBarVertical.htmlProgressSliderRef;
+        this.htmlProgressLabelRef = this.progressBarVertical.htmlProgressLabelRef;
         this.showProgressBar(app.ui.settings.getSettingValue(this.idShowProgressBar, this.defaultShowStatus));
         this.registerListeners();
     }
