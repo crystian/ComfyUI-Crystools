@@ -55,6 +55,7 @@ class CrystoolsProgressBar {
       this.htmlIdCrystoolsRoot,
       this.htmlIdCrystoolsProgressBarContainer,
       this.centerNode);
+
     this.htmlProgressSliderRef = this.progressBarVertical.htmlProgressSliderRef;
     this.htmlProgressLabelRef = this.progressBarVertical.htmlProgressLabelRef;
 
