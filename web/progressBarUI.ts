@@ -1,7 +1,7 @@
 import { app } from '/scripts/app.js';
 import { EStatus } from './types.js';
 
-export class ProgressBarVertical {
+export class ProgressBarUI {
   htmlProgressSliderRef: HTMLDivElement;
   htmlProgressLabelRef: HTMLDivElement;
   queueButtonElement: HTMLElement | null;

@@ -1,8 +1,8 @@
 import { api } from '/scripts/api.js';
 import { app } from '/scripts/app.js';
 import { commonPrefix } from './common.js';
+import { ProgressBarUI } from './progressBarUI.js';
 import { EStatus } from './types.js';
-import { ProgressBarVertical } from './progressBarVertical.js';
 class CrystoolsProgressBar {
     constructor() {
         Object.defineProperty(this, "idExtensionName", {
@@ -174,7 +174,7 @@ class CrystoolsProgressBar {
         this.createSettings();
     }
     setup() {
-        this.progressBarVertical = new ProgressBarVertical(this.htmlIdCrystoolsRoot, this.htmlIdCrystoolsProgressBarContainer, this.centerNode);
+        this.progressBarVertical = new ProgressBarUI(this.htmlIdCrystoolsRoot, this.htmlIdCrystoolsProgressBarContainer, this.centerNode);
         this.htmlProgressSliderRef = this.progressBarVertical.htmlProgressSliderRef;
         this.htmlProgressLabelRef = this.progressBarVertical.htmlProgressLabelRef;
         this.showProgressBar(app.ui.settings.getSettingValue(this.idShowProgressBar, this.defaultShowStatus));

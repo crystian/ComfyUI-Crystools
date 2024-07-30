@@ -1,5 +1,5 @@
 import { EStatus } from './types.js';
-export declare class ProgressBarVertical {
+export declare class ProgressBarUI {
     htmlIdCrystoolsRoot: string;
     htmlIdCrystoolsProgressBarContainer: string;
     private centerNode;

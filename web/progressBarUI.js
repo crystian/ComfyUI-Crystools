@@ -1,6 +1,6 @@
 import { app } from '/scripts/app.js';
 import { EStatus } from './types.js';
-export class ProgressBarVertical {
+export class ProgressBarUI {
     constructor(htmlIdCrystoolsRoot, htmlIdCrystoolsProgressBarContainer, centerNode) {
         Object.defineProperty(this, "htmlIdCrystoolsRoot", {
             enumerable: true,
