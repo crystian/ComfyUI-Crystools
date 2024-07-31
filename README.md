@@ -36,7 +36,7 @@ You can configure the refresh rate which resources to show:
 ![Monitors](./docs/monitor-settings.png)
 
 > **Notes:**
-> - The GPU data is only available when you use CUDA (only NVIDIA cards, partial support of AMD users on linux).
+> - The GPU data is only available when you use CUDA (only NVIDIA cards, sorry AMD users).
 > - This extension needs ComfyUI 1915 (or higher).
 > - The cost of the monitor is low (0.1 to 0.5% of utilization), you can disable it from settings (`Refres rate` to `0`).
 > - Data comes from these libraries:
@@ -511,6 +511,9 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 ## Changelog
 
 ### Crystools
+
+### 1.16.0 (31/07/2024)
+- Rollback of AMD support by manager does not support other repository parameter (https://test.pypi.org/simple by pyrsmi)
 
 ### 1.15.0 (21/07/2024)
 - AMD Branch merged to the main branch, should work for AMD users on **Linux**

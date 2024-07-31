@@ -2,8 +2,8 @@ import torch
 import pynvml
 import comfy.model_management
 from ..core import logger
-from ctypes import *
-from pyrsmi import rocml
+# from ctypes import *
+# from pyrsmi import rocml
 
 class CGPUInfo:
     """
@@ -11,8 +11,8 @@ class CGPUInfo:
     """
     cuda = False
     pynvmlLoaded = False
-    pyamdLoaded = False
-    anygpuLoaded = False
+    # pyamdLoaded = False
+    # anygpuLoaded = False
     cudaAvailable = False
     torchDevice = 'cpu'
     cudaDevice = 'cpu'
@@ -33,15 +33,16 @@ class CGPUInfo:
         except Exception as e:
             logger.error('Could not init pynvml (Nvidia).' + str(e))
 
-        if not self.pynvmlLoaded:
-            try:
-                rocml.smi_initialize()
-                self.pyamdLoaded = True
-                logger.info('Pyrsmi (AMD) initialized.')
-            except Exception as e:
-                logger.error('Could not init pyrsmi (AMD).' + str(e))
+        # if not self.pynvmlLoaded:
+        #     try:
+        #         rocml.smi_initialize()
+        #         self.pyamdLoaded = True
+        #         logger.info('Pyrsmi (AMD) initialized.')
+        #     except Exception as e:
+        #         logger.error('Could not init pyrsmi (AMD).' + str(e))
 
-        self.anygpuLoaded = self.pynvmlLoaded or self.pyamdLoaded
+        # self.anygpuLoaded = self.pynvmlLoaded or self.pyamdLoaded
+        self.anygpuLoaded = self.pynvmlLoaded
 
         try:
             self.torchDevice = comfy.model_management.get_torch_device_name(comfy.model_management.get_torch_device())
@@ -52,7 +53,7 @@ class CGPUInfo:
         if 'zluda' in self.torchDevice or 'ZLUDA' in self.torchDevice or 'Zluda' in self.torchDevice:
             logger.warn('ZLUDA detected. GPU monitoring will be disabled.')
             self.anygpuLoaded = False
-            self.pyamdLoaded = False
+            # self.pyamdLoaded = False
             self.pynvmlLoaded = False
 
         if self.anygpuLoaded and self.deviceGetCount() > 0:
@@ -183,16 +184,16 @@ class CGPUInfo:
     def deviceGetCount(self):
         if self.pynvmlLoaded:
             return pynvml.nvmlDeviceGetCount()
-        elif self.pyamdLoaded:
-            return rocml.smi_get_device_count()
+        # elif self.pyamdLoaded:
+        #     return rocml.smi_get_device_count()
         else:
             return 0
 
     def deviceGetHandleByIndex(self, index):
         if self.pynvmlLoaded:
             return pynvml.nvmlDeviceGetHandleByIndex(index)
-        elif self.pyamdLoaded:
-            return index
+        # elif self.pyamdLoaded:
+        #     return index
         else:
             return 0
 
@@ -212,26 +213,26 @@ class CGPUInfo:
                 print(f"UnicodeDecodeError: {e}")
 
             return gpuName
-        elif self.pyamdLoaded:
-            return rocml.smi_get_device_name(deviceIndex)
+        # elif self.pyamdLoaded:
+        #     return rocml.smi_get_device_name(deviceIndex)
         else:
             return ''
 
     def systemGetDriverVersion(self):
         if self.pynvmlLoaded:
             return f'NVIDIA Driver: {pynvml.nvmlSystemGetDriverVersion()}'
-        elif self.pyamdLoaded:
-            ver_str = create_string_buffer(256)
-            rocml.rocm_lib.rsmi_version_str_get(0, ver_str, 256)
-            return f'AMD Driver: {ver_str.value.decode()}'
+        # elif self.pyamdLoaded:
+        #     ver_str = create_string_buffer(256)
+        #     rocml.rocm_lib.rsmi_version_str_get(0, ver_str, 256)
+        #     return f'AMD Driver: {ver_str.value.decode()}'
         else:
             return 'Driver unknown'
 
     def deviceGetUtilizationRates(self, deviceHandle):
         if self.pynvmlLoaded:
             return pynvml.nvmlDeviceGetUtilizationRates(deviceHandle).gpu
-        elif self.pyamdLoaded:
-            return rocml.smi_get_device_utilization(deviceHandle)
+        # elif self.pyamdLoaded:
+        #     return rocml.smi_get_device_utilization(deviceHandle)
         else:
             return 0
 
@@ -239,19 +240,19 @@ class CGPUInfo:
         if self.pynvmlLoaded:
             mem = pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
             return {'total': mem.total, 'used': mem.used}
-        elif self.pyamdLoaded:
-            mem_used = rocml.smi_get_device_memory_used(deviceHandle)
-            mem_total = rocml.smi_get_device_memory_total(deviceHandle)
-            return {'total': mem_total, 'used': mem_used}
+        # elif self.pyamdLoaded:
+        #     mem_used = rocml.smi_get_device_memory_used(deviceHandle)
+        #     mem_total = rocml.smi_get_device_memory_total(deviceHandle)
+        #     return {'total': mem_total, 'used': mem_used}
         else:
             return {'total': 1, 'used': 1}
 
     def deviceGetTemperature(self, deviceHandle):
         if self.pynvmlLoaded:
             return pynvml.nvmlDeviceGetTemperature(deviceHandle, pynvml.NVML_TEMPERATURE_GPU)
-        elif self.pyamdLoaded:
-            temp = c_int64(0)
-            rocml.rocm_lib.rsmi_dev_temp_metric_get(deviceHandle, 1, 0, byref(temp))
-            return temp.value / 1000
+        # elif self.pyamdLoaded:
+        #     temp = c_int64(0)
+        #     rocml.rocm_lib.rsmi_dev_temp_metric_get(deviceHandle, 1, 0, byref(temp))
+        #     return temp.value / 1000
         else:
             return 0
