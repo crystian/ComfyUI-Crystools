@@ -586,6 +586,18 @@ You have predefined switches (string, latent, image, conditioning) but you can u
     ```
 3. Start up ComfyUI.
 
+#### For AMD users
+If you are an AMD user with Linux, you can try the AMD branch:
+
+**ATTENTION:** Don't install with the manager, you need to install manually:
+
+  ```
+  cd ComfyUI/custom_nodes
+  git clone -b AMD https://github.com/crystian/ComfyUI-Crystools.git
+  cd ComfyUI-Crystools
+  pip install -r requirements.txt
+  ```
+
 ### Install from manager
 
 Search for `crystools` in the [manager](https://github.com/ltdrdata/ComfyUI-Manager.git) and install it.
