@@ -36,8 +36,9 @@ class CHardwareInfo:
         self.switchHDD = switchHDD
         self.switchRAM = switchRAM
 
-        specName = 'CPU: ' + cpuinfo.get_cpu_info().get('brand_raw', "Unknown")
-        specArch = 'Arch: ' + cpuinfo.get_cpu_info().get('arch_string_raw', "Unknown")
+        get_cpu_info = cpuinfo.get_cpu_info()
+        specName = 'CPU: ' + get_cpu_info.get('brand_raw', "Unknown")
+        specArch = 'Arch: ' + get_cpu_info.get('arch_string_raw', "Unknown")
         specOs = 'OS: ' + str(platform.system()) + ' ' + str(platform.release())
         logger.info(f"{specName} - {specArch} - {specOs}")
 
