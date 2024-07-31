@@ -36,7 +36,7 @@ You can configure the refresh rate which resources to show:
 ![Monitors](./docs/monitor-settings.png)
 
 > **Notes:**
-> - The GPU data is only available when you use CUDA (only NVIDIA cards, sorry AMD users).
+> - The GPU data is only available when you use CUDA (only NVIDIA cards, partial support of AMD users on linux).
 > - This extension needs ComfyUI 1915 (or higher).
 > - The cost of the monitor is low (0.1 to 0.5% of utilization), you can disable it from settings (`Refres rate` to `0`).
 > - Data comes from these libraries:
