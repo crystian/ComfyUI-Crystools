@@ -1,5 +1,7 @@
 import platform
+import re
 import cpuinfo
+from cpuinfo import DataSource
 import psutil
 from .gpu import CGPUInfo
 from .hdd import getDrivesInfo
@@ -36,21 +38,47 @@ class CHardwareInfo:
         self.switchHDD = switchHDD
         self.switchRAM = switchRAM
 
-        get_cpu_info = cpuinfo.get_cpu_info()
-        specName = 'CPU: ' + get_cpu_info.get('brand_raw', "Unknown")
-        specArch = 'Arch: ' + get_cpu_info.get('arch_string_raw', "Unknown")
-        specOs = 'OS: ' + str(platform.system()) + ' ' + str(platform.release())
-        logger.info(f"{specName} - {specArch} - {specOs}")
+        self.print_sys_info()
 
         self.GPUInfo = CGPUInfo()
         self.switchGPU = switchGPU
         self.switchVRAM = switchVRAM
 
+    def print_sys_info(self):
+        brand = None
+        if DataSource.is_windows:   # Windows
+            brand = DataSource.winreg_processor_brand().strip()
+        elif DataSource.has_proc_cpuinfo():   # Linux
+            return_code, output = DataSource.cat_proc_cpuinfo()
+            if return_code == 0 and output is not None:
+                for line in output.splitlines():
+                    r = re.search(r'model name\s*:\s*(.+)', line)
+                    if r:
+                        brand = r.group(1)
+                        break
+        elif DataSource.has_sysctl():   # macOS
+            return_code, output = DataSource.sysctl_machdep_cpu_hw_cpufrequency()
+            if return_code == 0 and output is not None:
+                for line in output.splitlines():
+                    r = re.search(r'machdep\.cpu\.brand_string\s*:\s*(.+)', line)
+                    if r:
+                        brand = r.group(1)
+                        break
+
+        # fallback to use cpuinfo.get_cpu_info()
+        if not brand:
+            brand = cpuinfo.get_cpu_info().get('brand_raw', "Unknown")
+
+        specName = 'CPU: ' + brand
+        specArch = 'Arch: ' + DataSource.arch_string_raw
+        specOs = 'OS: ' + str(platform.system()) + ' ' + str(platform.release())
+        logger.info(f"{specName} - {specArch} - {specOs}")
+
     def getHDDsInfo(self):
-      return getDrivesInfo()
+        return getDrivesInfo()
 
     def getGPUInfo(self):
-      return self.GPUInfo.getInfo()
+        return self.GPUInfo.getInfo()
 
     def getStatus(self):
         cpu = -1
