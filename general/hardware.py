@@ -69,8 +69,15 @@ class CHardwareInfo:
         if not brand:
             brand = cpuinfo.get_cpu_info().get('brand_raw', "Unknown")
 
+        arch_string_raw = 'Arch unknown'
+
+        try:
+          arch_string_raw = DataSource.arch_string_raw
+        except:
+          pass
+
         specName = 'CPU: ' + brand
-        specArch = 'Arch: ' + DataSource.arch_string_raw
+        specArch = 'Arch: ' + arch_string_raw
         specOs = 'OS: ' + str(platform.system()) + ' ' + str(platform.release())
         logger.info(f"{specName} - {specArch} - {specOs}")
 
