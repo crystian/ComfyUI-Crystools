@@ -1,5 +1,6 @@
-import type { ComfyApp, TLGraphNode } from './liteGraph.js';
-import { ComfyWidgets } from './liteGraph.js';
+import type { TLGraphNode } from './liteGraph.js';
+import { ComfyApp } from 'types/comfy.js';
+import { ComfyWidgets } from '/scripts/widgets.js';
 
 export const commonPrefix = '🪛';
 
@@ -55,8 +56,8 @@ export function displayContext(
   // When the node is executed we will be sent the input text, display this in the widget
   // @ts-ignore
   const onExecutedOriginal = nodeType.prototype.onExecuted;
-  // @ts-ignore
   nodeType.prototype.onExecuted = function(message: { text: string }): void {
+    // @ts-ignore
     onExecutedOriginal?.apply(this, arguments);
     populate.call(this, message.text);
   };

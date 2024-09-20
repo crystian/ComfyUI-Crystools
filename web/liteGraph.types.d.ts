@@ -1,10 +1,12 @@
 // A LOTS OF PATCHES FOR LITEGRAPH TYPES ¯\_(ツ)_/¯
-export type * from '/types/litegraph';
-export type * from '/scripts/widgets';
-export type * from '/scripts/app';
-export type { api } from '/scripts/api';
+import { LGraph } from 'types/litegraph.js';
 
-import { LGraph, LiteGraph } from '/types/litegraph';
+export type * from 'types/litegraph.js';
+// export type * from 'scripts/widgets';
+// export type * from 'scripts/app';
+// export type { api } from 'scripts/api';
+//
+// import { LGraph, LiteGraph } from '/types/litegraph';
 
 export declare type TypeLiteGraph = typeof LiteGraph & {
   graph: LGraph;

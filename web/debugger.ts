@@ -1,8 +1,10 @@
 import { app } from '/scripts/app.js';
 import { api } from '/scripts/api.js';
 import { commonPrefix, displayContext } from './common.js';
-import type { ComfyNode, ComfyApp } from './liteGraph.js';
-import { LiteGraph, TLGraphNode, ComfyWidgets } from './liteGraph.js';
+import type { ComfyNode } from './liteGraph.js';
+import { LiteGraph, TLGraphNode } from './liteGraph.js';
+import { ComfyApp } from 'types/comfy.js';
+import { ComfyWidgets } from '/scripts/widgets.js';
 
 // "Show any" Node
 app.registerExtension({
@@ -50,9 +52,9 @@ app.registerExtension({
         api.addEventListener('executed', this.fillMetadataWidget, false);
       }
 
-      fillMetadataWidget = async (): Promise<string> => {
+      fillMetadataWidget = (): Promise<string> => {
         return app.graphToPrompt()
-        .then((workflow): string => {
+        .then((workflow: any): string => {
           let result = 'inactive';
           if(this.widgets?.length !== 4) {
             console.error('Something is wrong with the widgets, should be 4!');
