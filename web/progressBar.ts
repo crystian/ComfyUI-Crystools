@@ -1,5 +1,4 @@
-import { api } from '/scripts/api.js';
-import { app } from '/scripts/app.js';
+import { app, api } from './comfy/scripts.js';
 import { commonPrefix } from './common.js';
 import { EStatus, ProgressBarUI } from './progressBarUI.js';
 

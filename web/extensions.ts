@@ -1,4 +1,4 @@
-import { app } from '/scripts/app.js';
+import { app } from './comfy/scripts.js';
 import { displayContext } from './common.js';
 import type { ComfyNode } from './comfy/liteGraph.types.js';
 import { TLGraphNode } from './comfy/liteGraph.js';

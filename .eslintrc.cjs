@@ -61,7 +61,7 @@ module.exports = {
       "ObjectExpression": { "multiline": true, "minProperties": 1 },
       "ObjectPattern": { "multiline": true, "minProperties": 1 },
       "ImportDeclaration": {"multiline": true, "minProperties": 8 },
-      "ExportDeclaration": { "multiline": true, "minProperties": 1 }
+      "ExportDeclaration": { "multiline": true, "minProperties": 8 }
     }],
     "@typescript-eslint/explicit-function-return-type": 'error',
     '@typescript-eslint/triple-slash-reference': 'off',

@@ -1,4 +1,4 @@
-import { app } from '/scripts/app.js';
+import { app } from './comfy/scripts.js';
 export class MonitorUI {
     constructor(monitorCPUElement, monitorRAMElement, monitorHDDElement, monitorGPUSettings, monitorVRAMSettings, monitorTemperatureSettings, currentRate) {
         Object.defineProperty(this, "monitorCPUElement", {

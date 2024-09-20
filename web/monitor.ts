@@ -1,5 +1,4 @@
-import { app } from '/scripts/app.js';
-import { api } from '/scripts/api.js';
+import { app, api } from './comfy/scripts.js';
 import { commonPrefix } from './common.js';
 import { MonitorUI } from './monitorUI.js';
 
