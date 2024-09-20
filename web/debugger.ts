@@ -3,7 +3,7 @@ import { api } from '/scripts/api.js';
 import { commonPrefix, displayContext } from './common.js';
 import type { ComfyNode } from './liteGraph.js';
 import { LiteGraph, TLGraphNode } from './liteGraph.js';
-import { ComfyApp } from 'types/comfy.js';
+import { ComfyApp } from './typings/comfy.js';
 import { ComfyWidgets } from '/scripts/widgets.js';
 
 // "Show any" Node

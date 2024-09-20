@@ -1,5 +1,7 @@
 import type { TLGraphNode } from './liteGraph.js';
-import { ComfyApp } from 'types/comfy.js';
+import { ComfyApp } from './typings/comfy.js';
+// import { ComfyWidgets } from '../../scripts/widgets.js';
+// import { ComfyWidgets } from './widgets.js';
 import { ComfyWidgets } from '/scripts/widgets.js';
 
 export const commonPrefix = '🪛';
@@ -54,7 +56,9 @@ export function displayContext(
   }
 
   // When the node is executed we will be sent the input text, display this in the widget
+
   // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   const onExecutedOriginal = nodeType.prototype.onExecuted;
   nodeType.prototype.onExecuted = function(message: { text: string }): void {
     // @ts-ignore
