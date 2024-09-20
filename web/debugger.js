@@ -1,7 +1,7 @@
 import { app } from '/scripts/app.js';
 import { api } from '/scripts/api.js';
 import { commonPrefix, displayContext } from './common.js';
-import { LiteGraph, TLGraphNode } from './liteGraph.js';
+import { LiteGraph, TLGraphNode } from './comfy/liteGraph.js';
 import { ComfyWidgets } from '/scripts/widgets.js';
 app.registerExtension({
     name: 'Crystools.Debugger.ConsoleAny',

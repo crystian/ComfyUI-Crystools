@@ -1,7 +1,5 @@
-import type { TLGraphNode } from './liteGraph.js';
-import { ComfyApp } from './typings/comfy.js';
-// import { ComfyWidgets } from '../../scripts/widgets.js';
-// import { ComfyWidgets } from './widgets.js';
+import type { TLGraphNode } from './comfy/liteGraph.js';
+import { ComfyApp } from './comfy/typings/comfy.js';
 import { ComfyWidgets } from '/scripts/widgets.js';
 
 export const commonPrefix = '🪛';

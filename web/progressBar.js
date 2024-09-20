@@ -1,8 +1,7 @@
 import { api } from '/scripts/api.js';
 import { app } from '/scripts/app.js';
 import { commonPrefix } from './common.js';
-import { ProgressBarUI } from './progressBarUI.js';
-import { EStatus } from './types.js';
+import { EStatus, ProgressBarUI } from './progressBarUI.js';
 class CrystoolsProgressBar {
     constructor() {
         Object.defineProperty(this, "idExtensionName", {

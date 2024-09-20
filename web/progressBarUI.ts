@@ -1,5 +1,10 @@
 import { app } from '/scripts/app.js';
-import { EStatus } from './types.js';
+
+export enum EStatus {
+  executing = 'Executing',
+  executed = 'Executed',
+  execution_error = 'Execution error',
+}
 
 export class ProgressBarUI {
   htmlProgressSliderRef: HTMLDivElement;

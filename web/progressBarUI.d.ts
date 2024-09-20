@@ -1,4 +1,8 @@
-import { EStatus } from './types.js';
+export declare enum EStatus {
+    executing = "Executing",
+    executed = "Executed",
+    execution_error = "Execution error"
+}
 export declare class ProgressBarUI {
     htmlIdCrystoolsRoot: string;
     htmlIdCrystoolsProgressBarContainer: string;
