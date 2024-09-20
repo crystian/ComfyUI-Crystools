@@ -1,4 +1,4 @@
-import { app } from './comfy/scripts.js';
+import { app } from './comfy/index.js';
 export var EStatus;
 (function (EStatus) {
     EStatus["executing"] = "Executing";

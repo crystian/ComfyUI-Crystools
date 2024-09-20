@@ -1,8 +1,6 @@
-import { app, api, ComfyWidgets } from './comfy/scripts.js';
+import type { ComfyNode } from './comfy/index.js';
+import { app, api, ComfyWidgets, LiteGraph, TLGraphNode, ComfyApp } from './comfy/index.js';
 import { commonPrefix, displayContext } from './common.js';
-import type { ComfyNode } from './comfy/liteGraph.js';
-import { LiteGraph, TLGraphNode } from './comfy/liteGraph.js';
-import { ComfyApp } from './comfy/typings/comfy.js';
 
 // "Show any" Node
 app.registerExtension({

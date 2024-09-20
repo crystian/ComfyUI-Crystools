@@ -1,4 +1,4 @@
-import { app } from './comfy/scripts.js';
+import { app } from './comfy/index.js';
 
 export class MonitorUI {
   htmlIdCrystoolsRoot = 'crystools-root';

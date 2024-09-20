@@ -1,4 +1,4 @@
-import { app } from './comfy/scripts.js';
+import { app } from './comfy/index.js';
 import { displayContext } from './common.js';
 const crystoolsExtensions = {
     'Get resolution [Crystools]': 'Crystools.Image.GetResolution',

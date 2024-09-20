@@ -1,4 +1,4 @@
-import { ComfyWidgets } from './comfy/scripts.js';
+import { ComfyWidgets } from './comfy/index.js';
 export const commonPrefix = '🪛';
 export function displayContext(nodeType, appFromArg, index = 0, serialize_widgets = false, isVirtualNode = false) {
     function populate(text) {

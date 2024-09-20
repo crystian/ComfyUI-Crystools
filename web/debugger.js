@@ -1,6 +1,5 @@
-import { app, api, ComfyWidgets } from './comfy/scripts.js';
+import { app, api, ComfyWidgets, LiteGraph, TLGraphNode } from './comfy/index.js';
 import { commonPrefix, displayContext } from './common.js';
-import { LiteGraph, TLGraphNode } from './comfy/liteGraph.js';
 app.registerExtension({
     name: 'Crystools.Debugger.ConsoleAny',
     beforeRegisterNodeDef(nodeType, nodeData, appFromArg) {
