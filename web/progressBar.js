@@ -102,7 +102,6 @@ class CrystoolsProgressBar {
             configurable: true,
             writable: true,
             value: (value) => {
-                console.log('showProgressBar', value, this.newMenu);
                 if (this.newMenu === NewMenuOptions.Disabled) {
                     const container = document.getElementById(this.htmlIdCrystoolsProgressBarContainer);
                     if (container) {
@@ -116,7 +115,6 @@ class CrystoolsProgressBar {
             configurable: true,
             writable: true,
             value: () => {
-                console.log('updateDisplay');
                 const newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
                 if (newMenu !== this.newMenu) {
                     this.newMenu = newMenu;
@@ -125,7 +123,6 @@ class CrystoolsProgressBar {
                             this.setup();
                             break;
                         default:
-                            console.log('new menu', this.newMenu);
                     }
                 }
                 if (this.newMenu === NewMenuOptions.Disabled) {

@@ -48,9 +48,10 @@ type TMonitorSettings = {
   symbol: string, // on monitor
   title?: string, // on monitor
   tooltip?: string, // on settings
-  type: 'boolean' | 'number' | 'string',
-  defaultValue: boolean,
-  onChange: (value: boolean) => Promise<void>,
+  type: 'boolean' | 'number' | 'string' | 'slider' | 'combo',
+  defaultValue: boolean | number | string,
+  data?: any,
+  onChange: (value: boolean | number | string) => Promise<void>,
   htmlMonitorRef?: HTMLDivElement,
   htmlMonitorSliderRef?: HTMLDivElement,
   htmlMonitorLabelRef?: HTMLDivElement,

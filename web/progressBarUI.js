@@ -38,7 +38,6 @@ export class ProgressBarUIBase {
             value: NewMenuOptions.Disabled
         });
         this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
-        console.log('menu', this.newMenu);
         if (this.newMenu === NewMenuOptions.Disabled) {
             this.createRoot();
         }
@@ -106,7 +105,6 @@ export class ProgressBarUI extends ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: () => {
-                console.log('create');
                 const htmlContainer = document.createElement('div');
                 htmlContainer.setAttribute('id', this.htmlIdCrystoolsProgressBarContainer);
                 htmlContainer.setAttribute('title', 'click to see the current working node');
