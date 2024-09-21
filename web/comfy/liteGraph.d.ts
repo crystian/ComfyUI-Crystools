@@ -1,6 +1,5 @@
-export type * from './liteGraph.types';
-export * from '/scripts/widgets.js';
-import type { IWidget as IWidgetOld, LGraphNode as TypeGraphNode, TypeLiteGraph } from './liteGraph.types';
+export type * from './liteGraph.types.js';
+import type { IWidget as IWidgetOld, LGraphNode as TypeGraphNode, TypeLiteGraph } from './liteGraph.types.js';
 declare const LGraphNode: typeof TypeGraphNode;
 export interface IWidget extends IWidgetOld {
     onRemove?: () => void;
@@ -12,9 +11,7 @@ export declare class TLGraphNode extends LGraphNode {
     static color: string;
     static bgcolor: string;
     static collapsable: boolean;
-    widgets?: IWidget[];
     isVirtualNode?: boolean;
-    onResize?: (size: [number, number]) => void;
     widgets_values?: any[];
     name?: string;
     prototype: TLGraphNode;
