@@ -75,7 +75,7 @@ class CrystoolsProgressBar {
             writable: true,
             value: undefined
         });
-        Object.defineProperty(this, "progressBarVertical", {
+        Object.defineProperty(this, "progressBarUI", {
             enumerable: true,
             configurable: true,
             writable: true,
@@ -118,15 +118,12 @@ class CrystoolsProgressBar {
                 const newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
                 if (newMenu !== this.newMenu) {
                     this.newMenu = newMenu;
-                    switch (this.newMenu) {
-                        case NewMenuOptions.Disabled:
-                            this.setup();
-                            break;
-                        default:
+                    if (this.newMenu === NewMenuOptions.Disabled) {
+                        this.setup();
                     }
                 }
                 if (this.newMenu === NewMenuOptions.Disabled) {
-                    this.progressBarVertical?.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
+                    this.progressBarUI?.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
                 }
             }
         });
@@ -186,21 +183,21 @@ class CrystoolsProgressBar {
             }
         });
         this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
+        window.addEventListener('resize', () => this.updateDisplay());
         this.createSettings();
         this.updateDisplay();
-        window.addEventListener('resize', () => this.updateDisplay());
     }
     setup() {
-        if (this.progressBarVertical) {
+        if (this.progressBarUI) {
             this.showProgressBar(app.ui.settings.getSettingValue(this.idShowProgressBar, this.defaultShowStatus));
             return;
         }
         if (this.newMenu !== NewMenuOptions.Disabled) {
             return;
         }
-        this.progressBarVertical = new ProgressBarUI(this.htmlIdCrystoolsProgressBarContainer, this.centerNode);
-        this.htmlProgressSliderRef = this.progressBarVertical.htmlProgressSliderRef;
-        this.htmlProgressLabelRef = this.progressBarVertical.htmlProgressLabelRef;
+        this.progressBarUI = new ProgressBarUI(this.htmlIdCrystoolsProgressBarContainer, this.centerNode);
+        this.htmlProgressSliderRef = this.progressBarUI.htmlProgressSliderRef;
+        this.htmlProgressLabelRef = this.progressBarUI.htmlProgressLabelRef;
         this.showProgressBar(app.ui.settings.getSettingValue(this.idShowProgressBar, this.defaultShowStatus));
         this.registerListeners();
     }

@@ -88,16 +88,12 @@ export class ProgressBarUI extends ProgressBarUIBase{
   };
 
   refreshDisplay = (): void => {
-    console.log('dddd', this.newMenu);
     if(this.newMenu === NewMenuOptions.Disabled) {
       this.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
-    } else {
-      console.log('refresh');
     }
   };
 
   updateDisplay = (currentStatus: EStatus, timeStart: number, currentProgress: number): void => {
-    console.log('entra');
     if (!(this.htmlProgressLabelRef && this.htmlProgressSliderRef)) {
       console.error('htmlProgressLabelRef or htmlProgressSliderRef is undefined');
       return;

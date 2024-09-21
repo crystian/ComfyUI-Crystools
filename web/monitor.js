@@ -3,6 +3,7 @@ import { commonPrefix } from './common.js';
 import { MonitorUI } from './monitorUI.js';
 import { Colors } from './styles.js';
 import { convertNumberToPascalCase } from './utils.js';
+import { NewMenuOptions } from './progressBarUI.js';
 class CrystoolsMonitor {
     constructor() {
         Object.defineProperty(this, "idExtensionName", {
@@ -22,6 +23,12 @@ class CrystoolsMonitor {
             configurable: true,
             writable: true,
             value: void 0
+        });
+        Object.defineProperty(this, "newMenu", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: NewMenuOptions.Disabled
         });
         Object.defineProperty(this, "settingsRate", {
             enumerable: true,
@@ -350,6 +357,21 @@ class CrystoolsMonitor {
                 });
             }
         });
+        Object.defineProperty(this, "updateDisplay", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: () => {
+                console.log('updateDisplay');
+                const newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
+                if (newMenu !== this.newMenu) {
+                    this.newMenu = newMenu;
+                    if (this.newMenu === NewMenuOptions.Disabled) {
+                        this.setup();
+                    }
+                }
+            }
+        });
         Object.defineProperty(this, "updateServer", {
             enumerable: true,
             configurable: true,
@@ -426,13 +448,21 @@ class CrystoolsMonitor {
                 }, false);
             }
         });
+        this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
+        window.addEventListener('resize', () => this.updateDisplay());
         this.createSettingsRate();
         this.createSettingsCPU();
         this.createSettingsRAM();
         this.createSettingsHDD();
         this.createSettings();
+        this.updateDisplay();
     }
     setup() {
+        console.log('setup');
+        if (this.monitorUI) {
+            return;
+        }
+        console.log('setup nuevo');
         const currentRate = parseFloat(app.ui.settings.getSettingValue(this.settingsRate.id, this.settingsRate.defaultValue));
         this.monitorUI = new MonitorUI(this.monitorCPUElement, this.monitorRAMElement, this.monitorHDDElement, this.monitorGPUSettings, this.monitorVRAMSettings, this.monitorTemperatureSettings, currentRate);
         this.registerListeners();

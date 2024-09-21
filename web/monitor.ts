@@ -3,12 +3,14 @@ import { commonPrefix } from './common.js';
 import { MonitorUI } from './monitorUI.js';
 import { Colors } from './styles.js';
 import { convertNumberToPascalCase } from './utils.js';
+import { NewMenuOptions } from './progressBarUI.js';
 
 class CrystoolsMonitor {
   idExtensionName = 'Crystools.monitor';
   menuPrefix = commonPrefix;
 
   monitorUI: MonitorUI;
+  newMenu: NewMenuOptions = NewMenuOptions.Disabled;
 
   settingsRate: TMonitorSettings;
   monitorCPUElement: TMonitorSettings;
@@ -19,13 +21,15 @@ class CrystoolsMonitor {
   monitorVRAMSettings: TMonitorSettings[] = [];
   monitorTemperatureSettings: TMonitorSettings[] = [];
 
-
   constructor() {
+    this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
+    window.addEventListener('resize', () => this.updateDisplay());
     this.createSettingsRate();
     this.createSettingsCPU();
     this.createSettingsRAM();
     this.createSettingsHDD();
     this.createSettings();
+    this.updateDisplay();
   }
 
   createSettingsRate = (): void => {
@@ -280,7 +284,6 @@ class CrystoolsMonitor {
     };
   };
 
-
   createSettings = (): void => {
     app.ui.settings.addSetting(this.settingsRate);
     app.ui.settings.addSetting(this.monitorRAMElement);
@@ -307,6 +310,19 @@ class CrystoolsMonitor {
 
       });
     });
+  };
+
+  updateDisplay = (): void => {
+    console.log('updateDisplay');
+    const newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
+
+    if (newMenu !== this.newMenu) {
+      this.newMenu = newMenu;
+
+      if (this.newMenu === NewMenuOptions.Disabled) {
+        this.setup();
+      }
+    }
   };
 
   updateServer = async(data: TStatsSettings): Promise<string> => {
@@ -353,6 +369,11 @@ class CrystoolsMonitor {
   };
 
   setup(): void {
+    console.log('setup');
+    if (this.monitorUI) {
+      return;
+    }
+    console.log('setup nuevo');
     const currentRate =
       parseFloat(app.ui.settings.getSettingValue(this.settingsRate.id, this.settingsRate.defaultValue));
 

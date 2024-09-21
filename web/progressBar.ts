@@ -18,13 +18,13 @@ class CrystoolsProgressBar {
   htmlProgressSliderRef?: HTMLDivElement = undefined;
   htmlProgressLabelRef?: HTMLDivElement = undefined;
 
-  progressBarVertical: ProgressBarUI;
+  progressBarUI: ProgressBarUI;
 
   constructor() {
     this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
+    window.addEventListener('resize', () => this.updateDisplay());
     this.createSettings();
     this.updateDisplay();
-    window.addEventListener('resize', () => this.updateDisplay());
   }
 
   // not on setup because this affect the order on settings, I prefer to options at first
@@ -58,23 +58,19 @@ class CrystoolsProgressBar {
     if (newMenu !== this.newMenu) {
       this.newMenu = newMenu;
 
-      switch (this.newMenu) {
-        case NewMenuOptions.Disabled:
-          this.setup();
-          break;
-        default:
-          // console.log('new menu', this.newMenu);
+      if (this.newMenu === NewMenuOptions.Disabled) {
+        this.setup();
       }
     }
 
     if (this.newMenu === NewMenuOptions.Disabled) {
-      this.progressBarVertical?.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
+      this.progressBarUI?.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
     }
 
   };
 
   setup(): void {
-    if (this.progressBarVertical) {
+    if (this.progressBarUI) {
       this.showProgressBar(app.ui.settings.getSettingValue(this.idShowProgressBar, this.defaultShowStatus));
       return;
     }
@@ -82,12 +78,12 @@ class CrystoolsProgressBar {
       return;
     }
 
-    this.progressBarVertical = new ProgressBarUI(
+    this.progressBarUI = new ProgressBarUI(
       this.htmlIdCrystoolsProgressBarContainer,
       this.centerNode);
 
-    this.htmlProgressSliderRef = this.progressBarVertical.htmlProgressSliderRef;
-    this.htmlProgressLabelRef = this.progressBarVertical.htmlProgressLabelRef;
+    this.htmlProgressSliderRef = this.progressBarUI.htmlProgressSliderRef;
+    this.htmlProgressLabelRef = this.progressBarUI.htmlProgressLabelRef;
 
     this.showProgressBar(app.ui.settings.getSettingValue(this.idShowProgressBar, this.defaultShowStatus));
     this.registerListeners();
