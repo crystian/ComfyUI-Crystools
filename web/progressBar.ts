@@ -4,7 +4,7 @@ import { EStatus, ProgressBarUI } from './progressBarUI.js';
 
 class CrystoolsProgressBar {
   idExtensionName = 'Crystools.progressBar';
-  idShowProgressBar = 'Crystools.showStatus';
+  idShowProgressBar = 'Crystools.ProgressBar';
   defaultShowStatus = true;
   menuPrefix = commonPrefix;
   htmlIdCrystoolsRoot = 'crystools-root';
@@ -28,7 +28,7 @@ class CrystoolsProgressBar {
   createSettings = (): void => {
     app.ui.settings.addSetting({
       id: this.idShowProgressBar,
-      name: this.menuPrefix + '[monitor] Show progress bar',
+      name: this.menuPrefix + ' Progress bar',
       type: 'boolean',
       defaultValue: this.defaultShowStatus,
       onChange: this.showProgressBar,

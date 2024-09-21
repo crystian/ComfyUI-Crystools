@@ -1,6 +1,8 @@
 import { app, api } from './comfy/index.js';
 import { commonPrefix } from './common.js';
 import { MonitorUI } from './monitorUI.js';
+import { Colors } from './styles.js';
+import { convertNumberToPascalCase } from './utils.js';
 
 class CrystoolsMonitor {
   idExtensionName = 'Crystools.monitor';
@@ -8,18 +10,75 @@ class CrystoolsMonitor {
 
   monitorUI: MonitorUI;
 
-  idInputRate = 'Crystools.inputRate';
-  defaultRate = .5;
-  idWhichHDD = 'Crystools.whichHDD';
-  defaultWhichHDD = '/';
   monitorGPUSettings: TMonitorSettings[] = [];
   monitorVRAMSettings: TMonitorSettings[] = [];
   monitorTemperatureSettings: TMonitorSettings[] = [];
 
+  settingsRate = {
+    id: 'Crystools.RefreshRate',
+    name: this.menuPrefix + 'Refresh per second',
+    tooltip: 'This is the time (in seconds) between each update of the monitors, 0 means no refresh',
+    type: 'slider',
+    attrs: {
+      min: 0,
+      max: 2,
+      step: 0.25,
+    },
+    defaultValue: .5,
+    onChange: async(value: string): Promise<void> => {
+      let valueNumber: number;
+
+      try {
+        valueNumber = parseFloat(value);
+        if (isNaN(valueNumber)) {
+          throw new Error('invalid value');
+        }
+      } catch (error) {
+        console.error(error);
+        return;
+      }
+      try {
+        await this.updateServer({
+          rate: valueNumber,
+        });
+      } catch (error) {
+        console.error(error);
+        return;
+      }
+
+      if (valueNumber === 0) {
+        this.monitorUI.updateAllMonitors({
+          cpu_utilization: 0,
+          device: 'cpu',
+
+          gpus: [
+            {
+              gpu_utilization: 0,
+              gpu_temperature: 0,
+              vram_total: 0,
+              vram_used: 0,
+              vram_used_percent: 0,
+            },
+          ],
+          hdd_total: 0,
+          hdd_used: 0,
+          hdd_used_percent: 0,
+          ram_total: 0,
+          ram_used: 0,
+          ram_used_percent: 0,
+        });
+      }
+
+      this.monitorUI?.updateAllAnimationDuration(valueNumber);
+    },
+  };
+
+
   // CPU Variables
   monitorCPUElement: TMonitorSettings = {
-    id: 'Crystools.switchCPU',
-    name: this.menuPrefix + ' [monitor] CPU Usage',
+    id: 'Crystools.ShowCpu',
+    name: this.menuPrefix + ' CPU Usage',
+    category: ['Crystools', 'Hardware', 'Cpu' ],
     type: 'boolean',
     label: 'CPU',
     symbol: '%',
@@ -27,7 +86,7 @@ class CrystoolsMonitor {
     htmlMonitorRef: undefined,
     htmlMonitorSliderRef: undefined,
     htmlMonitorLabelRef: undefined,
-    cssColor: '#0AA015',
+    cssColor: Colors.CPU,
     onChange: async(value: boolean) => {
       this.monitorUI?.updateWidget(this.monitorCPUElement);
       await this.updateServer({
@@ -38,8 +97,9 @@ class CrystoolsMonitor {
 
   // RAM Variables
   monitorRAMElement: TMonitorSettings = {
-    id: 'Crystools.switchRAM',
-    name: this.menuPrefix + ' [monitor] RAM Used',
+    id: 'Crystools.ShowRam',
+    name: this.menuPrefix + ' RAM Used',
+    category: ['Crystools', 'Hardware', 'Ram' ],
     type: 'boolean',
     label: 'RAM',
     symbol: '%',
@@ -47,7 +107,7 @@ class CrystoolsMonitor {
     htmlMonitorRef: undefined,
     htmlMonitorSliderRef: undefined,
     htmlMonitorLabelRef: undefined,
-    cssColor: '#07630D',
+    cssColor: Colors.RAM,
     onChange: async(value: boolean) => {
       this.monitorUI?.updateWidget(this.monitorRAMElement);
       await this.updateServer({
@@ -58,21 +118,45 @@ class CrystoolsMonitor {
 
   // HDD Variables
   monitorHDDElement: TMonitorSettings = {
-    id: 'Crystools.switchHDD',
-    name: this.menuPrefix + ' [monitor] HDD Used',
+    id: 'Crystools.ShowHdd',
+    name: this.menuPrefix + ' Show HDD Used',
+    category: ['Crystools', 'Show Hard Disk', 'Show' ],
     type: 'boolean',
     label: 'HDD',
     symbol: '%',
-    tooltip: 'See Partition to show (HDD)',
-    defaultValue: true,
+    // tooltip: 'See Partition to show (HDD)',
+    defaultValue: false,
     htmlMonitorRef: undefined,
     htmlMonitorSliderRef: undefined,
     htmlMonitorLabelRef: undefined,
-    cssColor: '#730F92',
+    cssColor: Colors.DISK,
     onChange: async(value: boolean) => {
       this.monitorUI?.updateWidget(this.monitorHDDElement);
       await this.updateServer({
         switchHDD: value,
+      });
+    },
+  };
+
+  settingsHDD = {
+    id: 'Crystools.WhichHdd',
+    name: this.menuPrefix + ' Partition to show',
+    category: ['Crystools', 'Show Hard Disk', 'Which' ],
+    type: 'combo',
+    defaultValue: '/',
+    data: [],
+    // @ts-ignore bad definition from comfyUI: `options?: undefined;`??
+    options: (value: string): any => {
+      const which = app.ui.settings.getSettingValue(this.settingsHDD.id, this.settingsHDD.defaultValue);
+      return this.settingsHDD.data.map((m) => ({
+        value: m,
+        text: m,
+        selected: !value ? m === which : m === value,
+      }));
+    },
+    onChange: async(value: string): Promise<any> => {
+      await this.updateServer({
+        whichHDD: value,
       });
     },
   };
@@ -82,90 +166,16 @@ class CrystoolsMonitor {
   }
 
   createSettings = (): void => {
-    app.ui.settings.addSetting(this.monitorCPUElement);
+    app.ui.settings.addSetting(this.settingsRate);
     app.ui.settings.addSetting(this.monitorRAMElement);
-    app.ui.settings.addSetting(this.monitorHDDElement);
-
-    app.ui.settings.addSetting({
-      id: this.idInputRate,
-      name: this.menuPrefix + '[monitor] Refresh rate',
-      tooltip: 'This is the time (in seconds) between each update of the monitors, 0 means no refresh',
-      type: 'slider',
-      attrs: {
-        min: 0,
-        max: 5,
-        step: 0.25,
-      },
-      defaultValue: this.defaultRate,
-      onChange: async(value: string) => {
-        let valueNumber: number;
-
-        try {
-          valueNumber = parseFloat(value);
-          if (isNaN(valueNumber)) {
-            throw new Error('invalid value');
-          }
-        } catch (error) {
-          console.error(error);
-          return;
-        }
-        try {
-          await this.updateServer({
-            rate: valueNumber,
-          });
-        } catch (error) {
-          console.error(error);
-          return;
-        }
-
-        if (valueNumber === 0) {
-          this.monitorUI.updateAllMonitors({
-            cpu_utilization: 0,
-            device: 'cpu',
-
-            gpus: [
-              {
-                gpu_utilization: 0,
-                gpu_temperature: 0,
-                vram_total: 0,
-                vram_used: 0,
-                vram_used_percent: 0,
-              },
-            ],
-            hdd_total: 0,
-            hdd_used: 0,
-            hdd_used_percent: 0,
-            ram_total: 0,
-            ram_used: 0,
-            ram_used_percent: 0,
-          });
-        }
-
-        this.monitorUI?.updateAllAnimationDuration(valueNumber);
-      },
-    });
+    app.ui.settings.addSetting(this.monitorCPUElement);
 
     void this.getHDDsFromServer().then((data: string[]): void => {
-      const which = app.ui.settings.getSettingValue(this.idWhichHDD, this.defaultWhichHDD);
-      app.ui.settings.addSetting({
-        id: this.idWhichHDD,
-        name: this.menuPrefix + '[monitor] Partition to show',
-        type: 'combo',
-        defaultValue: this.defaultWhichHDD,
-        // @ts-ignore bad definition from comfyUI: `options?: undefined;`??
-        options: (value: string) =>
-          data.map((m) => ({
-            value: m,
-            text: m,
-            selected: !value ? m === which : m === value,
-          })),
-        onChange: async(value: string) => {
-          await this.updateServer({
-            whichHDD: value,
-          });
-        },
-      });
+      // @ts-ignore
+      this.settingsHDD.data = data;
+      app.ui.settings.addSetting(this.settingsHDD);
     });
+    app.ui.settings.addSetting(this.monitorHDDElement);
 
     void this.getGPUsFromServer().then((gpus: TGpuName[]): void => {
       let moreThanOneGPU = false;
@@ -193,8 +203,9 @@ class CrystoolsMonitor {
 
         // GPU Utilization Variables
         const monitorGPUNElement: TMonitorSettings = {
-          id: 'Crystools.switchGPU' + index,
-          name: this.menuPrefix + `[menu] Display GPU\r\n[${index}] ${name}`,
+          id: 'Crystools.ShowGpuUsage' + convertNumberToPascalCase(index),
+          category: ['Crystools', `Show GPU [${index}] ${name}`, 'Usage' ],
+          name: this.menuPrefix + ' Usage',
           type: 'boolean',
           label,
           symbol: '%',
@@ -203,7 +214,7 @@ class CrystoolsMonitor {
           htmlMonitorRef: undefined,
           htmlMonitorSliderRef: undefined,
           htmlMonitorLabelRef: undefined,
-          cssColor: '#0C86F4',
+          cssColor: Colors.GPU,
           onChange: async(value: boolean) => {
             this.monitorUI?.updateWidget(monitorGPUNElement);
             void await this.updateServerGPU(index,{
@@ -214,8 +225,9 @@ class CrystoolsMonitor {
 
         // GPU VRAM Variables
         const monitorVRAMNElement: TMonitorSettings = {
-          id: 'Crystools.switchVRAM' + index,
-          name: this.menuPrefix + `[menu] Display GPU VRAM\r\n[${index}] ${name}`,
+          id: 'Crystools.ShowGpuVram' + convertNumberToPascalCase(index),
+          category: ['Crystools', `Show GPU [${index}] ${name}`, 'VRAM' ],
+          name: this.menuPrefix + ' VRAM',
           type: 'boolean',
           label: labelVRAM,
           symbol: '%',
@@ -224,7 +236,7 @@ class CrystoolsMonitor {
           htmlMonitorRef: undefined,
           htmlMonitorSliderRef: undefined,
           htmlMonitorLabelRef: undefined,
-          cssColor: '#176EC7',
+          cssColor: Colors.VRAM,
           onChange: async(value: boolean) => {
             this.monitorUI?.updateWidget(monitorVRAMNElement);
             void await this.updateServerGPU(index,{
@@ -235,8 +247,9 @@ class CrystoolsMonitor {
 
         // GPU Temperature Variables
         const monitorTemperatureNElement: TMonitorSettings = {
-          id: 'Crystools.switchTemperature' + index,
-          name: this.menuPrefix + `[menu] Display GPU Temperature\r\n[${index}] ${name}`,
+          id: 'Crystools.ShowGpuTemperature' + convertNumberToPascalCase(index),
+          category: ['Crystools', `Show GPU [${index}] ${name}`, 'Temperature' ],
+          name: this.menuPrefix + ' Temperature',
           type: 'boolean',
           label: labelTemperature,
           symbol: '°',
@@ -245,8 +258,8 @@ class CrystoolsMonitor {
           htmlMonitorRef: undefined,
           htmlMonitorSliderRef: undefined,
           htmlMonitorLabelRef: undefined,
-          cssColor: '#00ff00',
-          cssColorFinal: '#ff0000',
+          cssColor: Colors.TEMP_START,
+          cssColorFinal: Colors.TEMP_END,
           onChange: async(value: boolean) => {
             this.monitorUI?.updateWidget(monitorTemperatureNElement);
             void await this.updateServerGPU(index,{
@@ -259,11 +272,11 @@ class CrystoolsMonitor {
         this.monitorVRAMSettings[index] = monitorVRAMNElement;
         this.monitorTemperatureSettings[index] = monitorTemperatureNElement;
         // @ts-ignore
-        app.ui.settings.addSetting(this.monitorGPUSettings[index]);
+        app.ui.settings.addSetting(this.monitorTemperatureSettings[index]);
         // @ts-ignore
         app.ui.settings.addSetting(this.monitorVRAMSettings[index]);
         // @ts-ignore
-        app.ui.settings.addSetting(this.monitorTemperatureSettings[index]);
+        app.ui.settings.addSetting(this.monitorGPUSettings[index]);
       });
     });
   };
@@ -312,7 +325,8 @@ class CrystoolsMonitor {
   };
 
   setup(): void {
-    const currentRate = parseFloat(app.ui.settings.getSettingValue(this.idInputRate, this.defaultRate));
+    const currentRate =
+      parseFloat(app.ui.settings.getSettingValue(this.settingsRate.id, this.settingsRate.defaultValue));
 
     this.monitorUI = new MonitorUI(
       this.monitorCPUElement,

@@ -43,6 +43,7 @@ type TStatsSettings = {
 type TMonitorSettings = {
   id: string,
   name: string,
+  category: string[], // for settings location
   label: string, // on monitor
   symbol: string, // on monitor
   title?: string, // on monitor

@@ -13,7 +13,7 @@ class CrystoolsProgressBar {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: 'Crystools.showStatus'
+            value: 'Crystools.ProgressBar'
         });
         Object.defineProperty(this, "defaultShowStatus", {
             enumerable: true,
@@ -88,7 +88,7 @@ class CrystoolsProgressBar {
             value: () => {
                 app.ui.settings.addSetting({
                     id: this.idShowProgressBar,
-                    name: this.menuPrefix + '[monitor] Show progress bar',
+                    name: this.menuPrefix + ' Progress bar',
                     type: 'boolean',
                     defaultValue: this.defaultShowStatus,
                     onChange: this.showProgressBar,
