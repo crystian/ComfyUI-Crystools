@@ -1,4 +1,4 @@
-// import { app } from './comfy/index.js';
+import { app } from './comfy/index.js';
 
 export enum EStatus {
   executing = 'Executing',
@@ -6,14 +6,25 @@ export enum EStatus {
   execution_error = 'Execution error',
 }
 
+export enum NewMenuOptions {
+  'Disabled' = 'Disabled',
+  'Top' = 'Top',
+  'Bottom' = 'Bottom',
+}
+
 export abstract class ProgressBarUIBase {
   protected htmlIdCrystoolsRoot = 'crystools-root';
   protected htmlClassCrystoolsMonitorContainer = 'crystools-monitor-container';
   protected htmlContainer: HTMLDivElement;
+  protected newMenu: NewMenuOptions = NewMenuOptions.Disabled;
 
   protected constructor() {
-    this.createRoot();
-    window.addEventListener('resize', () => this.refreshDisplay());
+    this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
+    console.log('menu', this.newMenu);
+    if(this.newMenu === NewMenuOptions.Disabled) {
+      this.createRoot();
+    }
+    // window.addEventListener('resize', () => this.refreshDisplay());
   }
 
   createRoot(): void {
@@ -33,7 +44,7 @@ export abstract class ProgressBarUIBase {
     ctoolsRoot.append(this.htmlContainer);
   }
 
-  abstract refreshDisplay(): void;
+  // abstract refreshDisplay(): void;
   abstract createDOM(): void;
 }
 
@@ -49,10 +60,13 @@ export class ProgressBarUI extends ProgressBarUIBase{
     private centerNode: () => void
   ) {
     super();
-    this.createDOM();
+    if(this.newMenu === NewMenuOptions.Disabled) {
+      this.createDOM();
+    }
   }
 
   createDOM = (): void => {
+    console.log('create');
     const htmlContainer = document.createElement('div');
     htmlContainer.setAttribute('id', this.htmlIdCrystoolsProgressBarContainer);
     htmlContainer.setAttribute('title', 'click to see the current working node');
@@ -77,10 +91,16 @@ export class ProgressBarUI extends ProgressBarUIBase{
   };
 
   refreshDisplay = (): void => {
-    this.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
+    console.log('dddd', this.newMenu);
+    if(this.newMenu === NewMenuOptions.Disabled) {
+      this.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
+    } else {
+      console.log('refresh');
+    }
   };
 
   updateDisplay = (currentStatus: EStatus, timeStart: number, currentProgress: number): void => {
+    console.log('entra');
     if (!(this.htmlProgressLabelRef && this.htmlProgressSliderRef)) {
       console.error('htmlProgressLabelRef or htmlProgressSliderRef is undefined');
       return;
@@ -90,9 +110,6 @@ export class ProgressBarUI extends ProgressBarUIBase{
     this.timeStart = timeStart;
     this.currentProgress = currentProgress;
 
-    // TODO from here!
-    // const menu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
-    // console.log('menu', menu);
 
     if (currentStatus === EStatus.executed) {
       // finished

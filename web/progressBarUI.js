@@ -1,9 +1,16 @@
+import { app } from './comfy/index.js';
 export var EStatus;
 (function (EStatus) {
     EStatus["executing"] = "Executing";
     EStatus["executed"] = "Executed";
     EStatus["execution_error"] = "Execution error";
 })(EStatus || (EStatus = {}));
+export var NewMenuOptions;
+(function (NewMenuOptions) {
+    NewMenuOptions["Disabled"] = "Disabled";
+    NewMenuOptions["Top"] = "Top";
+    NewMenuOptions["Bottom"] = "Bottom";
+})(NewMenuOptions || (NewMenuOptions = {}));
 export class ProgressBarUIBase {
     constructor() {
         Object.defineProperty(this, "htmlIdCrystoolsRoot", {
@@ -24,8 +31,17 @@ export class ProgressBarUIBase {
             writable: true,
             value: void 0
         });
-        this.createRoot();
-        window.addEventListener('resize', () => this.refreshDisplay());
+        Object.defineProperty(this, "newMenu", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: NewMenuOptions.Disabled
+        });
+        this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
+        console.log('menu', this.newMenu);
+        if (this.newMenu === NewMenuOptions.Disabled) {
+            this.createRoot();
+        }
     }
     createRoot() {
         let ctoolsRoot = document.getElementById(this.htmlIdCrystoolsRoot);
@@ -90,6 +106,7 @@ export class ProgressBarUI extends ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: () => {
+                console.log('create');
                 const htmlContainer = document.createElement('div');
                 htmlContainer.setAttribute('id', this.htmlIdCrystoolsProgressBarContainer);
                 htmlContainer.setAttribute('title', 'click to see the current working node');
@@ -115,7 +132,13 @@ export class ProgressBarUI extends ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: () => {
-                this.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
+                console.log('dddd', this.newMenu);
+                if (this.newMenu === NewMenuOptions.Disabled) {
+                    this.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
+                }
+                else {
+                    console.log('refresh');
+                }
             }
         });
         Object.defineProperty(this, "updateDisplay", {
@@ -123,6 +146,7 @@ export class ProgressBarUI extends ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: (currentStatus, timeStart, currentProgress) => {
+                console.log('entra');
                 if (!(this.htmlProgressLabelRef && this.htmlProgressSliderRef)) {
                     console.error('htmlProgressLabelRef or htmlProgressSliderRef is undefined');
                     return;
@@ -149,6 +173,8 @@ export class ProgressBarUI extends ProgressBarUIBase {
                 }
             }
         });
-        this.createDOM();
+        if (this.newMenu === NewMenuOptions.Disabled) {
+            this.createDOM();
+        }
     }
 }

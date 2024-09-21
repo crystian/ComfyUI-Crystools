@@ -1,6 +1,6 @@
 import { app, api } from './comfy/index.js';
 import { commonPrefix } from './common.js';
-import { EStatus, ProgressBarUI } from './progressBarUI.js';
+import { EStatus, NewMenuOptions, ProgressBarUI } from './progressBarUI.js';
 class CrystoolsProgressBar {
     constructor() {
         Object.defineProperty(this, "idExtensionName", {
@@ -32,6 +32,12 @@ class CrystoolsProgressBar {
             configurable: true,
             writable: true,
             value: 'crystools-progress-bar-container'
+        });
+        Object.defineProperty(this, "newMenu", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: NewMenuOptions.Disabled
         });
         Object.defineProperty(this, "currentStatus", {
             enumerable: true,
@@ -84,6 +90,7 @@ class CrystoolsProgressBar {
                     id: this.idShowProgressBar,
                     name: 'Show progress bar',
                     category: ['Crystools', this.menuPrefix + ' Progress Bar', 'Show'],
+                    tooltip: 'This apply only on old menu',
                     type: 'boolean',
                     defaultValue: this.defaultShowStatus,
                     onChange: this.showProgressBar,
@@ -95,9 +102,12 @@ class CrystoolsProgressBar {
             configurable: true,
             writable: true,
             value: (value) => {
-                const container = document.getElementById(this.htmlIdCrystoolsProgressBarContainer);
-                if (container) {
-                    container.style.display = value ? 'block' : 'none';
+                console.log('showProgressBar', value, this.newMenu);
+                if (this.newMenu === NewMenuOptions.Disabled) {
+                    const container = document.getElementById(this.htmlIdCrystoolsProgressBarContainer);
+                    if (container) {
+                        container.style.display = value ? 'block' : 'none';
+                    }
                 }
             }
         });
@@ -106,7 +116,21 @@ class CrystoolsProgressBar {
             configurable: true,
             writable: true,
             value: () => {
-                this.progressBarVertical.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
+                console.log('updateDisplay');
+                const newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
+                if (newMenu !== this.newMenu) {
+                    this.newMenu = newMenu;
+                    switch (this.newMenu) {
+                        case NewMenuOptions.Disabled:
+                            this.setup();
+                            break;
+                        default:
+                            console.log('new menu', this.newMenu);
+                    }
+                }
+                if (this.newMenu === NewMenuOptions.Disabled) {
+                    this.progressBarVertical?.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
+                }
             }
         });
         Object.defineProperty(this, "registerListeners", {
@@ -164,9 +188,19 @@ class CrystoolsProgressBar {
                 app.canvas.centerOnNode(node);
             }
         });
+        this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
         this.createSettings();
+        this.updateDisplay();
+        window.addEventListener('resize', () => this.updateDisplay());
     }
     setup() {
+        if (this.progressBarVertical) {
+            this.showProgressBar(app.ui.settings.getSettingValue(this.idShowProgressBar, this.defaultShowStatus));
+            return;
+        }
+        if (this.newMenu !== NewMenuOptions.Disabled) {
+            return;
+        }
         this.progressBarVertical = new ProgressBarUI(this.htmlIdCrystoolsProgressBarContainer, this.centerNode);
         this.htmlProgressSliderRef = this.progressBarVertical.htmlProgressSliderRef;
         this.htmlProgressLabelRef = this.progressBarVertical.htmlProgressLabelRef;
