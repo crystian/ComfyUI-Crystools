@@ -1,3 +1,6 @@
+import { injectCss } from './utils.js';
+void injectCss('extensions/ComfyUI-Crystools/monitor.css').then(() => {
+});
 export var Styles;
 (function (Styles) {
     Styles["BARS"] = "BARS";

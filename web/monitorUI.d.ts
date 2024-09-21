@@ -1,16 +1,15 @@
-export declare class MonitorUI {
-    monitorCPUElement: TMonitorSettings;
-    monitorRAMElement: TMonitorSettings;
-    monitorHDDElement: TMonitorSettings;
-    monitorGPUSettings: TMonitorSettings[];
-    monitorVRAMSettings: TMonitorSettings[];
-    monitorTemperatureSettings: TMonitorSettings[];
-    currentRate: number;
-    htmlIdCrystoolsRoot: string;
-    htmlIdCrystoolsMonitorContainer: string;
+import { ProgressBarUIBase } from './progressBarUI.js';
+export declare class MonitorUI extends ProgressBarUIBase {
+    private monitorCPUElement;
+    private monitorRAMElement;
+    private monitorHDDElement;
+    private monitorGPUSettings;
+    private monitorVRAMSettings;
+    private monitorTemperatureSettings;
+    private currentRate;
     constructor(monitorCPUElement: TMonitorSettings, monitorRAMElement: TMonitorSettings, monitorHDDElement: TMonitorSettings, monitorGPUSettings: TMonitorSettings[], monitorVRAMSettings: TMonitorSettings[], monitorTemperatureSettings: TMonitorSettings[], currentRate: number);
     refreshDisplay: () => void;
-    createVertical: () => void;
+    createDOM: () => void;
     updateAllWidget: () => void;
     updateWidget: (monitorSettings: TMonitorSettings) => void;
     updateAllMonitors: (data: TStatsData) => void;

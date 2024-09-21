@@ -7,7 +7,6 @@ class CrystoolsProgressBar {
   idShowProgressBar = 'Crystools.ProgressBar';
   defaultShowStatus = true;
   menuPrefix = commonPrefix;
-  htmlIdCrystoolsRoot = 'crystools-root';
   htmlIdCrystoolsProgressBarContainer = 'crystools-progress-bar-container';
 
   currentStatus = EStatus.executed;
@@ -24,7 +23,7 @@ class CrystoolsProgressBar {
     this.createSettings();
   }
 
-  // not on setup because this affect the order on settings, I prefer to options at first
+    // not on setup because this affect the order on settings, I prefer to options at first
   createSettings = (): void => {
     app.ui.settings.addSetting({
       id: this.idShowProgressBar,
@@ -51,7 +50,6 @@ class CrystoolsProgressBar {
 
   setup(): void {
     this.progressBarVertical = new ProgressBarUI(
-      this.htmlIdCrystoolsRoot,
       this.htmlIdCrystoolsProgressBarContainer,
       this.centerNode);
 
@@ -63,9 +61,7 @@ class CrystoolsProgressBar {
   }
 
   registerListeners = (): void => {
-    api.addEventListener('status', ({
-      detail,
-    }: any) => {
+    api.addEventListener('status', ({ detail }: any) => {
       this.currentStatus = this.currentStatus === EStatus.execution_error ? EStatus.execution_error : EStatus.executed;
       const queueRemaining = detail?.exec_info.queue_remaining;
 
@@ -75,12 +71,8 @@ class CrystoolsProgressBar {
       this.updateDisplay();
     }, false);
 
-    api.addEventListener('progress', ({
-      detail,
-    }: any) => {
-      const {
-        value, max, node,
-      } = detail;
+    api.addEventListener('progress', ({ detail }: any) => {
+      const { value, max, node } = detail;
       const progress = Math.floor((value / max) * 100);
 
       if (!isNaN(progress) && progress >= 0 && progress <= 100) {
@@ -91,9 +83,7 @@ class CrystoolsProgressBar {
       this.updateDisplay();
     }, false);
 
-    api.addEventListener('executed', ({
-      detail,
-    }: any) => {
+    api.addEventListener('executed', ({ detail }: any) => {
       if (detail?.node) {
         this.currentNode = detail.node;
       }
@@ -101,18 +91,14 @@ class CrystoolsProgressBar {
       this.updateDisplay();
     }, false);
 
-    api.addEventListener('execution_start', ({
-      _detail,
-    }: any) => {
+    api.addEventListener('execution_start', ({ _detail }: any) => {
       this.currentStatus = EStatus.executing;
       this.timeStart = Date.now();
 
       this.updateDisplay();
     }, false);
 
-    api.addEventListener('execution_error', ({
-      _detail,
-    }: any) => {
+    api.addEventListener('execution_error', ({ _detail }: any) => {
       this.currentStatus = EStatus.execution_error;
 
       this.updateDisplay();

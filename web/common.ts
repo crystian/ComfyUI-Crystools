@@ -25,9 +25,7 @@ export function displayContext(
     this.isVirtualNode = isVirtualNode;
 
     const widget = ComfyWidgets.STRING(this, 'text', [
-      'STRING', {
-        multiline: true,
-      },
+      'STRING', { multiline: true },
     ], appFromArg).widget;
     widget.inputEl.readOnly = true;
     widget.inputEl.style.opacity = 0.6;

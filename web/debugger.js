@@ -54,25 +54,17 @@ app.registerExtension({
                 this.serialize_widgets = false;
                 this.isVirtualNode = true;
                 const widget = ComfyWidgets.STRING(this, '', [
-                    '', {
-                        default: '', multiline: true,
-                    },
+                    '', { default: '', multiline: true },
                 ], app).widget;
                 widget.inputEl.readOnly = true;
                 ComfyWidgets.BOOLEAN(this, 'Active', [
-                    '', {
-                        default: true,
-                    },
+                    '', { default: true },
                 ]);
                 ComfyWidgets.BOOLEAN(this, 'Parsed', [
-                    '', {
-                        default: true,
-                    },
+                    '', { default: true },
                 ]);
                 ComfyWidgets.COMBO(this, 'What', [
-                    ['Prompt', 'Workflow'], {
-                        default: 'Prompt',
-                    },
+                    ['Prompt', 'Workflow'], { default: 'Prompt' },
                 ]);
                 api.addEventListener('executed', this.fillMetadataWidget, false);
             }

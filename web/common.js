@@ -14,9 +14,7 @@ export function displayContext(nodeType, appFromArg, index = 0, serialize_widget
         this.serialize_widgets = serialize_widgets;
         this.isVirtualNode = isVirtualNode;
         const widget = ComfyWidgets.STRING(this, 'text', [
-            'STRING', {
-                multiline: true,
-            },
+            'STRING', { multiline: true },
         ], appFromArg).widget;
         widget.inputEl.readOnly = true;
         widget.inputEl.style.opacity = 0.6;

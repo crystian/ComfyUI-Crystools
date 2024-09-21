@@ -3,18 +3,25 @@ export declare enum EStatus {
     executed = "Executed",
     execution_error = "Execution error"
 }
-export declare class ProgressBarUI {
-    htmlIdCrystoolsRoot: string;
-    htmlIdCrystoolsProgressBarContainer: string;
+export declare abstract class ProgressBarUIBase {
+    protected htmlIdCrystoolsRoot: string;
+    protected htmlClassCrystoolsMonitorContainer: string;
+    protected htmlContainer: HTMLDivElement;
+    protected constructor();
+    createRoot(): void;
+    abstract refreshDisplay(): void;
+    abstract createDOM(): void;
+}
+export declare class ProgressBarUI extends ProgressBarUIBase {
+    private htmlIdCrystoolsProgressBarContainer;
     private centerNode;
     htmlProgressSliderRef: HTMLDivElement;
     htmlProgressLabelRef: HTMLDivElement;
-    queueButtonElement: HTMLElement | null;
     currentStatus: EStatus;
     timeStart: number;
     currentProgress: number;
-    constructor(htmlIdCrystoolsRoot: string, htmlIdCrystoolsProgressBarContainer: string, centerNode: () => void);
-    createVertical: () => void;
+    constructor(htmlIdCrystoolsProgressBarContainer: string, centerNode: () => void);
+    createDOM: () => void;
     refreshDisplay: () => void;
     updateDisplay: (currentStatus: EStatus, timeStart: number, currentProgress: number) => void;
 }

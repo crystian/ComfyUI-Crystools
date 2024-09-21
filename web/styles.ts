@@ -1,3 +1,9 @@
+import { injectCss } from './utils.js';
+
+void injectCss('extensions/ComfyUI-Crystools/monitor.css').then(() => {
+  // console.log('injectCss');
+});
+
 export enum Styles {
   'BARS' = 'BARS'
 }

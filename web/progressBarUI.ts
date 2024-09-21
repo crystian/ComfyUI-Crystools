@@ -1,4 +1,4 @@
-import { app } from './comfy/index.js';
+// import { app } from './comfy/index.js';
 
 export enum EStatus {
   executing = 'Executing',
@@ -6,74 +6,71 @@ export enum EStatus {
   execution_error = 'Execution error',
 }
 
-export class ProgressBarUI {
-  htmlProgressSliderRef: HTMLDivElement;
-  htmlProgressLabelRef: HTMLDivElement;
-  queueButtonElement: HTMLElement | null;
-  currentStatus: EStatus;
-  timeStart: number;
-  currentProgress: number;
+export abstract class ProgressBarUIBase {
+  protected htmlIdCrystoolsRoot = 'crystools-root';
+  protected htmlClassCrystoolsMonitorContainer = 'crystools-monitor-container';
+  protected htmlContainer: HTMLDivElement;
 
-  constructor(
-    public htmlIdCrystoolsRoot: string,
-    public htmlIdCrystoolsProgressBarContainer: string,
-    private centerNode: () => void
-  ) {
-    this.htmlIdCrystoolsRoot = htmlIdCrystoolsRoot;
-    this.htmlIdCrystoolsProgressBarContainer = htmlIdCrystoolsProgressBarContainer;
-    this.queueButtonElement = document.getElementById('queue-button');
-    if (!this.queueButtonElement) {
-      throw new Error('queue-button not found');
-    }
-
-    this.createVertical();
-
-    window.addEventListener('resize', this.refreshDisplay);
+  protected constructor() {
+    this.createRoot();
+    window.addEventListener('resize', () => this.refreshDisplay());
   }
 
-  createVertical = (): void => {
+  createRoot(): void {
+    // IMPORTANT duplicate by progressbar and crystools-save
     let ctoolsRoot = document.getElementById(this.htmlIdCrystoolsRoot);
     if (!ctoolsRoot) {
       ctoolsRoot = document.createElement('div');
       ctoolsRoot.setAttribute('id', this.htmlIdCrystoolsRoot);
-      ctoolsRoot.style.display = 'flex';
-      ctoolsRoot.style.width = '100%';
-      ctoolsRoot.style.flexDirection = 'column';
-      this.queueButtonElement?.insertAdjacentElement('afterend', ctoolsRoot);
+
+      // the best parentElement:
+      const parentElement = document.getElementById('queue-button');
+      parentElement?.insertAdjacentElement('afterend', ctoolsRoot);
     }
 
+    this.htmlContainer = document.createElement('div');
+    this.htmlContainer.classList.add(this.htmlClassCrystoolsMonitorContainer);
+    ctoolsRoot.append(this.htmlContainer);
+  }
+
+  abstract refreshDisplay(): void;
+  abstract createDOM(): void;
+}
+
+export class ProgressBarUI extends ProgressBarUIBase{
+  htmlProgressSliderRef: HTMLDivElement;
+  htmlProgressLabelRef: HTMLDivElement;
+  currentStatus: EStatus;
+  timeStart: number;
+  currentProgress: number;
+
+  constructor (
+    private htmlIdCrystoolsProgressBarContainer: string,
+    private centerNode: () => void
+  ) {
+    super();
+    this.createDOM();
+  }
+
+  createDOM = (): void => {
     const htmlContainer = document.createElement('div');
     htmlContainer.setAttribute('id', this.htmlIdCrystoolsProgressBarContainer);
     htmlContainer.setAttribute('title', 'click to see the current working node');
-    htmlContainer.style.margin = '4px 0';
-    htmlContainer.style.width = '100%';
-    htmlContainer.style.cursor = 'pointer';
-    htmlContainer.style.order = '1';
     htmlContainer.addEventListener('click', this.centerNode);
-    ctoolsRoot.append(htmlContainer);
+    this.htmlContainer.append(htmlContainer);
+    this.htmlContainer.style.order = '1';
 
     const progressBar = document.createElement('div');
-    progressBar.style.margin = '0 10px';
-    progressBar.style.height = '18px';
-    progressBar.style.position = 'relative';
-    progressBar.style.backgroundColor = 'var(--bg-color)';
+    progressBar.classList.add('crystools-progress-bar');
     htmlContainer.append(progressBar);
 
     const progressSlider = document.createElement('div');
-    progressSlider.style.position = 'absolute';
-    progressSlider.style.height = '100%';
-    progressSlider.style.width = '0';
-    progressSlider.style.transition = 'width 0.2s';
-    progressSlider.style.backgroundColor = 'green';
     this.htmlProgressSliderRef = progressSlider;
+    progressSlider.classList.add('crystools-slider');
     progressBar.append(this.htmlProgressSliderRef);
 
     const progressLabel = document.createElement('div');
-    progressLabel.style.position = 'absolute';
-    progressLabel.style.margin = 'auto 0';
-    progressLabel.style.width = '100%';
-    progressLabel.style.color = 'var(--drag-text)';
-    progressLabel.style.fontSize = '14px';
+    progressLabel.classList.add('crystools-label');
     progressLabel.innerHTML = '0%';
     this.htmlProgressLabelRef = progressLabel;
     progressBar.append(this.htmlProgressLabelRef);
@@ -93,8 +90,9 @@ export class ProgressBarUI {
     this.timeStart = timeStart;
     this.currentProgress = currentProgress;
 
-    const menu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
-    console.log('menu', menu);
+    // TODO from here!
+    // const menu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
+    // console.log('menu', menu);
 
     if (currentStatus === EStatus.executed) {
       // finished

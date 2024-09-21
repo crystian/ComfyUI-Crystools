@@ -1,6 +1,8 @@
 import { app } from './comfy/index.js';
-export class MonitorUI {
+import { ProgressBarUIBase } from './progressBarUI.js';
+export class MonitorUI extends ProgressBarUIBase {
     constructor(monitorCPUElement, monitorRAMElement, monitorHDDElement, monitorGPUSettings, monitorVRAMSettings, monitorTemperatureSettings, currentRate) {
+        super();
         Object.defineProperty(this, "monitorCPUElement", {
             enumerable: true,
             configurable: true,
@@ -43,18 +45,6 @@ export class MonitorUI {
             writable: true,
             value: currentRate
         });
-        Object.defineProperty(this, "htmlIdCrystoolsRoot", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: 'crystools-root'
-        });
-        Object.defineProperty(this, "htmlIdCrystoolsMonitorContainer", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: 'crystools-monitor-container'
-        });
         Object.defineProperty(this, "refreshDisplay", {
             enumerable: true,
             configurable: true,
@@ -64,37 +54,20 @@ export class MonitorUI {
                 this.updateAllWidget();
             }
         });
-        Object.defineProperty(this, "createVertical", {
+        Object.defineProperty(this, "createDOM", {
             enumerable: true,
             configurable: true,
             writable: true,
             value: () => {
-                const parentElement = document.getElementById('queue-button');
-                let ctoolsRoot = document.getElementById(this.htmlIdCrystoolsRoot);
-                if (!ctoolsRoot) {
-                    ctoolsRoot = document.createElement('div');
-                    ctoolsRoot.setAttribute('id', this.htmlIdCrystoolsRoot);
-                    ctoolsRoot.style.display = 'flex';
-                    ctoolsRoot.style.width = '100%';
-                    ctoolsRoot.style.flexDirection = 'column';
-                    parentElement?.insertAdjacentElement('afterend', ctoolsRoot);
-                }
-                const htmlContainer = document.createElement('div');
-                htmlContainer.setAttribute('id', this.htmlIdCrystoolsMonitorContainer);
-                htmlContainer.style.width = '100%';
-                htmlContainer.style.cursor = 'crosshair';
-                htmlContainer.style.order = '3';
-                htmlContainer.style.margin = '4px 0';
-                ctoolsRoot.append(htmlContainer);
-                htmlContainer.append(this.createMonitor(this.monitorCPUElement));
-                htmlContainer.append(this.createMonitor(this.monitorRAMElement));
+                this.htmlContainer.append(this.createMonitor(this.monitorCPUElement));
+                this.htmlContainer.append(this.createMonitor(this.monitorRAMElement));
                 this.monitorGPUSettings.forEach((_monitorSettings, index) => {
-                    this.monitorGPUSettings[index] && htmlContainer.append(this.createMonitor(this.monitorGPUSettings[index]));
-                    this.monitorVRAMSettings[index] && htmlContainer.append(this.createMonitor(this.monitorVRAMSettings[index]));
+                    this.monitorGPUSettings[index] && this.htmlContainer.append(this.createMonitor(this.monitorGPUSettings[index]));
+                    this.monitorVRAMSettings[index] && this.htmlContainer.append(this.createMonitor(this.monitorVRAMSettings[index]));
                     this.monitorTemperatureSettings[index] &&
-                        htmlContainer.append(this.createMonitor(this.monitorTemperatureSettings[index]));
+                        this.htmlContainer.append(this.createMonitor(this.monitorTemperatureSettings[index]));
                 });
-                htmlContainer.append(this.createMonitor(this.monitorHDDElement));
+                this.htmlContainer.append(this.createMonitor(this.monitorHDDElement));
                 this.updateAllAnimationDuration(this.currentRate);
                 this.updateAllWidget();
             }
@@ -233,31 +206,20 @@ export class MonitorUI {
                 }
                 const htmlMain = document.createElement('div');
                 htmlMain.setAttribute('id', monitorSettings.id);
-                htmlMain.style.margin = '2px 10px';
-                htmlMain.style.height = '12px';
-                htmlMain.style.position = 'relative';
-                htmlMain.style.display = 'flex';
-                htmlMain.style.alignItems = 'center';
-                htmlMain.style.flexDirection = 'row';
+                htmlMain.classList.add('crystools-monitor');
                 monitorSettings.htmlMonitorRef = htmlMain;
                 if (monitorSettings.title) {
                     htmlMain.title = monitorSettings.title;
                 }
                 const htmlMonitorText = document.createElement('div');
-                htmlMonitorText.style.width = '35px';
-                htmlMonitorText.style.fontSize = '10px';
+                htmlMonitorText.classList.add('crystools-text');
                 htmlMonitorText.innerHTML = monitorSettings.label;
                 htmlMain.append(htmlMonitorText);
                 const htmlMonitorContent = document.createElement('div');
-                htmlMonitorContent.style.height = '100%';
-                htmlMonitorContent.style.flexGrow = '1';
-                htmlMonitorContent.style.position = 'relative';
-                htmlMonitorContent.style.backgroundColor = 'var(--bg-color)';
+                htmlMonitorContent.classList.add('crystools-content');
                 htmlMain.append(htmlMonitorContent);
                 const htmlMonitorSlider = document.createElement('div');
-                htmlMonitorSlider.style.position = 'absolute';
-                htmlMonitorSlider.style.height = '100%';
-                htmlMonitorSlider.style.width = '0';
+                htmlMonitorSlider.classList.add('crystools-slider');
                 if (monitorSettings.cssColorFinal) {
                     htmlMonitorSlider.style.backgroundColor =
                         `color-mix(in srgb, ${monitorSettings.cssColorFinal} 0%, ${monitorSettings.cssColor})`;
@@ -268,17 +230,13 @@ export class MonitorUI {
                 monitorSettings.htmlMonitorSliderRef = htmlMonitorSlider;
                 htmlMonitorContent.append(htmlMonitorSlider);
                 const htmlMonitorLabel = document.createElement('div');
-                htmlMonitorLabel.style.position = 'relative';
-                htmlMonitorLabel.style.width = '100%';
-                htmlMonitorLabel.style.color = 'var(--drag-text)';
-                htmlMonitorLabel.style.fontSize = '10px';
-                htmlMonitorLabel.innerHTML = '0%';
+                htmlMonitorLabel.classList.add('crystools-label');
                 monitorSettings.htmlMonitorLabelRef = htmlMonitorLabel;
                 htmlMonitorContent.append(htmlMonitorLabel);
+                htmlMonitorLabel.innerHTML = '0%';
                 return monitorSettings.htmlMonitorRef;
             }
         });
-        this.createVertical();
-        window.addEventListener('resize', this.refreshDisplay);
+        this.createDOM();
     }
 }

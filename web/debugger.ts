@@ -23,25 +23,17 @@ app.registerExtension({
         this.isVirtualNode = true;
 
         const widget = ComfyWidgets.STRING(this, '', [
-          '', {
-            default: '', multiline: true,
-          },
+          '', {default: '', multiline: true},
         ], app).widget;
         widget.inputEl.readOnly = true;
         ComfyWidgets.BOOLEAN(this, 'Active', [
-          '', {
-            default: true,
-          },
+          '', {default: true},
         ]);
         ComfyWidgets.BOOLEAN(this, 'Parsed', [
-          '', {
-            default: true,
-          },
+          '', {default: true},
         ]);
         ComfyWidgets.COMBO(this, 'What', [
-          ['Prompt', 'Workflow'], {
-            default: 'Prompt',
-          },
+          ['Prompt', 'Workflow'], {default: 'Prompt'},
         ]);
 
         // It runs at finish on each prompt queue
@@ -52,7 +44,7 @@ app.registerExtension({
         return app.graphToPrompt()
         .then((workflow: any): string => {
           let result = 'inactive';
-          if(this.widgets?.length !== 4) {
+          if (this.widgets?.length !== 4) {
             console.error('Something is wrong with the widgets, should be 4!');
             return 'error';
           }

@@ -70,9 +70,7 @@ class CrystoolsMonitor {
                         return;
                     }
                     try {
-                        await this.updateServer({
-                            rate: valueNumber,
-                        });
+                        await this.updateServer({ rate: valueNumber });
                     }
                     catch (error) {
                         console.error(error);
@@ -121,9 +119,7 @@ class CrystoolsMonitor {
                 cssColor: Colors.CPU,
                 onChange: async (value) => {
                     this.monitorUI?.updateWidget(this.monitorCPUElement);
-                    await this.updateServer({
-                        switchCPU: value,
-                    });
+                    await this.updateServer({ switchCPU: value });
                 },
             }
         });
@@ -145,9 +141,7 @@ class CrystoolsMonitor {
                 cssColor: Colors.RAM,
                 onChange: async (value) => {
                     this.monitorUI?.updateWidget(this.monitorRAMElement);
-                    await this.updateServer({
-                        switchRAM: value,
-                    });
+                    await this.updateServer({ switchRAM: value });
                 },
             }
         });
@@ -169,9 +163,7 @@ class CrystoolsMonitor {
                 cssColor: Colors.DISK,
                 onChange: async (value) => {
                     this.monitorUI?.updateWidget(this.monitorHDDElement);
-                    await this.updateServer({
-                        switchHDD: value,
-                    });
+                    await this.updateServer({ switchHDD: value });
                 },
             }
         });
@@ -195,9 +187,7 @@ class CrystoolsMonitor {
                     }));
                 },
                 onChange: async (value) => {
-                    await this.updateServer({
-                        whichHDD: value,
-                    });
+                    await this.updateServer({ whichHDD: value });
                 },
             }
         });
@@ -247,9 +237,7 @@ class CrystoolsMonitor {
                             cssColor: Colors.GPU,
                             onChange: async (value) => {
                                 this.monitorUI?.updateWidget(monitorGPUNElement);
-                                void await this.updateServerGPU(index, {
-                                    utilization: value
-                                });
+                                void await this.updateServerGPU(index, { utilization: value });
                             },
                         };
                         const monitorVRAMNElement = {
@@ -267,9 +255,7 @@ class CrystoolsMonitor {
                             cssColor: Colors.VRAM,
                             onChange: async (value) => {
                                 this.monitorUI?.updateWidget(monitorVRAMNElement);
-                                void await this.updateServerGPU(index, {
-                                    vram: value
-                                });
+                                void await this.updateServerGPU(index, { vram: value });
                             },
                         };
                         const monitorTemperatureNElement = {
@@ -288,9 +274,7 @@ class CrystoolsMonitor {
                             cssColorFinal: Colors.TEMP_END,
                             onChange: async (value) => {
                                 this.monitorUI?.updateWidget(monitorTemperatureNElement);
-                                void await this.updateServerGPU(index, {
-                                    temperature: value
-                                });
+                                void await this.updateServerGPU(index, { temperature: value });
                             },
                         };
                         this.monitorGPUSettings[index] = monitorGPUNElement;

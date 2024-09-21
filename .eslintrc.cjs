@@ -58,8 +58,8 @@ module.exports = {
     // false positive https://github.com/typescript-eslint/typescript-eslint/issues/2483
     'no-shadow': 'off',
     'object-curly-newline': ["error", {
-      "ObjectExpression": { "multiline": true, "minProperties": 1 },
-      "ObjectPattern": { "multiline": true, "minProperties": 1 },
+      "ObjectExpression": { "multiline": true, "minProperties": 8 },
+      "ObjectPattern": { "multiline": true, "minProperties": 8 },
       "ImportDeclaration": {"multiline": true, "minProperties": 8 },
       "ExportDeclaration": { "multiline": true, "minProperties": 8 }
     }],

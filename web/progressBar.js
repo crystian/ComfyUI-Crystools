@@ -27,12 +27,6 @@ class CrystoolsProgressBar {
             writable: true,
             value: commonPrefix
         });
-        Object.defineProperty(this, "htmlIdCrystoolsRoot", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: 'crystools-root'
-        });
         Object.defineProperty(this, "htmlIdCrystoolsProgressBarContainer", {
             enumerable: true,
             configurable: true,
@@ -120,7 +114,7 @@ class CrystoolsProgressBar {
             configurable: true,
             writable: true,
             value: () => {
-                api.addEventListener('status', ({ detail, }) => {
+                api.addEventListener('status', ({ detail }) => {
                     this.currentStatus = this.currentStatus === EStatus.execution_error ? EStatus.execution_error : EStatus.executed;
                     const queueRemaining = detail?.exec_info.queue_remaining;
                     if (queueRemaining) {
@@ -128,8 +122,8 @@ class CrystoolsProgressBar {
                     }
                     this.updateDisplay();
                 }, false);
-                api.addEventListener('progress', ({ detail, }) => {
-                    const { value, max, node, } = detail;
+                api.addEventListener('progress', ({ detail }) => {
+                    const { value, max, node } = detail;
                     const progress = Math.floor((value / max) * 100);
                     if (!isNaN(progress) && progress >= 0 && progress <= 100) {
                         this.currentProgress = progress;
@@ -137,18 +131,18 @@ class CrystoolsProgressBar {
                     }
                     this.updateDisplay();
                 }, false);
-                api.addEventListener('executed', ({ detail, }) => {
+                api.addEventListener('executed', ({ detail }) => {
                     if (detail?.node) {
                         this.currentNode = detail.node;
                     }
                     this.updateDisplay();
                 }, false);
-                api.addEventListener('execution_start', ({ _detail, }) => {
+                api.addEventListener('execution_start', ({ _detail }) => {
                     this.currentStatus = EStatus.executing;
                     this.timeStart = Date.now();
                     this.updateDisplay();
                 }, false);
-                api.addEventListener('execution_error', ({ _detail, }) => {
+                api.addEventListener('execution_error', ({ _detail }) => {
                     this.currentStatus = EStatus.execution_error;
                     this.updateDisplay();
                 }, false);
@@ -173,7 +167,7 @@ class CrystoolsProgressBar {
         this.createSettings();
     }
     setup() {
-        this.progressBarVertical = new ProgressBarUI(this.htmlIdCrystoolsRoot, this.htmlIdCrystoolsProgressBarContainer, this.centerNode);
+        this.progressBarVertical = new ProgressBarUI(this.htmlIdCrystoolsProgressBarContainer, this.centerNode);
         this.htmlProgressSliderRef = this.progressBarVertical.htmlProgressSliderRef;
         this.htmlProgressLabelRef = this.progressBarVertical.htmlProgressLabelRef;
         this.showProgressBar(app.ui.settings.getSettingValue(this.idShowProgressBar, this.defaultShowStatus));
