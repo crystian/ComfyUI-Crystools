@@ -88,7 +88,8 @@ class CrystoolsProgressBar {
             value: () => {
                 app.ui.settings.addSetting({
                     id: this.idShowProgressBar,
-                    name: this.menuPrefix + ' Progress bar',
+                    name: 'Show progress bar',
+                    category: ['Crystools', this.menuPrefix + ' Progress Bar', 'Show'],
                     type: 'boolean',
                     defaultValue: this.defaultShowStatus,
                     onChange: this.showProgressBar,

@@ -16,7 +16,8 @@ class CrystoolsMonitor {
 
   settingsRate = {
     id: 'Crystools.RefreshRate',
-    name: this.menuPrefix + 'Refresh per second',
+    name: 'Refresh per second',
+    category: ['Crystools', this.menuPrefix + ' Refresh Rate'],
     tooltip: 'This is the time (in seconds) between each update of the monitors, 0 means no refresh',
     type: 'slider',
     attrs: {
@@ -77,8 +78,8 @@ class CrystoolsMonitor {
   // CPU Variables
   monitorCPUElement: TMonitorSettings = {
     id: 'Crystools.ShowCpu',
-    name: this.menuPrefix + ' CPU Usage',
-    category: ['Crystools', 'Hardware', 'Cpu' ],
+    name: 'CPU Usage',
+    category: ['Crystools', this.menuPrefix + ' Hardware', 'Cpu' ],
     type: 'boolean',
     label: 'CPU',
     symbol: '%',
@@ -98,8 +99,8 @@ class CrystoolsMonitor {
   // RAM Variables
   monitorRAMElement: TMonitorSettings = {
     id: 'Crystools.ShowRam',
-    name: this.menuPrefix + ' RAM Used',
-    category: ['Crystools', 'Hardware', 'Ram' ],
+    name: 'RAM Used',
+    category: ['Crystools', this.menuPrefix + ' Hardware', 'Ram' ],
     type: 'boolean',
     label: 'RAM',
     symbol: '%',
@@ -119,8 +120,8 @@ class CrystoolsMonitor {
   // HDD Variables
   monitorHDDElement: TMonitorSettings = {
     id: 'Crystools.ShowHdd',
-    name: this.menuPrefix + ' Show HDD Used',
-    category: ['Crystools', 'Show Hard Disk', 'Show' ],
+    name: 'Show HDD Used',
+    category: ['Crystools', this.menuPrefix + ' Show Hard Disk', 'Show' ],
     type: 'boolean',
     label: 'HDD',
     symbol: '%',
@@ -140,8 +141,8 @@ class CrystoolsMonitor {
 
   settingsHDD = {
     id: 'Crystools.WhichHdd',
-    name: this.menuPrefix + ' Partition to show',
-    category: ['Crystools', 'Show Hard Disk', 'Which' ],
+    name: 'Partition to show',
+    category: ['Crystools', this.menuPrefix + ' Show Hard Disk', 'Which' ],
     type: 'combo',
     defaultValue: '/',
     data: [],
@@ -204,8 +205,8 @@ class CrystoolsMonitor {
         // GPU Utilization Variables
         const monitorGPUNElement: TMonitorSettings = {
           id: 'Crystools.ShowGpuUsage' + convertNumberToPascalCase(index),
-          category: ['Crystools', `Show GPU [${index}] ${name}`, 'Usage' ],
-          name: this.menuPrefix + ' Usage',
+          name: ' Usage',
+          category: ['Crystools', `${this.menuPrefix} Show GPU [${index}] ${name}`, 'Usage' ],
           type: 'boolean',
           label,
           symbol: '%',
@@ -226,8 +227,8 @@ class CrystoolsMonitor {
         // GPU VRAM Variables
         const monitorVRAMNElement: TMonitorSettings = {
           id: 'Crystools.ShowGpuVram' + convertNumberToPascalCase(index),
-          category: ['Crystools', `Show GPU [${index}] ${name}`, 'VRAM' ],
-          name: this.menuPrefix + ' VRAM',
+          name: 'VRAM',
+          category: ['Crystools', `${this.menuPrefix} Show GPU [${index}] ${name}`, 'VRAM' ],
           type: 'boolean',
           label: labelVRAM,
           symbol: '%',
@@ -248,8 +249,8 @@ class CrystoolsMonitor {
         // GPU Temperature Variables
         const monitorTemperatureNElement: TMonitorSettings = {
           id: 'Crystools.ShowGpuTemperature' + convertNumberToPascalCase(index),
-          category: ['Crystools', `Show GPU [${index}] ${name}`, 'Temperature' ],
-          name: this.menuPrefix + ' Temperature',
+          name: 'Temperature',
+          category: ['Crystools', `${this.menuPrefix} Show GPU [${index}] ${name}`, 'Temperature' ],
           type: 'boolean',
           label: labelTemperature,
           symbol: '°',

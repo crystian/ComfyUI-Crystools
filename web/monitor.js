@@ -47,7 +47,8 @@ class CrystoolsMonitor {
             writable: true,
             value: {
                 id: 'Crystools.RefreshRate',
-                name: this.menuPrefix + 'Refresh per second',
+                name: 'Refresh per second',
+                category: ['Crystools', this.menuPrefix + ' Refresh Rate'],
                 tooltip: 'This is the time (in seconds) between each update of the monitors, 0 means no refresh',
                 type: 'slider',
                 attrs: {
@@ -108,8 +109,8 @@ class CrystoolsMonitor {
             writable: true,
             value: {
                 id: 'Crystools.ShowCpu',
-                name: this.menuPrefix + ' CPU Usage',
-                category: ['Crystools', 'Hardware', 'Cpu'],
+                name: 'CPU Usage',
+                category: ['Crystools', this.menuPrefix + ' Hardware', 'Cpu'],
                 type: 'boolean',
                 label: 'CPU',
                 symbol: '%',
@@ -132,8 +133,8 @@ class CrystoolsMonitor {
             writable: true,
             value: {
                 id: 'Crystools.ShowRam',
-                name: this.menuPrefix + ' RAM Used',
-                category: ['Crystools', 'Hardware', 'Ram'],
+                name: 'RAM Used',
+                category: ['Crystools', this.menuPrefix + ' Hardware', 'Ram'],
                 type: 'boolean',
                 label: 'RAM',
                 symbol: '%',
@@ -156,8 +157,8 @@ class CrystoolsMonitor {
             writable: true,
             value: {
                 id: 'Crystools.ShowHdd',
-                name: this.menuPrefix + ' Show HDD Used',
-                category: ['Crystools', 'Show Hard Disk', 'Show'],
+                name: 'Show HDD Used',
+                category: ['Crystools', this.menuPrefix + ' Show Hard Disk', 'Show'],
                 type: 'boolean',
                 label: 'HDD',
                 symbol: '%',
@@ -180,8 +181,8 @@ class CrystoolsMonitor {
             writable: true,
             value: {
                 id: 'Crystools.WhichHdd',
-                name: this.menuPrefix + ' Partition to show',
-                category: ['Crystools', 'Show Hard Disk', 'Which'],
+                name: 'Partition to show',
+                category: ['Crystools', this.menuPrefix + ' Show Hard Disk', 'Which'],
                 type: 'combo',
                 defaultValue: '/',
                 data: [],
@@ -233,8 +234,8 @@ class CrystoolsMonitor {
                         }
                         const monitorGPUNElement = {
                             id: 'Crystools.ShowGpuUsage' + convertNumberToPascalCase(index),
-                            category: ['Crystools', `Show GPU [${index}] ${name}`, 'Usage'],
-                            name: this.menuPrefix + ' Usage',
+                            name: ' Usage',
+                            category: ['Crystools', `${this.menuPrefix} Show GPU [${index}] ${name}`, 'Usage'],
                             type: 'boolean',
                             label,
                             symbol: '%',
@@ -253,8 +254,8 @@ class CrystoolsMonitor {
                         };
                         const monitorVRAMNElement = {
                             id: 'Crystools.ShowGpuVram' + convertNumberToPascalCase(index),
-                            category: ['Crystools', `Show GPU [${index}] ${name}`, 'VRAM'],
-                            name: this.menuPrefix + ' VRAM',
+                            name: 'VRAM',
+                            category: ['Crystools', `${this.menuPrefix} Show GPU [${index}] ${name}`, 'VRAM'],
                             type: 'boolean',
                             label: labelVRAM,
                             symbol: '%',
@@ -273,8 +274,8 @@ class CrystoolsMonitor {
                         };
                         const monitorTemperatureNElement = {
                             id: 'Crystools.ShowGpuTemperature' + convertNumberToPascalCase(index),
-                            category: ['Crystools', `Show GPU [${index}] ${name}`, 'Temperature'],
-                            name: this.menuPrefix + ' Temperature',
+                            name: 'Temperature',
+                            category: ['Crystools', `${this.menuPrefix} Show GPU [${index}] ${name}`, 'Temperature'],
                             type: 'boolean',
                             label: labelTemperature,
                             symbol: '°',
