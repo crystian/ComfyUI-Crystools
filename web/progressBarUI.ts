@@ -12,7 +12,7 @@ export class ProgressBarUI extends ProgressBarUIBase {
     showSection: boolean,
     private centerNode: () => void,
   ) {
-    super('queue-button', 'crystools-root-vertical', showSection);
+    super('queue-button', 'crystools-root', showSection);
     this.createDOM();
   }
 

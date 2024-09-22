@@ -1,7 +1,6 @@
-import { app } from './comfy/index.js';
 import { ProgressBarUIBase } from './progressBarUIBase.js';
 
-export class MonitorVerticalUI extends ProgressBarUIBase {
+export class MonitorUI extends ProgressBarUIBase {
   lastMonitor = 1; // just for order on monitors section
 
   constructor(
@@ -14,7 +13,7 @@ export class MonitorVerticalUI extends ProgressBarUIBase {
     private currentRate: number,
     showSection: boolean,
   ) {
-    super('queue-button', 'crystools-root-vertical', showSection);
+    super('queue-button', 'crystools-root', showSection);
     this.createDOM();
   }
 
@@ -24,7 +23,6 @@ export class MonitorVerticalUI extends ProgressBarUIBase {
     this.htmlContainer.append(this.createMonitor(this.monitorRAMElement));
     this.htmlContainer.append(this.createMonitor(this.monitorHDDElement));
     this.updateAllAnimationDuration(this.currentRate);
-    this.updateAllWidget();
   };
 
   createDOMGPUMonitor = (monitorSettings?: TMonitorSettings): void => {
@@ -34,7 +32,6 @@ export class MonitorVerticalUI extends ProgressBarUIBase {
 
     this.htmlContainer.append(this.createMonitor(monitorSettings));
     this.updateAllAnimationDuration(this.currentRate);
-    this.updateAllWidget();
   };
 
   orderMonitors = (): void => {
@@ -56,33 +53,6 @@ export class MonitorVerticalUI extends ProgressBarUIBase {
       this.monitorHDDElement.htmlMonitorRef.style.order = ''+ this.lastMonitor++;
     } catch (error) {
       console.error('orderMonitors', error);
-    }
-  };
-
-  updateAllWidget = (): void => {
-    this.updateWidget(this.monitorCPUElement);
-    this.updateWidget(this.monitorRAMElement);
-    this.updateWidget(this.monitorHDDElement);
-
-    this.monitorGPUSettings.forEach((monitorSettings) => {
-      monitorSettings && this.updateWidget(monitorSettings);
-    });
-    this.monitorVRAMSettings.forEach((monitorSettings) => {
-      monitorSettings && this.updateWidget(monitorSettings);
-    });
-    this.monitorTemperatureSettings.forEach((monitorSettings) => {
-      monitorSettings && this.updateWidget(monitorSettings);
-    });
-  };
-
-  /**
-   * for the settings menu
-   * @param monitorSettings
-   */
-  updateWidget = (monitorSettings: TMonitorSettings): void => {
-    const value = app.ui.settings.getSettingValue(monitorSettings.id, monitorSettings.defaultValue);
-    if (monitorSettings.htmlMonitorRef) {
-      monitorSettings.htmlMonitorRef.style.display = value ? 'flex' : 'none';
     }
   };
 

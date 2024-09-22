@@ -1,7 +1,7 @@
 import { EStatus, ProgressBarUIBase } from './progressBarUIBase.js';
 export class ProgressBarUI extends ProgressBarUIBase {
     constructor(showSection, centerNode) {
-        super('queue-button', 'crystools-root-vertical', showSection);
+        super('queue-button', 'crystools-root', showSection);
         Object.defineProperty(this, "centerNode", {
             enumerable: true,
             configurable: true,

@@ -30,6 +30,12 @@ export class ProgressBarUIBase {
             writable: true,
             value: showSection
         });
+        Object.defineProperty(this, "htmlRoot", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         Object.defineProperty(this, "htmlContainer", {
             enumerable: true,
             configurable: true,
@@ -47,16 +53,13 @@ export class ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: () => {
-                let ctoolsRoot = document.getElementById(this.rootId);
-                if (!ctoolsRoot) {
-                    ctoolsRoot = document.createElement('div');
-                    ctoolsRoot.setAttribute('id', this.rootId);
-                    let parentElement = document.getElementById(this.parentId);
-                    if (!parentElement) {
-                        parentElement = document.getElementsByClassName(this.parentId)[0];
-                    }
+                this.htmlRoot = document.getElementById(this.rootId);
+                if (!this.htmlRoot) {
+                    this.htmlRoot = document.createElement('div');
+                    this.htmlRoot.setAttribute('id', this.rootId);
+                    const parentElement = document.getElementById(this.parentId);
                     if (parentElement) {
-                        parentElement.insertAdjacentElement('afterend', ctoolsRoot);
+                        parentElement.insertAdjacentElement('afterend', this.htmlRoot);
                     }
                     else {
                         console.error('Crystools: parentElement not found', this.parentId);
@@ -64,7 +67,7 @@ export class ProgressBarUIBase {
                 }
                 this.htmlContainer = document.createElement('div');
                 this.htmlContainer.classList.add(this.htmlClassMonitor);
-                ctoolsRoot.append(this.htmlContainer);
+                this.htmlRoot.append(this.htmlContainer);
             }
         });
         this.createRoot();

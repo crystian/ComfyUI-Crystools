@@ -11,7 +11,8 @@ export enum NewMenuOptions {
 }
 
 export abstract class ProgressBarUIBase {
-  protected htmlContainer: HTMLDivElement;
+  public htmlRoot: HTMLElement | null;
+  public htmlContainer: HTMLDivElement;
   protected htmlClassMonitor = 'crystools-monitor-container';
 
   protected constructor(
@@ -25,18 +26,15 @@ export abstract class ProgressBarUIBase {
 
   private createRoot = (): void => {
     // IMPORTANT duplicate on crystools-save
-    let ctoolsRoot = document.getElementById(this.rootId);
-    if (!ctoolsRoot) {
-      ctoolsRoot = document.createElement('div');
-      ctoolsRoot.setAttribute('id', this.rootId);
+    this.htmlRoot = document.getElementById(this.rootId);
+    if (!this.htmlRoot) {
+      this.htmlRoot = document.createElement('div');
+      this.htmlRoot.setAttribute('id', this.rootId);
 
       // the best parentElement:
-      let parentElement: Element | null | undefined = document.getElementById(this.parentId);
-      if (!parentElement) {
-        parentElement = document.getElementsByClassName(this.parentId)[0];
-      }
+      const parentElement: Element | null | undefined = document.getElementById(this.parentId);
       if (parentElement) {
-        parentElement.insertAdjacentElement('afterend', ctoolsRoot);
+        parentElement.insertAdjacentElement('afterend', this.htmlRoot);
       } else {
         console.error('Crystools: parentElement not found', this.parentId);
       }
@@ -44,7 +42,7 @@ export abstract class ProgressBarUIBase {
 
     this.htmlContainer = document.createElement('div');
     this.htmlContainer.classList.add(this.htmlClassMonitor);
-    ctoolsRoot.append(this.htmlContainer);
+    this.htmlRoot.append(this.htmlContainer);
   };
 
   public showFullSection(value: boolean): void {
