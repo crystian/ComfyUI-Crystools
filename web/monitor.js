@@ -4,6 +4,7 @@ import { MonitorVerticalUI } from './monitorVerticalUI.js';
 import { Colors } from './styles.js';
 import { convertNumberToPascalCase } from './utils.js';
 import { NewMenuOptions } from './progressBarUIBase.js';
+import { MonitorHorizontalUI } from './monitorHorizontalUI.js';
 class CrystoolsMonitor {
     constructor() {
         Object.defineProperty(this, "idExtensionName", {
@@ -78,6 +79,12 @@ class CrystoolsMonitor {
             writable: true,
             value: void 0
         });
+        Object.defineProperty(this, "monitorHorizontalUI", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         Object.defineProperty(this, "createSettingsRate", {
             enumerable: true,
             configurable: true,
@@ -114,28 +121,31 @@ class CrystoolsMonitor {
                             console.error(error);
                             return;
                         }
+                        const data = {
+                            cpu_utilization: 0,
+                            device: 'cpu',
+                            gpus: [
+                                {
+                                    gpu_utilization: 0,
+                                    gpu_temperature: 0,
+                                    vram_total: 0,
+                                    vram_used: 0,
+                                    vram_used_percent: 0,
+                                },
+                            ],
+                            hdd_total: 0,
+                            hdd_used: 0,
+                            hdd_used_percent: 0,
+                            ram_total: 0,
+                            ram_used: 0,
+                            ram_used_percent: 0,
+                        };
                         if (valueNumber === 0) {
-                            this.monitorVerticalUI.updateDisplay({
-                                cpu_utilization: 0,
-                                device: 'cpu',
-                                gpus: [
-                                    {
-                                        gpu_utilization: 0,
-                                        gpu_temperature: 0,
-                                        vram_total: 0,
-                                        vram_used: 0,
-                                        vram_used_percent: 0,
-                                    },
-                                ],
-                                hdd_total: 0,
-                                hdd_used: 0,
-                                hdd_used_percent: 0,
-                                ram_total: 0,
-                                ram_used: 0,
-                                ram_used_percent: 0,
-                            });
+                            this.monitorVerticalUI.updateDisplay(data);
+                            this.monitorHorizontalUI.updateDisplay(data);
                         }
                         this.monitorVerticalUI?.updateAllAnimationDuration(valueNumber);
+                        this.monitorHorizontalUI?.updateAllAnimationDuration(valueNumber);
                     },
                 };
             }
@@ -183,6 +193,7 @@ class CrystoolsMonitor {
                     cssColor: Colors.RAM,
                     onChange: async (value) => {
                         this.monitorVerticalUI?.updateWidget(this.monitorRAMElement);
+                        this.monitorHorizontalUI?.updateWidget(this.monitorRAMElement);
                         await this.updateServer({ switchRAM: value });
                     },
                 };
@@ -214,12 +225,14 @@ class CrystoolsMonitor {
                     cssColor: Colors.GPU,
                     onChange: async (value) => {
                         this.monitorVerticalUI?.updateWidget(monitorGPUNElement);
+                        this.monitorHorizontalUI?.updateWidget(monitorGPUNElement);
                         void await this.updateServerGPU(index, { utilization: value });
                     },
                 };
                 this.monitorGPUSettings[index] = monitorGPUNElement;
                 app.ui.settings.addSetting(this.monitorGPUSettings[index]);
                 this.monitorVerticalUI.createDOMGPUMonitor(this.monitorGPUSettings[index]);
+                this.monitorHorizontalUI.createDOMGPUMonitor(this.monitorGPUSettings[index]);
             }
         });
         Object.defineProperty(this, "createSettingsGPUVRAM", {
@@ -248,12 +261,14 @@ class CrystoolsMonitor {
                     cssColor: Colors.VRAM,
                     onChange: async (value) => {
                         this.monitorVerticalUI?.updateWidget(monitorVRAMNElement);
+                        this.monitorHorizontalUI?.updateWidget(monitorVRAMNElement);
                         void await this.updateServerGPU(index, { vram: value });
                     },
                 };
                 this.monitorVRAMSettings[index] = monitorVRAMNElement;
                 app.ui.settings.addSetting(this.monitorVRAMSettings[index]);
                 this.monitorVerticalUI.createDOMGPUMonitor(this.monitorVRAMSettings[index]);
+                this.monitorHorizontalUI.createDOMGPUMonitor(this.monitorVRAMSettings[index]);
             }
         });
         Object.defineProperty(this, "createSettingsGPUTemp", {
@@ -283,12 +298,14 @@ class CrystoolsMonitor {
                     cssColorFinal: Colors.TEMP_END,
                     onChange: async (value) => {
                         this.monitorVerticalUI?.updateWidget(monitorTemperatureNElement);
+                        this.monitorHorizontalUI?.updateWidget(monitorTemperatureNElement);
                         void await this.updateServerGPU(index, { temperature: value });
                     },
                 };
                 this.monitorTemperatureSettings[index] = monitorTemperatureNElement;
                 app.ui.settings.addSetting(this.monitorTemperatureSettings[index]);
                 this.monitorVerticalUI.createDOMGPUMonitor(this.monitorTemperatureSettings[index]);
+                this.monitorHorizontalUI.createDOMGPUMonitor(this.monitorTemperatureSettings[index]);
             }
         });
         Object.defineProperty(this, "createSettingsHDD", {
@@ -310,6 +327,7 @@ class CrystoolsMonitor {
                     cssColor: Colors.DISK,
                     onChange: async (value) => {
                         this.monitorVerticalUI?.updateWidget(this.monitorHDDElement);
+                        this.monitorHorizontalUI?.updateWidget(this.monitorHDDElement);
                         await this.updateServer({ switchHDD: value });
                     },
                 };
@@ -358,6 +376,7 @@ class CrystoolsMonitor {
                         this.createSettingsGPUUsage(name, index, moreThanOneGPU);
                     });
                     this.monitorVerticalUI.orderMonitors();
+                    this.monitorHorizontalUI.orderMonitors();
                 });
             }
         });
@@ -371,6 +390,10 @@ class CrystoolsMonitor {
                     this.newMenu = newMenu;
                     this.monitorVerticalUI.showFullSection(this.newMenu === NewMenuOptions.Disabled);
                     if (this.monitorVerticalUI.showSection) {
+                        this.setup();
+                    }
+                    this.monitorHorizontalUI.showFullSection(this.newMenu !== NewMenuOptions.Disabled);
+                    if (this.monitorHorizontalUI.showSection) {
                         this.setup();
                     }
                 }
@@ -444,7 +467,7 @@ class CrystoolsMonitor {
             configurable: true,
             writable: true,
             value: () => {
-                if (this.monitorVerticalUI) {
+                if (this.monitorVerticalUI || this.monitorHorizontalUI) {
                     return;
                 }
                 this.createSettingsRate();
@@ -455,6 +478,7 @@ class CrystoolsMonitor {
                 const currentRate = parseFloat(app.ui.settings.getSettingValue(this.settingsRate.id, this.settingsRate.defaultValue));
                 this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
                 this.monitorVerticalUI = new MonitorVerticalUI(this.monitorCPUElement, this.monitorRAMElement, this.monitorHDDElement, this.monitorGPUSettings, this.monitorVRAMSettings, this.monitorTemperatureSettings, currentRate, (this.newMenu === NewMenuOptions.Disabled));
+                this.monitorHorizontalUI = new MonitorHorizontalUI(this.monitorCPUElement, this.monitorRAMElement, this.monitorHDDElement, this.monitorGPUSettings, this.monitorVRAMSettings, this.monitorTemperatureSettings, currentRate, (this.newMenu !== NewMenuOptions.Disabled));
                 this.updateDisplay();
                 this.registerListeners();
             }
@@ -469,6 +493,7 @@ class CrystoolsMonitor {
                         return;
                     }
                     this.monitorVerticalUI.updateDisplay(event.detail);
+                    this.monitorHorizontalUI.updateDisplay(event.detail);
                 }, false);
             }
         });

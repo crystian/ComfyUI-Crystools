@@ -1,4 +1,4 @@
-#crystools-root-old {
+#crystools-root-vertical {
   /*background-color: red;*/
   display: flex;
   width: 100%;
@@ -73,6 +73,85 @@
         font-size: 14px;
       }
     }
+  }
+
+}
+
+#crystools-root-horizontal {
+  /*background-color: red;*/
+  display: flex;
+  /*width: 100%;*/
+  flex-direction: row;
+  margin: 0;
+  padding: 0;
+
+  .crystools-monitor-container {
+    /*width: 100%;*/
+    /*cursor: crosshair;*/
+    /*margin: 4px 0;*/
+    /*!* display: flex; by progress bar base *!*/
+    /*flex-wrap: wrap;*/
+    /*flex-direction: column;*/
+
+    /*.crystools-monitor {*/
+    /*  margin: 1px 10px;*/
+    /*  height: 12px;*/
+    /*  position: relative;*/
+    /*  display: flex;*/
+    /*  align-items: center;*/
+    /*  flex-direction: row;*/
+    /*}*/
+
+    /*.crystools-text {*/
+    /*  width: 40px;*/
+    /*  font-size: 10px;*/
+    /*  text-align: right;*/
+    /*  margin-right: 3px;*/
+    /*}*/
+
+    /*.crystools-content {*/
+    /*  height: 100%;*/
+    /*  flex-grow: 1;*/
+    /*  position: relative;*/
+    /*  background-color: var(--bg-color);*/
+    /*}*/
+
+    /*.crystools-slider {*/
+    /*  position: absolute;*/
+    /*  height: 100%;*/
+    /*  width: 0;*/
+    /*}*/
+
+    /*.crystools-label {*/
+    /*  position: relative;*/
+    /*  width: 100%;*/
+    /*  color: var(--drag-text);*/
+    /*  font-size: 10px;*/
+    /*}*/
+
+    /*.crystools-progress-bar {*/
+    /*  cursor: pointer;*/
+    /*  margin: 0 2px;*/
+    /*  height: 18px;*/
+    /*  position: relative;*/
+    /*  background-color: var(--bg-color);*/
+
+    /*  .crystools-slider {*/
+    /*    position: absolute;*/
+    /*    height: 100%;*/
+    /*    width: 0;*/
+    /*    transition: width 0.2s;*/
+    /*    background-color: green;*/
+    /*  }*/
+
+    /*  .crystools-label {*/
+    /*    position: absolute;*/
+    /*    margin: auto 0;*/
+    /*    width: 100%;*/
+    /*    color: var(--drag-text);*/
+    /*    font-size: 14px;*/
+    /*  }*/
+    /*}*/
   }
 
 }

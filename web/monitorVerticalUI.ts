@@ -14,7 +14,7 @@ export class MonitorVerticalUI extends ProgressBarUIBase {
     private currentRate: number,
     showSection: boolean,
   ) {
-    super('queue-button', 'crystools-root-old', showSection);
+    super('queue-button', 'crystools-root-vertical', showSection);
     this.createDOM();
   }
 

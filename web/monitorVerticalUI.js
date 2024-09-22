@@ -2,7 +2,7 @@ import { app } from './comfy/index.js';
 import { ProgressBarUIBase } from './progressBarUIBase.js';
 export class MonitorVerticalUI extends ProgressBarUIBase {
     constructor(monitorCPUElement, monitorRAMElement, monitorHDDElement, monitorGPUSettings, monitorVRAMSettings, monitorTemperatureSettings, currentRate, showSection) {
-        super('queue-button', 'crystools-root-old', showSection);
+        super('queue-button', 'crystools-root-vertical', showSection);
         Object.defineProperty(this, "monitorCPUElement", {
             enumerable: true,
             configurable: true,

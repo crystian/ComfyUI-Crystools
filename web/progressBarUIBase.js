@@ -51,8 +51,16 @@ export class ProgressBarUIBase {
                 if (!ctoolsRoot) {
                     ctoolsRoot = document.createElement('div');
                     ctoolsRoot.setAttribute('id', this.rootId);
-                    const parentElement = document.getElementById(this.parentId);
-                    parentElement?.insertAdjacentElement('afterend', ctoolsRoot);
+                    let parentElement = document.getElementById(this.parentId);
+                    if (!parentElement) {
+                        parentElement = document.getElementsByClassName(this.parentId)[0];
+                    }
+                    if (parentElement) {
+                        parentElement.insertAdjacentElement('afterend', ctoolsRoot);
+                    }
+                    else {
+                        console.error('Crystools: parentElement not found', this.parentId);
+                    }
                 }
                 this.htmlContainer = document.createElement('div');
                 this.htmlContainer.classList.add(this.htmlClassMonitor);
