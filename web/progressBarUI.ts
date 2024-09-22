@@ -1,18 +1,18 @@
 import { EStatus, ProgressBarUIBase } from './progressBarUIBase.js';
 
-export class ProgressBarUI extends ProgressBarUIBase{
+export class ProgressBarUI extends ProgressBarUIBase {
   htmlProgressSliderRef: HTMLDivElement;
   htmlProgressLabelRef: HTMLDivElement;
   currentStatus: EStatus;
   timeStart: number;
   currentProgress: number;
+  progressBar: boolean;
 
-  constructor (
+  constructor(
+    showSection: boolean,
     private centerNode: () => void,
-    show: boolean,
   ) {
-    super('queue-button', 'crystools-root-old', show);
-    window.addEventListener('resize', this.refreshDisplay);
+    super('queue-button', 'crystools-root-old', showSection);
     this.createDOM();
   }
 
@@ -41,18 +41,24 @@ export class ProgressBarUI extends ProgressBarUIBase{
 
   // eslint-disable-next-line complexity
   updateDisplay = (currentStatus: EStatus, timeStart: number, currentProgress: number): void => {
-    if (!this.show) {
+    if (!this.showSection) {
       return;
     }
+
+    if (!this.progressBar) {
+      return;
+    }
+
     if (!(this.htmlProgressLabelRef && this.htmlProgressSliderRef)) {
       console.error('htmlProgressLabelRef or htmlProgressSliderRef is undefined');
       return;
     }
 
+    // console.log('only if showSection and progressBar', timeStart, currentProgress);
+
     this.currentStatus = currentStatus;
     this.timeStart = timeStart;
     this.currentProgress = currentProgress;
-
 
     if (currentStatus === EStatus.executed) {
       // finished
@@ -78,10 +84,9 @@ export class ProgressBarUI extends ProgressBarUIBase{
 
   };
 
-  // not data only display
-  private refreshDisplay = (): void => {
-    if (this.show) {
-      this.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
-    }
+  // remember it can't have more parameters because it is used on settings automatically
+  public showProgressBar = (value: boolean): void => {
+    this.progressBar = value;
+    this.htmlContainer.style.display = this.progressBar ? 'block' : 'none';
   };
 }

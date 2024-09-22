@@ -6,8 +6,9 @@ export declare class ProgressBarUI extends ProgressBarUIBase {
     currentStatus: EStatus;
     timeStart: number;
     currentProgress: number;
-    constructor(centerNode: () => void, show: boolean);
+    progressBar: boolean;
+    constructor(showSection: boolean, centerNode: () => void);
     createDOM: () => void;
     updateDisplay: (currentStatus: EStatus, timeStart: number, currentProgress: number) => void;
-    private refreshDisplay;
+    showProgressBar: (value: boolean) => void;
 }

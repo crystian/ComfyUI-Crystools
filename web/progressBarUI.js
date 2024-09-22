@@ -1,7 +1,7 @@
 import { EStatus, ProgressBarUIBase } from './progressBarUIBase.js';
 export class ProgressBarUI extends ProgressBarUIBase {
-    constructor(centerNode, show) {
-        super('queue-button', 'crystools-root-old', show);
+    constructor(showSection, centerNode) {
+        super('queue-button', 'crystools-root-old', showSection);
         Object.defineProperty(this, "centerNode", {
             enumerable: true,
             configurable: true,
@@ -38,6 +38,12 @@ export class ProgressBarUI extends ProgressBarUIBase {
             writable: true,
             value: void 0
         });
+        Object.defineProperty(this, "progressBar", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         Object.defineProperty(this, "createDOM", {
             enumerable: true,
             configurable: true,
@@ -67,7 +73,10 @@ export class ProgressBarUI extends ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: (currentStatus, timeStart, currentProgress) => {
-                if (!this.show) {
+                if (!this.showSection) {
+                    return;
+                }
+                if (!this.progressBar) {
                     return;
                 }
                 if (!(this.htmlProgressLabelRef && this.htmlProgressSliderRef)) {
@@ -96,17 +105,15 @@ export class ProgressBarUI extends ProgressBarUIBase {
                 }
             }
         });
-        Object.defineProperty(this, "refreshDisplay", {
+        Object.defineProperty(this, "showProgressBar", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: () => {
-                if (this.show) {
-                    this.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
-                }
+            value: (value) => {
+                this.progressBar = value;
+                this.htmlContainer.style.display = this.progressBar ? 'block' : 'none';
             }
         });
-        window.addEventListener('resize', this.refreshDisplay);
         this.createDOM();
     }
 }

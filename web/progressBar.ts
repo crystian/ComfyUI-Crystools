@@ -18,7 +18,7 @@ class CrystoolsProgressBar {
   progressBarUI: ProgressBarUI;
 
   constructor() {
-    this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
+    window.addEventListener('resize', this.updateDisplay);
   }
 
   // not on setup because this affect the order on settings, I prefer to options at first
@@ -30,24 +30,19 @@ class CrystoolsProgressBar {
       tooltip: 'This apply only on old menu',
       type: 'boolean',
       defaultValue: this.defaultShowStatus,
-      onChange: this.progressBarUI.render,
+      onChange: this.progressBarUI.showProgressBar,
     });
   };
 
   updateDisplay = (): void => {
-    if(!this.progressBarUI.show){
-      return;
-    }
-
     const newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
 
     if (newMenu !== this.newMenu) {
       this.newMenu = newMenu;
 
-      if (this.newMenu === NewMenuOptions.Disabled) {
+      this.progressBarUI.showSection = (this.newMenu === NewMenuOptions.Disabled);
+      if (this.progressBarUI.showSection) {
         this.setup();
-      } else {
-        this.progressBarUI.show = false;
       }
     }
 
@@ -55,19 +50,20 @@ class CrystoolsProgressBar {
   };
 
   // automatically called by ComfyUI
-  setup(): void {
+  setup = (): void => {
     if (this.progressBarUI) {
-      this.progressBarUI.render(app.ui.settings.getSettingValue(this.idShowProgressBar, this.defaultShowStatus));
+      this.progressBarUI
+      .showProgressBar(app.ui.settings.getSettingValue(this.idShowProgressBar, this.defaultShowStatus));
       return;
     }
 
     this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
-    this.progressBarUI = new ProgressBarUI(this.centerNode, (this.newMenu === NewMenuOptions.Disabled));
+    this.progressBarUI = new ProgressBarUI((this.newMenu === NewMenuOptions.Disabled), this.centerNode);
 
     this.createSettings();
     this.updateDisplay();
     this.registerListeners();
-  }
+  };
 
   registerListeners = (): void => {
     api.addEventListener('status', ({detail}: any) => {
@@ -130,5 +126,5 @@ class CrystoolsProgressBar {
 const crystoolsProgressBar = new CrystoolsProgressBar();
 app.registerExtension({
   name: crystoolsProgressBar.idExtensionName,
-  setup: crystoolsProgressBar.setup.bind(crystoolsProgressBar),
+  setup: crystoolsProgressBar.setup,
 });

@@ -3,15 +3,19 @@
   display: flex;
   width: 100%;
   flex-direction: column;
+  margin: 0;
+  padding: 0;
 
   .crystools-monitor-container {
     width: 100%;
     cursor: crosshair;
-    order: 3;
     margin: 4px 0;
+    /* display: flex; by progress bar base */
+    flex-wrap: wrap;
+    flex-direction: column;
 
     .crystools-monitor {
-      margin: 2px 10px;
+      margin: 1px 10px;
       height: 12px;
       position: relative;
       display: flex;
@@ -20,8 +24,10 @@
     }
 
     .crystools-text {
-      width: 35px;
+      width: 40px;
       font-size: 10px;
+      text-align: right;
+      margin-right: 3px;
     }
 
     .crystools-content {

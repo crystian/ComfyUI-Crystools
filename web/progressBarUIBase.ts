@@ -17,9 +17,10 @@ export abstract class ProgressBarUIBase {
   protected constructor(
     public parentId: string,
     public rootId: string,
-    public show: boolean,
+    public showSection: boolean,
   ) {
     this.createRoot();
+    this.showFullSection(this.showSection);
   }
 
   private createRoot = (): void => {
@@ -39,12 +40,12 @@ export abstract class ProgressBarUIBase {
     ctoolsRoot.append(this.htmlContainer);
   };
 
-  // remember it can't have more parameters because it is used on settings automatically
-  public render = (value: boolean): void => {
-    this.show = value;
-    this.htmlContainer.style.display = this.show ? 'block' : 'none';
-  };
+  public showFullSection(value: boolean): void {
+    this.showSection = value;
+    this.htmlContainer.style.display = value ? 'flex' : 'none';
+  }
 
   abstract createDOM(): void;
-  abstract updateDisplay(currentStatus: EStatus, timeStart: number, currentProgress: number): void;
+
+  // abstract updateDisplay(currentStatus: EStatus, timeStart: number, currentProgress: number): void;
 }
