@@ -1,69 +1,7 @@
-import { app } from './comfy/index.js';
-export var EStatus;
-(function (EStatus) {
-    EStatus["executing"] = "Executing";
-    EStatus["executed"] = "Executed";
-    EStatus["execution_error"] = "Execution error";
-})(EStatus || (EStatus = {}));
-export var NewMenuOptions;
-(function (NewMenuOptions) {
-    NewMenuOptions["Disabled"] = "Disabled";
-    NewMenuOptions["Top"] = "Top";
-    NewMenuOptions["Bottom"] = "Bottom";
-})(NewMenuOptions || (NewMenuOptions = {}));
-export class ProgressBarUIBase {
-    constructor() {
-        Object.defineProperty(this, "htmlIdCrystoolsRoot", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: 'crystools-root'
-        });
-        Object.defineProperty(this, "htmlClassCrystoolsMonitorContainer", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: 'crystools-monitor-container'
-        });
-        Object.defineProperty(this, "htmlContainer", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "newMenu", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: NewMenuOptions.Disabled
-        });
-        this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
-        if (this.newMenu === NewMenuOptions.Disabled) {
-            this.createRoot();
-        }
-    }
-    createRoot() {
-        let ctoolsRoot = document.getElementById(this.htmlIdCrystoolsRoot);
-        if (!ctoolsRoot) {
-            ctoolsRoot = document.createElement('div');
-            ctoolsRoot.setAttribute('id', this.htmlIdCrystoolsRoot);
-            const parentElement = document.getElementById('queue-button');
-            parentElement?.insertAdjacentElement('afterend', ctoolsRoot);
-        }
-        this.htmlContainer = document.createElement('div');
-        this.htmlContainer.classList.add(this.htmlClassCrystoolsMonitorContainer);
-        ctoolsRoot.append(this.htmlContainer);
-    }
-}
+import { EStatus, ProgressBarUIBase } from './progressBarUIBase.js';
 export class ProgressBarUI extends ProgressBarUIBase {
-    constructor(htmlIdCrystoolsProgressBarContainer, centerNode) {
-        super();
-        Object.defineProperty(this, "htmlIdCrystoolsProgressBarContainer", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: htmlIdCrystoolsProgressBarContainer
-        });
+    constructor(centerNode, show) {
+        super('queue-button', 'crystools-root-old', show);
         Object.defineProperty(this, "centerNode", {
             enumerable: true,
             configurable: true,
@@ -106,7 +44,6 @@ export class ProgressBarUI extends ProgressBarUIBase {
             writable: true,
             value: () => {
                 const htmlContainer = document.createElement('div');
-                htmlContainer.setAttribute('id', this.htmlIdCrystoolsProgressBarContainer);
                 htmlContainer.setAttribute('title', 'click to see the current working node');
                 htmlContainer.addEventListener('click', this.centerNode);
                 this.htmlContainer.append(htmlContainer);
@@ -125,21 +62,14 @@ export class ProgressBarUI extends ProgressBarUIBase {
                 progressBar.append(this.htmlProgressLabelRef);
             }
         });
-        Object.defineProperty(this, "refreshDisplay", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: () => {
-                if (this.newMenu === NewMenuOptions.Disabled) {
-                    this.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
-                }
-            }
-        });
         Object.defineProperty(this, "updateDisplay", {
             enumerable: true,
             configurable: true,
             writable: true,
             value: (currentStatus, timeStart, currentProgress) => {
+                if (!this.show) {
+                    return;
+                }
                 if (!(this.htmlProgressLabelRef && this.htmlProgressSliderRef)) {
                     console.error('htmlProgressLabelRef or htmlProgressSliderRef is undefined');
                     return;
@@ -166,8 +96,17 @@ export class ProgressBarUI extends ProgressBarUIBase {
                 }
             }
         });
-        if (this.newMenu === NewMenuOptions.Disabled) {
-            this.createDOM();
-        }
+        Object.defineProperty(this, "refreshDisplay", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: () => {
+                if (this.show) {
+                    this.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
+                }
+            }
+        });
+        window.addEventListener('resize', this.refreshDisplay);
+        this.createDOM();
     }
 }

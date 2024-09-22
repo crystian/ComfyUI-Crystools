@@ -1,13 +1,13 @@
 import { app, api } from './comfy/index.js';
 import { commonPrefix } from './common.js';
-import { EStatus, NewMenuOptions, ProgressBarUI } from './progressBarUI.js';
+import { ProgressBarUI } from './progressBarUI.js';
+import { EStatus, NewMenuOptions } from './progressBarUIBase.js';
 
 class CrystoolsProgressBar {
   idExtensionName = 'Crystools.progressBar';
   idShowProgressBar = 'Crystools.ProgressBar';
   defaultShowStatus = true;
   menuPrefix = commonPrefix;
-  htmlIdCrystoolsProgressBarContainer = 'crystools-progress-bar-container';
   newMenu: NewMenuOptions = NewMenuOptions.Disabled;
 
   currentStatus = EStatus.executed;
@@ -15,16 +15,10 @@ class CrystoolsProgressBar {
   currentNode?: number = undefined;
   timeStart = 0;
 
-  htmlProgressSliderRef?: HTMLDivElement = undefined;
-  htmlProgressLabelRef?: HTMLDivElement = undefined;
-
   progressBarUI: ProgressBarUI;
 
   constructor() {
     this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
-    window.addEventListener('resize', () => this.updateDisplay());
-    this.createSettings();
-    this.updateDisplay();
   }
 
   // not on setup because this affect the order on settings, I prefer to options at first
@@ -36,23 +30,15 @@ class CrystoolsProgressBar {
       tooltip: 'This apply only on old menu',
       type: 'boolean',
       defaultValue: this.defaultShowStatus,
-      onChange: this.showProgressBar,
+      onChange: this.progressBarUI.render,
     });
   };
 
-  showProgressBar = (value: boolean): void => {
-    if (this.newMenu === NewMenuOptions.Disabled) {
-      const container = document.getElementById(this.htmlIdCrystoolsProgressBarContainer);
-
-      // validation because this run before setup
-      if (container) {
-        container.style.display = value ? 'block' : 'none';
-      }
+  updateDisplay = (): void => {
+    if(!this.progressBarUI.show){
+      return;
     }
 
-  };
-
-  updateDisplay = (): void => {
     const newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
 
     if (newMenu !== this.newMenu) {
@@ -60,32 +46,26 @@ class CrystoolsProgressBar {
 
       if (this.newMenu === NewMenuOptions.Disabled) {
         this.setup();
+      } else {
+        this.progressBarUI.show = false;
       }
     }
 
-    if (this.newMenu === NewMenuOptions.Disabled) {
-      this.progressBarUI?.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
-    }
-
+    this.progressBarUI.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
   };
 
+  // automatically called by ComfyUI
   setup(): void {
     if (this.progressBarUI) {
-      this.showProgressBar(app.ui.settings.getSettingValue(this.idShowProgressBar, this.defaultShowStatus));
-      return;
-    }
-    if (this.newMenu !== NewMenuOptions.Disabled) {
+      this.progressBarUI.render(app.ui.settings.getSettingValue(this.idShowProgressBar, this.defaultShowStatus));
       return;
     }
 
-    this.progressBarUI = new ProgressBarUI(
-      this.htmlIdCrystoolsProgressBarContainer,
-      this.centerNode);
+    this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
+    this.progressBarUI = new ProgressBarUI(this.centerNode, (this.newMenu === NewMenuOptions.Disabled));
 
-    this.htmlProgressSliderRef = this.progressBarUI.htmlProgressSliderRef;
-    this.htmlProgressLabelRef = this.progressBarUI.htmlProgressLabelRef;
-
-    this.showProgressBar(app.ui.settings.getSettingValue(this.idShowProgressBar, this.defaultShowStatus));
+    this.createSettings();
+    this.updateDisplay();
     this.registerListeners();
   }
 
