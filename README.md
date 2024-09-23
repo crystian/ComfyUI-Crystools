@@ -514,6 +514,7 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### 1.18.0 (21/09/2024)
 - HORIZONTAL UI! 🎉
+- Configurable size of monitors on settings menu
 
 ### 1.17.0 (21/09/2024)
 - Settings menu reorganized
