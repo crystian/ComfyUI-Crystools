@@ -15,7 +15,7 @@
     width: 100%;
     cursor: crosshair;
     /*margin: 4px 0;*/
-    /* display: flex; by progress bar base */
+    display: flex; /* by progress bar base */
     flex-wrap: wrap;
     flex-direction: column;
 
@@ -32,14 +32,15 @@
         font-size: 10px;
         text-align: right;
         margin-right: 3px;
-        &:hover{
+
+        &:hover {
           font-weight: 600;
           color: var(--input-text);
         }
       }
 
       .crystools-label {
-        &:hover{
+        &:hover {
           font-weight: 800;
           color: var(--input-text);
         }
@@ -56,7 +57,7 @@
     .crystools-slider {
       position: absolute;
       height: 100%;
-      width: 0;            ;
+      width: 0;
       box-shadow: inset 2px 2px 10px rgba(0, 0, 0, 0.2);
     }
 
@@ -94,4 +95,84 @@
     }
   }
 
+}
+
+
+
+.comfyui-menu #crystools-root {
+  /*background-color: red;*/
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 1;
+  /*flex-grow: 1;*/
+  justify-content: flex-end;
+  /*width: 100%;*/
+    gap: 5px;
+  height: 100%;
+
+  .crystools-monitor-container {
+  /*background-color: var(--comfy-menu-bg);*/
+    /*width: 100%;*/
+    cursor: crosshair;
+    /*margin: 4px 0;*/
+    display: flex; /* by progress bar base */
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100%;
+    max-width: 600px;
+    min-width: 300px;
+    gap: 5px;
+
+    .crystools-monitor {
+    background-color: var(--comfy-input-bg);
+      position: relative;
+      align-items: center;
+      flex-direction: row;
+      /*width: 60px;*/
+      height: 100%;
+
+      .crystools-text {
+        font-size: 10px;
+        text-align: right;
+        margin-left: 3px;
+        position: absolute;
+        bottom: 2px;
+        z-index: 100;
+
+        /*&:hover {*/
+        /*  font-weight: 600;*/
+        /*  color: var(--input-text);*/
+        /*}*/
+      }
+
+      /*.crystools-label {*/
+      /*  &:hover {*/
+      /*    font-weight: 800;*/
+      /*    color: var(--input-text);*/
+      /*  }*/
+      /*}*/
+    }
+    .crystools-content {
+      height: 100%;
+      width: 60px;
+      position: relative;
+    }
+
+    .crystools-slider {
+      position: absolute;
+      height: 100%;
+      width: 0;
+      box-shadow: inset 2px 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .crystools-label {
+      position: relative;
+      width: 100%;
+      color: var(--input-text);
+      font-size: 12px;
+      left: 32px;
+    }
+  }
 }

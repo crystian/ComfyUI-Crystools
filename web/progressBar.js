@@ -93,6 +93,7 @@ class CrystoolsProgressBar {
                         this.setup();
                     }
                 }
+                this.progressBarUI.htmlContainer.style.display = 'none';
                 this.progressBarUI.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
             }
         });

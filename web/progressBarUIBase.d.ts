@@ -17,6 +17,5 @@ export declare abstract class ProgressBarUIBase {
     protected htmlClassMonitor: string;
     protected constructor(parentId: string, rootId: string, showSection: boolean);
     private createRoot;
-    showFullSection(value: boolean): void;
     abstract createDOM(): void;
 }

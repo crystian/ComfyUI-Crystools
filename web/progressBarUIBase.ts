@@ -21,7 +21,7 @@ export abstract class ProgressBarUIBase {
     public showSection: boolean,
   ) {
     this.createRoot();
-    this.showFullSection(this.showSection);
+    // this.showFullSection(this.showSection);
   }
 
   private createRoot = (): void => {
@@ -39,16 +39,16 @@ export abstract class ProgressBarUIBase {
         console.error('Crystools: parentElement not found', this.parentId);
       }
     }
-
+    this.showSection = true;
     this.htmlContainer = document.createElement('div');
     this.htmlContainer.classList.add(this.htmlClassMonitor);
     this.htmlRoot.append(this.htmlContainer);
   };
 
-  public showFullSection(value: boolean): void {
-    this.showSection = value;
-    this.htmlContainer.style.display = value ? 'flex' : 'none';
-  }
+  // public showFullSection(value: boolean): void {
+  //   this.showSection = value;
+  //   this.htmlContainer.style.display = value ? 'flex' : 'none';
+  // }
 
   abstract createDOM(): void;
 

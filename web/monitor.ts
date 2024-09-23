@@ -320,10 +320,7 @@ class CrystoolsMonitor {
     if (newMenu !== this.newMenu) {
       this.newMenu = newMenu;
 
-      this.monitorUI.showFullSection(this.newMenu === NewMenuOptions.Disabled);
-      if (this.monitorUI.showSection) {
-        this.setup();
-      }
+      this.setup();
 
       this.moveMonitor(this.newMenu);
     }
@@ -347,6 +344,7 @@ class CrystoolsMonitor {
       console.log('moveMonitor1', parentElement);
       console.log('moveMonitor2', this.monitorUI.htmlRoot);
       parentElement.insertAdjacentElement('afterend', this.monitorUI.htmlRoot);
+
     } else {
       console.error('Crystools: parentElement to move monitors not found!', parentElement);
     }
@@ -424,6 +422,7 @@ class CrystoolsMonitor {
   };
 
   setup = (): void => {
+    console.log('setup');
     if (this.monitorUI) {
       // this.monitorUIOld.render(0);
       return;
@@ -452,6 +451,7 @@ class CrystoolsMonitor {
 
     this.updateDisplay();
     this.registerListeners();
+    console.log('setup2');
   };
 
   registerListeners = (): void => {

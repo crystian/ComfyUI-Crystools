@@ -380,10 +380,7 @@ class CrystoolsMonitor {
                 const newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
                 if (newMenu !== this.newMenu) {
                     this.newMenu = newMenu;
-                    this.monitorUI.showFullSection(this.newMenu === NewMenuOptions.Disabled);
-                    if (this.monitorUI.showSection) {
-                        this.setup();
-                    }
+                    this.setup();
                     this.moveMonitor(this.newMenu);
                 }
             }
@@ -511,6 +508,7 @@ class CrystoolsMonitor {
             configurable: true,
             writable: true,
             value: () => {
+                console.log('setup');
                 if (this.monitorUI) {
                     return;
                 }
@@ -524,6 +522,7 @@ class CrystoolsMonitor {
                 this.monitorUI = new MonitorUI(this.monitorCPUElement, this.monitorRAMElement, this.monitorHDDElement, this.monitorGPUSettings, this.monitorVRAMSettings, this.monitorTemperatureSettings, currentRate, (this.newMenu === NewMenuOptions.Disabled));
                 this.updateDisplay();
                 this.registerListeners();
+                console.log('setup2');
             }
         });
         Object.defineProperty(this, "registerListeners", {
