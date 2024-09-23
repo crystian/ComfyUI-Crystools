@@ -46,6 +46,7 @@ type TMonitorSettings = {
   category: string[], // for settings location
   label: string, // on monitor
   symbol: string, // on monitor
+  monitorTitle?: string, // on monitor
   title?: string, // on monitor
   tooltip?: string, // on settings
   type: 'boolean' | 'number' | 'string' | 'slider' | 'combo',

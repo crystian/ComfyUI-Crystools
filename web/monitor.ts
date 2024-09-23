@@ -6,20 +6,27 @@ import { convertNumberToPascalCase } from './utils.js';
 import { NewMenuOptions } from './progressBarUIBase.js';
 
 class CrystoolsMonitor {
-  idExtensionName = 'Crystools.monitor';
-  menuPrefix = commonPrefix;
-  newMenu: NewMenuOptions = NewMenuOptions.Disabled;
+  readonly idExtensionName = 'Crystools.monitor';
+  private readonly menuPrefix = commonPrefix;
+  private newMenu: NewMenuOptions = NewMenuOptions.Disabled;
 
-  settingsRate: TMonitorSettings;
-  monitorCPUElement: TMonitorSettings;
-  monitorRAMElement: TMonitorSettings;
-  monitorHDDElement: TMonitorSettings;
-  settingsHDD: TMonitorSettings;
-  monitorGPUSettings: TMonitorSettings[] = [];
-  monitorVRAMSettings: TMonitorSettings[] = [];
-  monitorTemperatureSettings: TMonitorSettings[] = [];
+  private settingsRate: TMonitorSettings;
+  private settingsMonitorHeight: TMonitorSettings;
+  private settingsMonitorWidth: TMonitorSettings;
+  private monitorCPUElement: TMonitorSettings;
+  private monitorRAMElement: TMonitorSettings;
+  private monitorHDDElement: TMonitorSettings;
+  private settingsHDD: TMonitorSettings;
+  private monitorGPUSettings: TMonitorSettings[] = [];
+  private monitorVRAMSettings: TMonitorSettings[] = [];
+  private monitorTemperatureSettings: TMonitorSettings[] = [];
 
-  monitorUI: MonitorUI;
+  private monitorUI: MonitorUI;
+
+  private readonly monitorWidthId = 'Crystools.MonitorWidth';
+  private readonly monitorWidth = 60;
+  private readonly monitorHeightId = 'Crystools.MonitorHeight';
+  private readonly monitorHeight = 30;
 
   constructor() {
     window.addEventListener('resize', this.updateDisplay);
@@ -29,15 +36,16 @@ class CrystoolsMonitor {
     this.settingsRate = {
       id: 'Crystools.RefreshRate',
       name: 'Refresh per second',
-      category: ['Crystools', this.menuPrefix + ' Refresh Rate'],
+      category: ['Crystools', this.menuPrefix + ' Configuration', 'refresh'],
       tooltip: 'This is the time (in seconds) between each update of the monitors, 0 means no refresh',
       type: 'slider',
       attrs: {
         min: 0,
         max: 2,
-        step: 0.25,
+        step: .25,
       },
       defaultValue: .5,
+
       // @ts-ignore
       onChange: async(value: string): Promise<void> => {
         let valueNumber: number;
@@ -147,7 +155,7 @@ class CrystoolsMonitor {
       type: 'boolean',
       label,
       symbol: '%',
-      title: `${index}: ${name}`,
+      monitorTitle: `${index}: ${name}`,
       defaultValue: true,
       htmlMonitorRef: undefined,
       htmlMonitorSliderRef: undefined,
@@ -182,7 +190,7 @@ class CrystoolsMonitor {
       type: 'boolean',
       label: label,
       symbol: '%',
-      title: `${index}: ${name}`,
+      monitorTitle: `${index}: ${name}`,
       defaultValue: true,
       htmlMonitorRef: undefined,
       htmlMonitorSliderRef: undefined,
@@ -217,7 +225,7 @@ class CrystoolsMonitor {
       type: 'boolean',
       label: label,
       symbol: '°',
-      title: `${index}: ${name}`,
+      monitorTitle: `${index}: ${name}`,
       defaultValue: true,
       htmlMonitorRef: undefined,
       htmlMonitorSliderRef: undefined,
@@ -281,8 +289,76 @@ class CrystoolsMonitor {
     };
   };
 
+  createSettingsMonitorWidth = (): void => {
+    this.settingsMonitorWidth = {
+      id: this.monitorWidthId,
+      name: 'Pixel Width',
+      category: ['Crystools', this.menuPrefix + ' Configuration', 'width'],
+      tooltip: 'The width of the monitor in pixels on the UI (only on horizontal UI)',
+      type: 'slider',
+      attrs: {
+        min: 60,
+        max: 100,
+        step: 1,
+      },
+      defaultValue: this.monitorWidth,
+      // @ts-ignore
+      onChange: (value: string): void => {
+        let valueNumber: number;
+
+        try {
+          valueNumber = parseInt(value);
+          if (isNaN(valueNumber)) {
+            throw new Error('invalid value');
+          }
+        } catch (error) {
+          console.error(error);
+          return;
+        }
+
+        const h = app.ui.settings.getSettingValue(this.monitorHeightId, this.monitorHeight);
+        this.monitorUI?.updateMonitorSize(valueNumber, h);
+      },
+    };
+  };
+
+  createSettingsMonitorHeight = (): void => {
+    this.settingsMonitorHeight = {
+      id: this.monitorHeightId,
+      name: 'Pixel Height',
+      category: ['Crystools', this.menuPrefix + ' Configuration', 'height'],
+      tooltip: 'The height of the monitor in pixels on the UI (only on horizontal UI)',
+      type: 'slider',
+      attrs: {
+        min: 16,
+        max: 50,
+        step: 1,
+      },
+      defaultValue: this.monitorHeight,
+      // @ts-ignore
+      onChange: (value: string): void => {
+        let valueNumber: number;
+
+        try {
+          valueNumber = parseInt(value);
+          if (isNaN(valueNumber)) {
+            throw new Error('invalid value');
+          }
+        } catch (error) {
+          console.error(error);
+          return;
+        }
+
+        const w = app.ui.settings.getSettingValue(this.monitorWidthId, this.monitorWidth);
+        this.monitorUI?.updateMonitorSize(w, valueNumber);
+      },
+    };
+  };
+
   createSettings = (): void => {
     app.ui.settings.addSetting(this.settingsRate);
+    app.ui.settings.addSetting(this.settingsMonitorHeight);
+    app.ui.settings.addSetting(this.settingsMonitorWidth);
     app.ui.settings.addSetting(this.monitorRAMElement);
     app.ui.settings.addSetting(this.monitorCPUElement);
 
@@ -312,19 +388,20 @@ class CrystoolsMonitor {
     this.monitorUI.orderMonitors();
     this.updateAllWidget();
     this.moveMonitor(this.newMenu);
+
+    const w = app.ui.settings.getSettingValue(this.monitorWidthId, this.monitorWidth);
+    const h = app.ui.settings.getSettingValue(this.monitorHeightId, this.monitorHeight);
+    this.monitorUI.updateMonitorSize(w, h);
   };
 
   updateDisplay = (): void => {
-    const newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
-
-    if (newMenu !== this.newMenu) {
-      this.newMenu = newMenu;
-
-      this.setup();
-
-      this.moveMonitor(this.newMenu);
-    }
-
+    setTimeout(() => {
+      const newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
+      if (newMenu !== this.newMenu) {
+        this.newMenu = newMenu;
+        this.moveMonitor(this.newMenu);
+      }
+    });
   };
 
   moveMonitor = (position: NewMenuOptions): void => {
@@ -439,6 +516,8 @@ class CrystoolsMonitor {
     }
 
     this.createSettingsRate();
+    this.createSettingsMonitorHeight();
+    this.createSettingsMonitorWidth();
     this.createSettingsCPU();
     this.createSettingsRAM();
     this.createSettingsHDD();
