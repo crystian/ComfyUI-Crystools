@@ -1,8 +1,7 @@
-import { app } from './comfy/index.js';
-import { ProgressBarUIBase } from './progressBarUI.js';
+import { ProgressBarUIBase } from './progressBarUIBase.js';
 export class MonitorUI extends ProgressBarUIBase {
-    constructor(monitorCPUElement, monitorRAMElement, monitorHDDElement, monitorGPUSettings, monitorVRAMSettings, monitorTemperatureSettings, currentRate) {
-        super();
+    constructor(monitorCPUElement, monitorRAMElement, monitorHDDElement, monitorGPUSettings, monitorVRAMSettings, monitorTemperatureSettings, currentRate, showSection) {
+        super('queue-button', 'crystools-root', showSection);
         Object.defineProperty(this, "monitorCPUElement", {
             enumerable: true,
             configurable: true,
@@ -45,64 +44,57 @@ export class MonitorUI extends ProgressBarUIBase {
             writable: true,
             value: currentRate
         });
-        Object.defineProperty(this, "refreshDisplay", {
+        Object.defineProperty(this, "lastMonitor", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: () => {
-                console.log('refreshDisplay');
-                this.updateAllWidget();
-            }
+            value: 1
         });
         Object.defineProperty(this, "createDOM", {
             enumerable: true,
             configurable: true,
             writable: true,
             value: () => {
+                this.htmlContainer.style.order = '2';
                 this.htmlContainer.append(this.createMonitor(this.monitorCPUElement));
                 this.htmlContainer.append(this.createMonitor(this.monitorRAMElement));
-                this.monitorGPUSettings.forEach((_monitorSettings, index) => {
-                    this.monitorGPUSettings[index] && this.htmlContainer.append(this.createMonitor(this.monitorGPUSettings[index]));
-                    this.monitorVRAMSettings[index] && this.htmlContainer.append(this.createMonitor(this.monitorVRAMSettings[index]));
-                    this.monitorTemperatureSettings[index] &&
-                        this.htmlContainer.append(this.createMonitor(this.monitorTemperatureSettings[index]));
-                });
                 this.htmlContainer.append(this.createMonitor(this.monitorHDDElement));
                 this.updateAllAnimationDuration(this.currentRate);
-                this.updateAllWidget();
             }
         });
-        Object.defineProperty(this, "updateAllWidget", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: () => {
-                this.updateWidget(this.monitorCPUElement);
-                this.updateWidget(this.monitorRAMElement);
-                this.updateWidget(this.monitorHDDElement);
-                this.monitorGPUSettings.forEach((monitorSettings) => {
-                    monitorSettings && this.updateWidget(monitorSettings);
-                });
-                this.monitorVRAMSettings.forEach((monitorSettings) => {
-                    monitorSettings && this.updateWidget(monitorSettings);
-                });
-                this.monitorTemperatureSettings.forEach((monitorSettings) => {
-                    monitorSettings && this.updateWidget(monitorSettings);
-                });
-            }
-        });
-        Object.defineProperty(this, "updateWidget", {
+        Object.defineProperty(this, "createDOMGPUMonitor", {
             enumerable: true,
             configurable: true,
             writable: true,
             value: (monitorSettings) => {
-                const value = app.ui.settings.getSettingValue(monitorSettings.id, monitorSettings.defaultValue);
-                if (monitorSettings.htmlMonitorRef) {
-                    monitorSettings.htmlMonitorRef.style.display = value ? 'flex' : 'none';
+                if (!monitorSettings) {
+                    return;
+                }
+                this.htmlContainer.append(this.createMonitor(monitorSettings));
+                this.updateAllAnimationDuration(this.currentRate);
+            }
+        });
+        Object.defineProperty(this, "orderMonitors", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: () => {
+                try {
+                    this.monitorCPUElement.htmlMonitorRef.style.order = '' + this.lastMonitor++;
+                    this.monitorRAMElement.htmlMonitorRef.style.order = '' + this.lastMonitor++;
+                    this.monitorGPUSettings.forEach((_monitorSettings, index) => {
+                        this.monitorGPUSettings[index].htmlMonitorRef.style.order = '' + this.lastMonitor++;
+                        this.monitorVRAMSettings[index].htmlMonitorRef.style.order = '' + this.lastMonitor++;
+                        this.monitorTemperatureSettings[index].htmlMonitorRef.style.order = '' + this.lastMonitor++;
+                    });
+                    this.monitorHDDElement.htmlMonitorRef.style.order = '' + this.lastMonitor++;
+                }
+                catch (error) {
+                    console.error('orderMonitors', error);
                 }
             }
         });
-        Object.defineProperty(this, "updateAllMonitors", {
+        Object.defineProperty(this, "updateDisplay", {
             enumerable: true,
             configurable: true,
             writable: true,
@@ -158,7 +150,13 @@ export class MonitorUI extends ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: (monitorSettings, percent) => {
+                if (!this.showSection) {
+                    return;
+                }
                 if (!(monitorSettings.htmlMonitorSliderRef && monitorSettings.htmlMonitorLabelRef)) {
+                    return;
+                }
+                if (percent < 0) {
                     return;
                 }
                 monitorSettings.htmlMonitorLabelRef.innerHTML = `${Math.floor(percent)}${monitorSettings.symbol}`;
@@ -205,7 +203,7 @@ export class MonitorUI extends ProgressBarUIBase {
                     return document.createElement('div');
                 }
                 const htmlMain = document.createElement('div');
-                htmlMain.setAttribute('id', monitorSettings.id);
+                htmlMain.classList.add(monitorSettings.id);
                 htmlMain.classList.add('crystools-monitor');
                 monitorSettings.htmlMonitorRef = htmlMain;
                 if (monitorSettings.title) {

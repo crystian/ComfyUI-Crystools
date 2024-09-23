@@ -1,7 +1,8 @@
-import { app } from './comfy/index.js';
-import { ProgressBarUIBase } from './progressBarUI.js';
+import { ProgressBarUIBase } from './progressBarUIBase.js';
 
 export class MonitorUI extends ProgressBarUIBase {
+  lastMonitor = 1; // just for order on monitors section
+
   constructor(
     private monitorCPUElement: TMonitorSettings,
     private monitorRAMElement: TMonitorSettings,
@@ -9,76 +10,53 @@ export class MonitorUI extends ProgressBarUIBase {
     private monitorGPUSettings: TMonitorSettings[],
     private monitorVRAMSettings: TMonitorSettings[],
     private monitorTemperatureSettings: TMonitorSettings[],
-    private currentRate: number
+    private currentRate: number,
+    showSection: boolean,
   ) {
-    super();
+    super('queue-button', 'crystools-root', showSection);
     this.createDOM();
   }
 
-  refreshDisplay = (): void => {
-    console.log('refreshDisplay');
-    this.updateAllWidget();
-  };
-
-  override createDOM = (): void => {
+  createDOM = (): void => {
+    this.htmlContainer.style.order = '2';
     this.htmlContainer.append(this.createMonitor(this.monitorCPUElement));
     this.htmlContainer.append(this.createMonitor(this.monitorRAMElement));
-
-    // gpu0 > gpu1 > vram0 > vram1
-    // this.monitorGPUSettings.forEach((monitorSettings) => {
-    //   monitorSettings && htmlContainer.append(this.createMonitor(monitorSettings));
-    // });
-    // this.monitorVRAMSettings.forEach((monitorSettings) => {
-    //   monitorSettings && htmlContainer.append(this.createMonitor(monitorSettings));
-    // });
-    // this.monitorTemperatureSettings.forEach((monitorSettings) => {
-    //   monitorSettings && htmlContainer.append(this.createMonitor(monitorSettings));
-    // });
-
-    // gpu0 > vram0 > gpu1 > vram1
-    this.monitorGPUSettings.forEach((_monitorSettings, index) => {
-      this.monitorGPUSettings[index] && this.htmlContainer.append(this.createMonitor(this.monitorGPUSettings[index]));
-      this.monitorVRAMSettings[index] && this.htmlContainer.append(this.createMonitor(this.monitorVRAMSettings[index]));
-      this.monitorTemperatureSettings[index] &&
-      this.htmlContainer.append(this.createMonitor(this.monitorTemperatureSettings[index]));
-    });
-
     this.htmlContainer.append(this.createMonitor(this.monitorHDDElement));
-
     this.updateAllAnimationDuration(this.currentRate);
-    this.updateAllWidget();
   };
 
+  createDOMGPUMonitor = (monitorSettings?: TMonitorSettings): void => {
+    if (!monitorSettings) {
+      return;
+    }
 
-  updateAllWidget = (): void => {
-    this.updateWidget(this.monitorCPUElement);
-    this.updateWidget(this.monitorRAMElement);
-    this.updateWidget(this.monitorHDDElement);
-
-    this.monitorGPUSettings.forEach((monitorSettings) => {
-      monitorSettings && this.updateWidget(monitorSettings);
-    });
-    this.monitorVRAMSettings.forEach((monitorSettings) => {
-      monitorSettings && this.updateWidget(monitorSettings);
-    });
-    this.monitorTemperatureSettings.forEach((monitorSettings) => {
-      monitorSettings && this.updateWidget(monitorSettings);
-    });
+    this.htmlContainer.append(this.createMonitor(monitorSettings));
+    this.updateAllAnimationDuration(this.currentRate);
   };
 
-  /**
-   * for the settings menu
-   * @param monitorSettings
-   */
-  updateWidget = (monitorSettings: TMonitorSettings): void => {
-    const value = app.ui.settings.getSettingValue(monitorSettings.id, monitorSettings.defaultValue);
-    if (monitorSettings.htmlMonitorRef) {
-      monitorSettings.htmlMonitorRef.style.display = value ? 'flex' : 'none';
+  orderMonitors = (): void => {
+    try {
+      // @ts-ignore
+      this.monitorCPUElement.htmlMonitorRef.style.order = '' + this.lastMonitor++;
+      // @ts-ignore
+      this.monitorRAMElement.htmlMonitorRef.style.order = ''+ this.lastMonitor++;
+      // @ts-ignore
+      this.monitorGPUSettings.forEach((_monitorSettings, index) => {
+        // @ts-ignore
+        this.monitorGPUSettings[index].htmlMonitorRef.style.order = ''+ this.lastMonitor++;
+        // @ts-ignore
+        this.monitorVRAMSettings[index].htmlMonitorRef.style.order = ''+ this.lastMonitor++;
+        // @ts-ignore
+        this.monitorTemperatureSettings[index].htmlMonitorRef.style.order = ''+ this.lastMonitor++;
+      });
+      // @ts-ignore
+      this.monitorHDDElement.htmlMonitorRef.style.order = ''+ this.lastMonitor++;
+    } catch (error) {
+      console.error('orderMonitors', error);
     }
   };
 
-  updateAllMonitors = (data: TStatsData): void => {
-    // console.log('updateAllMonitors', data);
+  updateDisplay = (data: TStatsData): void => {
     this.updateMonitor(this.monitorCPUElement, data.cpu_utilization);
     this.updateMonitor(this.monitorRAMElement, data.ram_used_percent);
     this.updateMonitor(this.monitorHDDElement, data.hdd_used_percent);
@@ -125,7 +103,7 @@ export class MonitorUI extends ProgressBarUIBase {
         }
 
         this.updateMonitor(monitorSettings, gpu.gpu_temperature);
-        if(monitorSettings.cssColorFinal && monitorSettings.htmlMonitorSliderRef){
+        if (monitorSettings.cssColorFinal && monitorSettings.htmlMonitorSliderRef) {
           monitorSettings.htmlMonitorSliderRef.style.backgroundColor =
             `color-mix(in srgb, ${monitorSettings.cssColorFinal} ${gpu.gpu_temperature}%, ${monitorSettings.cssColor})`;
         }
@@ -136,9 +114,19 @@ export class MonitorUI extends ProgressBarUIBase {
   };
 
   updateMonitor = (monitorSettings: TMonitorSettings, percent: number): void => {
+    if (!this.showSection) {
+      return;
+    }
+
     if (!(monitorSettings.htmlMonitorSliderRef && monitorSettings.htmlMonitorLabelRef)) {
       return;
     }
+
+    if (percent < 0) {
+      return;
+    }
+
+    // console.log('updateMonitor', monitorSettings.id, percent);
 
     monitorSettings.htmlMonitorLabelRef.innerHTML = `${Math.floor(percent)}${monitorSettings.symbol}`;
     monitorSettings.htmlMonitorSliderRef.style.width = `${Math.floor(percent)}%`;
@@ -168,15 +156,16 @@ export class MonitorUI extends ProgressBarUIBase {
     slider.style.transition = `width ${value.toFixed(1)}s`;
   };
 
-
   createMonitor = (monitorSettings?: TMonitorSettings): HTMLDivElement => {
     if (!monitorSettings) {
       // just for typescript
       return document.createElement('div');
     }
+
     const htmlMain = document.createElement('div');
-    htmlMain.setAttribute('id', monitorSettings.id);
+    htmlMain.classList.add(monitorSettings.id);
     htmlMain.classList.add('crystools-monitor');
+
     monitorSettings.htmlMonitorRef = htmlMain;
 
     if (monitorSettings.title) {
@@ -194,7 +183,7 @@ export class MonitorUI extends ProgressBarUIBase {
 
     const htmlMonitorSlider = document.createElement('div');
     htmlMonitorSlider.classList.add('crystools-slider');
-    if(monitorSettings.cssColorFinal){
+    if (monitorSettings.cssColorFinal) {
       htmlMonitorSlider.style.backgroundColor =
         `color-mix(in srgb, ${monitorSettings.cssColorFinal} 0%, ${monitorSettings.cssColor})`;
     } else {

@@ -1,54 +1,7 @@
-export var EStatus;
-(function (EStatus) {
-    EStatus["executing"] = "Executing";
-    EStatus["executed"] = "Executed";
-    EStatus["execution_error"] = "Execution error";
-})(EStatus || (EStatus = {}));
-export class ProgressBarUIBase {
-    constructor() {
-        Object.defineProperty(this, "htmlIdCrystoolsRoot", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: 'crystools-root'
-        });
-        Object.defineProperty(this, "htmlClassCrystoolsMonitorContainer", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: 'crystools-monitor-container'
-        });
-        Object.defineProperty(this, "htmlContainer", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        this.createRoot();
-        window.addEventListener('resize', () => this.refreshDisplay());
-    }
-    createRoot() {
-        let ctoolsRoot = document.getElementById(this.htmlIdCrystoolsRoot);
-        if (!ctoolsRoot) {
-            ctoolsRoot = document.createElement('div');
-            ctoolsRoot.setAttribute('id', this.htmlIdCrystoolsRoot);
-            const parentElement = document.getElementById('queue-button');
-            parentElement?.insertAdjacentElement('afterend', ctoolsRoot);
-        }
-        this.htmlContainer = document.createElement('div');
-        this.htmlContainer.classList.add(this.htmlClassCrystoolsMonitorContainer);
-        ctoolsRoot.append(this.htmlContainer);
-    }
-}
+import { EStatus, ProgressBarUIBase } from './progressBarUIBase.js';
 export class ProgressBarUI extends ProgressBarUIBase {
-    constructor(htmlIdCrystoolsProgressBarContainer, centerNode) {
-        super();
-        Object.defineProperty(this, "htmlIdCrystoolsProgressBarContainer", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: htmlIdCrystoolsProgressBarContainer
-        });
+    constructor(showSection, centerNode) {
+        super('queue-button', 'crystools-root', showSection);
         Object.defineProperty(this, "centerNode", {
             enumerable: true,
             configurable: true,
@@ -85,13 +38,18 @@ export class ProgressBarUI extends ProgressBarUIBase {
             writable: true,
             value: void 0
         });
+        Object.defineProperty(this, "progressBar", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         Object.defineProperty(this, "createDOM", {
             enumerable: true,
             configurable: true,
             writable: true,
             value: () => {
                 const htmlContainer = document.createElement('div');
-                htmlContainer.setAttribute('id', this.htmlIdCrystoolsProgressBarContainer);
                 htmlContainer.setAttribute('title', 'click to see the current working node');
                 htmlContainer.addEventListener('click', this.centerNode);
                 this.htmlContainer.append(htmlContainer);
@@ -110,19 +68,17 @@ export class ProgressBarUI extends ProgressBarUIBase {
                 progressBar.append(this.htmlProgressLabelRef);
             }
         });
-        Object.defineProperty(this, "refreshDisplay", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: () => {
-                this.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
-            }
-        });
         Object.defineProperty(this, "updateDisplay", {
             enumerable: true,
             configurable: true,
             writable: true,
             value: (currentStatus, timeStart, currentProgress) => {
+                if (!this.showSection) {
+                    return;
+                }
+                if (!this.progressBar) {
+                    return;
+                }
                 if (!(this.htmlProgressLabelRef && this.htmlProgressSliderRef)) {
                     console.error('htmlProgressLabelRef or htmlProgressSliderRef is undefined');
                     return;
@@ -147,6 +103,15 @@ export class ProgressBarUI extends ProgressBarUIBase {
                     this.htmlProgressSliderRef.style.width = this.htmlProgressLabelRef.innerHTML;
                     this.htmlProgressSliderRef.style.backgroundColor = 'green';
                 }
+            }
+        });
+        Object.defineProperty(this, "showProgressBar", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: (value) => {
+                this.progressBar = value;
+                this.htmlContainer.style.display = this.progressBar ? 'block' : 'none';
             }
         });
         this.createDOM();

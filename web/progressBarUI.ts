@@ -1,60 +1,23 @@
-// import { app } from './comfy/index.js';
+import { EStatus, ProgressBarUIBase } from './progressBarUIBase.js';
 
-export enum EStatus {
-  executing = 'Executing',
-  executed = 'Executed',
-  execution_error = 'Execution error',
-}
-
-export abstract class ProgressBarUIBase {
-  protected htmlIdCrystoolsRoot = 'crystools-root';
-  protected htmlClassCrystoolsMonitorContainer = 'crystools-monitor-container';
-  protected htmlContainer: HTMLDivElement;
-
-  protected constructor() {
-    this.createRoot();
-    window.addEventListener('resize', () => this.refreshDisplay());
-  }
-
-  createRoot(): void {
-    // IMPORTANT duplicate by progressbar and crystools-save
-    let ctoolsRoot = document.getElementById(this.htmlIdCrystoolsRoot);
-    if (!ctoolsRoot) {
-      ctoolsRoot = document.createElement('div');
-      ctoolsRoot.setAttribute('id', this.htmlIdCrystoolsRoot);
-
-      // the best parentElement:
-      const parentElement = document.getElementById('queue-button');
-      parentElement?.insertAdjacentElement('afterend', ctoolsRoot);
-    }
-
-    this.htmlContainer = document.createElement('div');
-    this.htmlContainer.classList.add(this.htmlClassCrystoolsMonitorContainer);
-    ctoolsRoot.append(this.htmlContainer);
-  }
-
-  abstract refreshDisplay(): void;
-  abstract createDOM(): void;
-}
-
-export class ProgressBarUI extends ProgressBarUIBase{
+export class ProgressBarUI extends ProgressBarUIBase {
   htmlProgressSliderRef: HTMLDivElement;
   htmlProgressLabelRef: HTMLDivElement;
   currentStatus: EStatus;
   timeStart: number;
   currentProgress: number;
+  progressBar: boolean;
 
-  constructor (
-    private htmlIdCrystoolsProgressBarContainer: string,
-    private centerNode: () => void
+  constructor(
+    showSection: boolean,
+    private centerNode: () => void,
   ) {
-    super();
+    super('queue-button', 'crystools-root', showSection);
     this.createDOM();
   }
 
   createDOM = (): void => {
     const htmlContainer = document.createElement('div');
-    htmlContainer.setAttribute('id', this.htmlIdCrystoolsProgressBarContainer);
     htmlContainer.setAttribute('title', 'click to see the current working node');
     htmlContainer.addEventListener('click', this.centerNode);
     this.htmlContainer.append(htmlContainer);
@@ -76,23 +39,26 @@ export class ProgressBarUI extends ProgressBarUIBase{
     progressBar.append(this.htmlProgressLabelRef);
   };
 
-  refreshDisplay = (): void => {
-    this.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
-  };
-
+  // eslint-disable-next-line complexity
   updateDisplay = (currentStatus: EStatus, timeStart: number, currentProgress: number): void => {
+    if (!this.showSection) {
+      return;
+    }
+
+    if (!this.progressBar) {
+      return;
+    }
+
     if (!(this.htmlProgressLabelRef && this.htmlProgressSliderRef)) {
       console.error('htmlProgressLabelRef or htmlProgressSliderRef is undefined');
       return;
     }
 
+    // console.log('only if showSection and progressBar', timeStart, currentProgress);
+
     this.currentStatus = currentStatus;
     this.timeStart = timeStart;
     this.currentProgress = currentProgress;
-
-    // TODO from here!
-    // const menu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
-    // console.log('menu', menu);
 
     if (currentStatus === EStatus.executed) {
       // finished
@@ -118,4 +84,9 @@ export class ProgressBarUI extends ProgressBarUIBase{
 
   };
 
+  // remember it can't have more parameters because it is used on settings automatically
+  public showProgressBar = (value: boolean): void => {
+    this.progressBar = value;
+    this.htmlContainer.style.display = this.progressBar ? 'block' : 'none';
+  };
 }

@@ -512,6 +512,14 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### Crystools
 
+### 1.18.0 (21/09/2024)
+- HORIZONTAL UI! 🎉
+
+### 1.17.0 (21/09/2024)
+- Settings menu reorganized
+- Preparing for horizontal UI
+- Update from ComfyUI (typescript and new features)
+
 ### 1.16.0 (31/07/2024)
 - Rollback of AMD support by manager does not support other repository parameter (https://test.pypi.org/simple by pyrsmi)
 
