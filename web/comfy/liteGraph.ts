@@ -1,9 +1,8 @@
 // / <reference path="/types/litegraph.d.ts" />
 // A LOTS OF PATCHES FOR LITEGRAPH TYPES ¯\_(ツ)_/¯
-export type * from './liteGraph.types';
-export * from '/scripts/widgets.js';
+export type * from './liteGraph.types.js';
 
-import type { IWidget as IWidgetOld, LGraphNode as TypeGraphNode, TypeLiteGraph } from './liteGraph.types';
+import type { IWidget as IWidgetOld, LGraphNode as TypeGraphNode, TypeLiteGraph } from './liteGraph.types.js';
 
 declare const LGraphNode: typeof TypeGraphNode; // just for get the type
 
@@ -20,9 +19,9 @@ export class TLGraphNode extends LGraphNode {
   static bgcolor: string;
   static collapsable: boolean;
 
-  widgets?: IWidget[];
+  // widgets?: IWidget[];
   isVirtualNode?: boolean;
-  onResize?: (size: [number, number]) => void;
+  // override onResize?: (size: [number, number]) => void;
   widgets_values?: any[];
   name?: string;
 

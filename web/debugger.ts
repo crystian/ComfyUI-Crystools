@@ -1,8 +1,6 @@
-import { app } from '/scripts/app.js';
-import { api } from '/scripts/api.js';
+import type { ComfyNode } from './comfy/index.js';
+import { app, api, ComfyWidgets, LiteGraph, TLGraphNode, ComfyApp } from './comfy/index.js';
 import { commonPrefix, displayContext } from './common.js';
-import type { ComfyNode, ComfyApp } from './liteGraph.js';
-import { LiteGraph, TLGraphNode, ComfyWidgets } from './liteGraph.js';
 
 // "Show any" Node
 app.registerExtension({
@@ -25,36 +23,28 @@ app.registerExtension({
         this.isVirtualNode = true;
 
         const widget = ComfyWidgets.STRING(this, '', [
-          '', {
-            default: '', multiline: true,
-          },
+          '', {default: '', multiline: true},
         ], app).widget;
         widget.inputEl.readOnly = true;
         ComfyWidgets.BOOLEAN(this, 'Active', [
-          '', {
-            default: true,
-          },
+          '', {default: true},
         ]);
         ComfyWidgets.BOOLEAN(this, 'Parsed', [
-          '', {
-            default: true,
-          },
+          '', {default: true},
         ]);
         ComfyWidgets.COMBO(this, 'What', [
-          ['Prompt', 'Workflow'], {
-            default: 'Prompt',
-          },
+          ['Prompt', 'Workflow'], {default: 'Prompt'},
         ]);
 
         // It runs at finish on each prompt queue
         api.addEventListener('executed', this.fillMetadataWidget, false);
       }
 
-      fillMetadataWidget = async (): Promise<string> => {
+      fillMetadataWidget = (): Promise<string> => {
         return app.graphToPrompt()
-        .then((workflow): string => {
+        .then((workflow: any): string => {
           let result = 'inactive';
-          if(this.widgets?.length !== 4) {
+          if (this.widgets?.length !== 4) {
             console.error('Something is wrong with the widgets, should be 4!');
             return 'error';
           }

@@ -109,11 +109,11 @@ class CGPUInfo:
         if self.cudaDevice == 'cpu':
             gpuType = 'cpu'
             gpus.append({
-                'gpu_utilization': 0,
-                'gpu_temperature': 0,
-                'vram_total': 0,
-                'vram_used': 0,
-                'vram_used_percent': 0,
+                'gpu_utilization': -1,
+                'gpu_temperature': -1,
+                'vram_total': -1,
+                'vram_used': -1,
+                'vram_used_percent': -1,
             })
         else:
             gpuType = self.cudaDevice
@@ -125,11 +125,11 @@ class CGPUInfo:
                 for deviceIndex in range(self.cudaDevicesFound):
                     deviceHandle = self.deviceGetHandleByIndex(deviceIndex)
 
-                    gpuUtilization = 0
-                    vramPercent = 0
-                    vramUsed = 0
-                    vramTotal = 0
-                    gpuTemperature = 0
+                    gpuUtilization = -1
+                    vramPercent = -1
+                    vramUsed = -1
+                    vramTotal = -1
+                    gpuTemperature = -1
 
                     # GPU Utilization
                     if self.switchGPU and self.gpusUtilization[deviceIndex]:

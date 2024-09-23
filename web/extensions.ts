@@ -1,7 +1,6 @@
-import { app } from '/scripts/app.js';
+import { app, TLGraphNode, ComfyApp } from './comfy/index.js';
+import type { ComfyNode } from './comfy/index.js';
 import { displayContext } from './common.js';
-import type { ComfyNode, ComfyApp } from './liteGraph.types';
-import { TLGraphNode } from './liteGraph';
 
 const crystoolsExtensions: Record<string, string> = {
   'Get resolution [Crystools]': 'Crystools.Image.GetResolution',
