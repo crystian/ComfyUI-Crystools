@@ -1,4 +1,5 @@
 import { ProgressBarUIBase } from './progressBarUIBase.js';
+import { createStyleSheet, formatBytes } from './utils.js';
 export class MonitorUI extends ProgressBarUIBase {
     constructor(monitorCPUElement, monitorRAMElement, monitorHDDElement, monitorGPUSettings, monitorVRAMSettings, monitorTemperatureSettings, currentRate, showSection) {
         super('queue-button', 'crystools-root', showSection);
@@ -50,6 +51,12 @@ export class MonitorUI extends ProgressBarUIBase {
             writable: true,
             value: 1
         });
+        Object.defineProperty(this, "styleSheet", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         Object.defineProperty(this, "createDOM", {
             enumerable: true,
             configurable: true,
@@ -100,8 +107,8 @@ export class MonitorUI extends ProgressBarUIBase {
             writable: true,
             value: (data) => {
                 this.updateMonitor(this.monitorCPUElement, data.cpu_utilization);
-                this.updateMonitor(this.monitorRAMElement, data.ram_used_percent);
-                this.updateMonitor(this.monitorHDDElement, data.hdd_used_percent);
+                this.updateMonitor(this.monitorRAMElement, data.ram_used_percent, data.ram_used, data.ram_total);
+                this.updateMonitor(this.monitorHDDElement, data.hdd_used_percent, data.hdd_used, data.hdd_total);
                 if (data.gpus === undefined || data.gpus.length === 0) {
                     console.warn('UpdateAllMonitors: no GPU data');
                     return;
@@ -123,7 +130,7 @@ export class MonitorUI extends ProgressBarUIBase {
                         if (gpu === undefined) {
                             return;
                         }
-                        this.updateMonitor(monitorSettings, gpu.vram_used_percent);
+                        this.updateMonitor(monitorSettings, gpu.vram_used_percent, gpu.vram_used, gpu.vram_total);
                     }
                     else {
                     }
@@ -149,7 +156,7 @@ export class MonitorUI extends ProgressBarUIBase {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: (monitorSettings, percent) => {
+            value: (monitorSettings, percent, used, total) => {
                 if (!this.showSection) {
                     return;
                 }
@@ -158,6 +165,16 @@ export class MonitorUI extends ProgressBarUIBase {
                 }
                 if (percent < 0) {
                     return;
+                }
+                const prefix = monitorSettings.monitorTitle ? monitorSettings.monitorTitle + ' - ' : '';
+                let title = `${Math.floor(percent)}${monitorSettings.symbol}`;
+                let postfix = '';
+                if (used !== undefined && total !== undefined) {
+                    postfix = ` - ${formatBytes(used)} / ${formatBytes(total)} GB`;
+                }
+                title = `${prefix}${title}${postfix}`;
+                if (monitorSettings.htmlMonitorRef) {
+                    monitorSettings.htmlMonitorRef.title = title;
                 }
                 monitorSettings.htmlMonitorLabelRef.innerHTML = `${Math.floor(percent)}${monitorSettings.symbol}`;
                 monitorSettings.htmlMonitorSliderRef.style.width = `${Math.floor(percent)}%`;
@@ -235,6 +252,18 @@ export class MonitorUI extends ProgressBarUIBase {
                 return monitorSettings.htmlMonitorRef;
             }
         });
+        Object.defineProperty(this, "updateMonitorSize", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: (width, height) => {
+                this.styleSheet.innerText = `
+    .comfyui-menu #crystools-root .crystools-monitor .crystools-content {
+      height: ${height}px; width: ${width}px;
+     }`;
+            }
+        });
         this.createDOM();
+        this.styleSheet = createStyleSheet('crystools-monitors-size');
     }
 }

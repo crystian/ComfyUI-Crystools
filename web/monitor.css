@@ -103,14 +103,15 @@
   display: flex;
   flex-direction: row;
   flex-shrink: 1;
-  /*flex-grow: 1;*/
+  flex-grow: 100;
   justify-content: center;
+  /*gap: 5px;*/
   /*width: 100%;*/
-  gap: 5px;
-  height: 100%;
+  /*height: 100%;*/
   /*margin: 0 auto;*/
   /*align-items: center;*/
   /*align-self: center;*/
+  min-width: 200px;
 
   .crystools-monitor-container {
     /*background-color: var(--comfy-menu-bg);*/
@@ -122,10 +123,10 @@
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
-    height: 100%;
-    max-width: 600px;
-    min-width: 300px;
     gap: 5px;
+    /*height: 100%;*/
+    /*max-width: 300px;*/
+    /*min-width: 200px;*/
 
     .crystools-monitor {
       background-color: var(--comfy-input-bg);
@@ -140,6 +141,7 @@
         text-align: right;
         margin-left: 3px;
         position: absolute;
+        font-weight: 100;
         bottom: 2px;
         z-index: 10;
 
@@ -158,8 +160,6 @@
     }
 
     .crystools-content {
-      height: 30px;
-      width: 56px;
       position: relative;
     }
 
@@ -174,7 +174,8 @@
       position: relative;
       width: 100%;
       color: var(--input-text);
-      font-size: 12px;
+      font-weight: 500;
+      font-size: 11px;
       right: 2px;
       top: 2px;
       text-align: right;

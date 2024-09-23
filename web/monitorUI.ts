@@ -1,7 +1,9 @@
 import { ProgressBarUIBase } from './progressBarUIBase.js';
+import { createStyleSheet, formatBytes } from './utils.js';
 
 export class MonitorUI extends ProgressBarUIBase {
   lastMonitor = 1; // just for order on monitors section
+  styleSheet: HTMLStyleElement;
 
   constructor(
     private monitorCPUElement: TMonitorSettings,
@@ -15,6 +17,8 @@ export class MonitorUI extends ProgressBarUIBase {
   ) {
     super('queue-button', 'crystools-root', showSection);
     this.createDOM();
+
+    this.styleSheet = createStyleSheet('crystools-monitors-size');
   }
 
   createDOM = (): void => {
@@ -58,8 +62,8 @@ export class MonitorUI extends ProgressBarUIBase {
 
   updateDisplay = (data: TStatsData): void => {
     this.updateMonitor(this.monitorCPUElement, data.cpu_utilization);
-    this.updateMonitor(this.monitorRAMElement, data.ram_used_percent);
-    this.updateMonitor(this.monitorHDDElement, data.hdd_used_percent);
+    this.updateMonitor(this.monitorRAMElement, data.ram_used_percent, data.ram_used, data.ram_total);
+    this.updateMonitor(this.monitorHDDElement, data.hdd_used_percent, data.hdd_used, data.hdd_total);
 
     if (data.gpus === undefined || data.gpus.length === 0) {
       console.warn('UpdateAllMonitors: no GPU data');
@@ -88,7 +92,7 @@ export class MonitorUI extends ProgressBarUIBase {
           return;
         }
 
-        this.updateMonitor(monitorSettings, gpu.vram_used_percent);
+        this.updateMonitor(monitorSettings, gpu.vram_used_percent, gpu.vram_used, gpu.vram_total);
       } else {
         // console.error('UpdateAllMonitors: no GPU VRAM data for index', index);
       }
@@ -113,7 +117,8 @@ export class MonitorUI extends ProgressBarUIBase {
     });
   };
 
-  updateMonitor = (monitorSettings: TMonitorSettings, percent: number): void => {
+  // eslint-disable-next-line complexity
+  updateMonitor = (monitorSettings: TMonitorSettings, percent: number, used?: number, total?: number): void => {
     if (!this.showSection) {
       return;
     }
@@ -127,7 +132,18 @@ export class MonitorUI extends ProgressBarUIBase {
     }
 
     // console.log('updateMonitor', monitorSettings.id, percent);
+    const prefix = monitorSettings.monitorTitle ? monitorSettings.monitorTitle + ' - ' : '';
+    let title = `${Math.floor(percent)}${monitorSettings.symbol}`;
+    let postfix = '';
 
+    if(used !== undefined && total !== undefined) {
+      postfix = ` - ${formatBytes(used)} / ${formatBytes(total)} GB`;
+    }
+    title = `${prefix}${title}${postfix}`;
+
+    if(monitorSettings.htmlMonitorRef){
+      monitorSettings.htmlMonitorRef.title = title;
+    }
     monitorSettings.htmlMonitorLabelRef.innerHTML = `${Math.floor(percent)}${monitorSettings.symbol}`;
     monitorSettings.htmlMonitorSliderRef.style.width = `${Math.floor(percent)}%`;
   };
@@ -198,5 +214,12 @@ export class MonitorUI extends ProgressBarUIBase {
     htmlMonitorContent.append(htmlMonitorLabel);
     htmlMonitorLabel.innerHTML = '0%';
     return monitorSettings.htmlMonitorRef;
+  };
+
+  updateMonitorSize = (width: number, height: number): void => {
+    this.styleSheet.innerText = `
+    .comfyui-menu #crystools-root .crystools-monitor .crystools-content {
+      height: ${height}px; width: ${width}px;
+     }`;
   };
 }
