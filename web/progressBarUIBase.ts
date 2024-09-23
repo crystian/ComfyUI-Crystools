@@ -39,9 +39,11 @@ export abstract class ProgressBarUIBase {
         console.error('Crystools: parentElement not found', this.parentId);
       }
     }
+    // TODO remove this
     this.showSection = true;
     this.htmlContainer = document.createElement('div');
     this.htmlContainer.classList.add(this.htmlClassMonitor);
+    this.htmlContainer.setAttribute('id', this.constructor.name);
     this.htmlRoot.append(this.htmlContainer);
   };
 

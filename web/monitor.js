@@ -394,15 +394,19 @@ class CrystoolsMonitor {
                 switch (position) {
                     case NewMenuOptions.Disabled:
                         parentElement = document.getElementById('queue-button');
+                        if (document.getElementById('ProgressBarUI')) {
+                            document.getElementById('ProgressBarUI').style.display = 'flex';
+                        }
                         break;
                     case NewMenuOptions.Top:
                     case NewMenuOptions.Bottom:
+                        if (document.getElementById('ProgressBarUI')) {
+                            document.getElementById('ProgressBarUI').style.display = 'none';
+                        }
                         parentElement = document.getElementsByClassName('comfyui-menu-push')[0];
                         break;
                 }
                 if (parentElement && this.monitorUI.htmlRoot) {
-                    console.log('moveMonitor1', parentElement);
-                    console.log('moveMonitor2', this.monitorUI.htmlRoot);
                     parentElement.insertAdjacentElement('afterend', this.monitorUI.htmlRoot);
                 }
                 else {
@@ -508,7 +512,6 @@ class CrystoolsMonitor {
             configurable: true,
             writable: true,
             value: () => {
-                console.log('setup');
                 if (this.monitorUI) {
                     return;
                 }
@@ -522,7 +525,6 @@ class CrystoolsMonitor {
                 this.monitorUI = new MonitorUI(this.monitorCPUElement, this.monitorRAMElement, this.monitorHDDElement, this.monitorGPUSettings, this.monitorVRAMSettings, this.monitorTemperatureSettings, currentRate, (this.newMenu === NewMenuOptions.Disabled));
                 this.updateDisplay();
                 this.registerListeners();
-                console.log('setup2');
             }
         });
         Object.defineProperty(this, "registerListeners", {

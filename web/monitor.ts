@@ -333,16 +333,27 @@ class CrystoolsMonitor {
     switch (position) {
       case NewMenuOptions.Disabled:
         parentElement = document.getElementById('queue-button');
+        // TODO remove this
+        if (document.getElementById('ProgressBarUI')) {
+          // @ts-ignore
+          document.getElementById('ProgressBarUI').style.display = 'flex';
+
+        }
         break;
       case NewMenuOptions.Top:
       case NewMenuOptions.Bottom:
+        // TODO remove this
+        if (document.getElementById('ProgressBarUI')) {
+          // @ts-ignore
+          document.getElementById('ProgressBarUI').style.display = 'none';
+        }
         parentElement = document.getElementsByClassName('comfyui-menu-push')[0];
         break;
     }
 
     if (parentElement && this.monitorUI.htmlRoot) {
-      console.log('moveMonitor1', parentElement);
-      console.log('moveMonitor2', this.monitorUI.htmlRoot);
+      // console.log('moveMonitor1', parentElement);
+      // console.log('moveMonitor2', this.monitorUI.htmlRoot);
       parentElement.insertAdjacentElement('afterend', this.monitorUI.htmlRoot);
 
     } else {
@@ -422,7 +433,6 @@ class CrystoolsMonitor {
   };
 
   setup = (): void => {
-    console.log('setup');
     if (this.monitorUI) {
       // this.monitorUIOld.render(0);
       return;
@@ -451,7 +461,6 @@ class CrystoolsMonitor {
 
     this.updateDisplay();
     this.registerListeners();
-    console.log('setup2');
   };
 
   registerListeners = (): void => {

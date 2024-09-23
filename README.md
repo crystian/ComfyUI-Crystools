@@ -512,6 +512,9 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### Crystools
 
+### 1.18.0 (21/09/2024)
+- HORIZONTAL UI! 🎉
+
 ### 1.17.0 (21/09/2024)
 - Settings menu reorganized
 - Preparing for horizontal UI
