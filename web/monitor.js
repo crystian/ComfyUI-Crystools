@@ -509,6 +509,12 @@ class CrystoolsMonitor {
                         if (document.getElementById('ProgressBarUI')) {
                             document.getElementById('ProgressBarUI').style.display = 'flex';
                         }
+                        if (parentElement && this.monitorUI.htmlRoot) {
+                            parentElement.insertAdjacentElement('afterend', this.monitorUI.htmlRoot);
+                        }
+                        else {
+                            console.error('Crystools: parentElement to move monitors not found!', parentElement);
+                        }
                         break;
                     case NewMenuOptions.Top:
                     case NewMenuOptions.Bottom:
@@ -516,13 +522,13 @@ class CrystoolsMonitor {
                             document.getElementById('ProgressBarUI').style.display = 'none';
                         }
                         parentElement = document.getElementsByClassName('comfyui-menu-push')[0];
+                        if (parentElement && this.monitorUI.htmlRoot) {
+                            parentElement.appendChild(this.monitorUI.htmlRoot);
+                        }
+                        else {
+                            console.error('Crystools: parentElement to move monitors not found!', parentElement);
+                        }
                         break;
-                }
-                if (parentElement && this.monitorUI.htmlRoot) {
-                    parentElement.insertAdjacentElement('afterend', this.monitorUI.htmlRoot);
-                }
-                else {
-                    console.error('Crystools: parentElement to move monitors not found!', parentElement);
                 }
             }
         });

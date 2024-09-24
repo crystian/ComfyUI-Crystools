@@ -404,6 +404,7 @@ class CrystoolsMonitor {
     });
   };
 
+  // eslint-disable-next-line complexity
   moveMonitor = (position: NewMenuOptions): void => {
     let parentElement: Element | null | undefined;
 
@@ -416,7 +417,13 @@ class CrystoolsMonitor {
           document.getElementById('ProgressBarUI').style.display = 'flex';
 
         }
+        if (parentElement && this.monitorUI.htmlRoot) {
+          parentElement.insertAdjacentElement('afterend', this.monitorUI.htmlRoot);
+        } else {
+          console.error('Crystools: parentElement to move monitors not found!', parentElement);
+        }
         break;
+
       case NewMenuOptions.Top:
       case NewMenuOptions.Bottom:
         // TODO remove this
@@ -425,17 +432,15 @@ class CrystoolsMonitor {
           document.getElementById('ProgressBarUI').style.display = 'none';
         }
         parentElement = document.getElementsByClassName('comfyui-menu-push')[0];
+
+        if (parentElement && this.monitorUI.htmlRoot) {
+          parentElement.appendChild(this.monitorUI.htmlRoot);
+        } else {
+          console.error('Crystools: parentElement to move monitors not found!', parentElement);
+        }
         break;
     }
 
-    if (parentElement && this.monitorUI.htmlRoot) {
-      // console.log('moveMonitor1', parentElement);
-      // console.log('moveMonitor2', this.monitorUI.htmlRoot);
-      parentElement.insertAdjacentElement('afterend', this.monitorUI.htmlRoot);
-
-    } else {
-      console.error('Crystools: parentElement to move monitors not found!', parentElement);
-    }
 
   };
 
