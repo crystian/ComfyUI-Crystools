@@ -1,8 +1,8 @@
 import { ProgressBarUIBase } from './progressBarUIBase.js';
 import { createStyleSheet, formatBytes } from './utils.js';
 export class MonitorUI extends ProgressBarUIBase {
-    constructor(monitorCPUElement, monitorRAMElement, monitorHDDElement, monitorGPUSettings, monitorVRAMSettings, monitorTemperatureSettings, currentRate, showSection) {
-        super('queue-button', 'crystools-root', showSection);
+    constructor(monitorCPUElement, monitorRAMElement, monitorHDDElement, monitorGPUSettings, monitorVRAMSettings, monitorTemperatureSettings, currentRate) {
+        super('queue-button', 'crystools-root');
         Object.defineProperty(this, "monitorCPUElement", {
             enumerable: true,
             configurable: true,
@@ -44,12 +44,6 @@ export class MonitorUI extends ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: currentRate
-        });
-        Object.defineProperty(this, "showSection", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: showSection
         });
         Object.defineProperty(this, "lastMonitor", {
             enumerable: true,
@@ -163,9 +157,6 @@ export class MonitorUI extends ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: (monitorSettings, percent, used, total) => {
-                if (!this.showSection) {
-                    return;
-                }
                 if (!(monitorSettings.htmlMonitorSliderRef && monitorSettings.htmlMonitorLabelRef)) {
                     return;
                 }
@@ -267,6 +258,16 @@ export class MonitorUI extends ProgressBarUIBase {
     .comfyui-menu #crystools-root .crystools-monitor .crystools-content {
       height: ${height}px; width: ${width}px;
      }`;
+            }
+        });
+        Object.defineProperty(this, "showMonitor", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: (monitorSettings, value) => {
+                if (monitorSettings.htmlMonitorRef) {
+                    monitorSettings.htmlMonitorRef.style.display = value ? 'flex' : 'none';
+                }
             }
         });
         this.createDOM();

@@ -1,12 +1,12 @@
 import { EStatus, ProgressBarUIBase } from './progressBarUIBase.js';
 export class ProgressBarUI extends ProgressBarUIBase {
-    constructor(showSection, centerNode) {
-        super('queue-button', 'crystools-root', showSection);
-        Object.defineProperty(this, "showSection", {
+    constructor(showSectionFlag, centerNode) {
+        super('queue-button', 'crystools-root');
+        Object.defineProperty(this, "showSectionFlag", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: showSection
+            value: showSectionFlag
         });
         Object.defineProperty(this, "centerNode", {
             enumerable: true,
@@ -44,7 +44,7 @@ export class ProgressBarUI extends ProgressBarUIBase {
             writable: true,
             value: void 0
         });
-        Object.defineProperty(this, "progressBar", {
+        Object.defineProperty(this, "showProgressBarFlag", {
             enumerable: true,
             configurable: true,
             writable: true,
@@ -79,7 +79,7 @@ export class ProgressBarUI extends ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: (currentStatus, timeStart, currentProgress) => {
-                if (!(this.showSection && this.progressBar)) {
+                if (!(this.showSectionFlag && this.showProgressBarFlag)) {
                     return;
                 }
                 if (!(this.htmlProgressLabelRef && this.htmlProgressSliderRef)) {
@@ -108,13 +108,30 @@ export class ProgressBarUI extends ProgressBarUIBase {
                 }
             }
         });
+        Object.defineProperty(this, "showSection", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: (value) => {
+                this.showSectionFlag = value;
+                this.displaySection();
+            }
+        });
         Object.defineProperty(this, "showProgressBar", {
             enumerable: true,
             configurable: true,
             writable: true,
             value: (value) => {
-                this.progressBar = value;
-                this.showFullSectionOnDemand(this.progressBar && this.showSection);
+                this.showProgressBarFlag = value;
+                this.displaySection();
+            }
+        });
+        Object.defineProperty(this, "displaySection", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: () => {
+                this.htmlContainer.style.display = (this.showSectionFlag && this.showProgressBarFlag) ? 'block' : 'none';
             }
         });
         this.createDOM();

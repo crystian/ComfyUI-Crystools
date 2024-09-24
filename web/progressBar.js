@@ -89,7 +89,7 @@ class CrystoolsProgressBar {
                     const newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
                     if (newMenu !== this.newMenu) {
                         this.newMenu = newMenu;
-                        this.progressBarUI.showFullSection(this.newMenu === NewMenuOptions.Disabled);
+                        this.progressBarUI.showSection(this.newMenu === NewMenuOptions.Disabled);
                     }
                     this.progressBarUI.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
                 });

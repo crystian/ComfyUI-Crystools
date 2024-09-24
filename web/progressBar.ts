@@ -35,19 +35,15 @@ class CrystoolsProgressBar {
   };
 
   updateDisplay = (): void => {
-    const newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
+    setTimeout(() => {
+      const newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
+      if (newMenu !== this.newMenu) {
+        this.newMenu = newMenu;
 
-    if (newMenu !== this.newMenu) {
-      this.newMenu = newMenu;
-
-      this.progressBarUI.showSection = (this.newMenu === NewMenuOptions.Disabled);
-      if (this.progressBarUI.showSection) {
-        this.setup();
+        this.progressBarUI.showSection(this.newMenu === NewMenuOptions.Disabled);
       }
-    }
-    // this.progressBarUI.showSection = (this.newMenu !== NewMenuOptions.Disabled);
-    // this.progressBarUI.htmlContainer.style.display = 'none';
-    this.progressBarUI.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
+      this.progressBarUI.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
+    });
   };
 
   // automatically called by ComfyUI
@@ -57,7 +53,6 @@ class CrystoolsProgressBar {
       .showProgressBar(app.ui.settings.getSettingValue(this.idShowProgressBar, this.defaultShowStatus));
       return;
     }
-
 
     this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
     this.progressBarUI = new ProgressBarUI((this.newMenu === NewMenuOptions.Disabled), this.centerNode);

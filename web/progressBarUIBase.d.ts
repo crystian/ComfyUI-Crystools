@@ -11,11 +11,10 @@ export declare enum NewMenuOptions {
 export declare abstract class ProgressBarUIBase {
     parentId: string;
     rootId: string;
-    showSection: boolean;
     htmlRoot: HTMLElement | null;
     htmlContainer: HTMLDivElement;
     protected htmlClassMonitor: string;
-    protected constructor(parentId: string, rootId: string, showSection: boolean);
+    protected constructor(parentId: string, rootId: string);
     private createRoot;
     abstract createDOM(): void;
 }

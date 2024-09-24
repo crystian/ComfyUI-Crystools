@@ -11,7 +11,7 @@ export var NewMenuOptions;
     NewMenuOptions["Bottom"] = "Bottom";
 })(NewMenuOptions || (NewMenuOptions = {}));
 export class ProgressBarUIBase {
-    constructor(parentId, rootId, showSection) {
+    constructor(parentId, rootId) {
         Object.defineProperty(this, "parentId", {
             enumerable: true,
             configurable: true,
@@ -23,12 +23,6 @@ export class ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: rootId
-        });
-        Object.defineProperty(this, "showSection", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: showSection
         });
         Object.defineProperty(this, "htmlRoot", {
             enumerable: true,
@@ -71,24 +65,6 @@ export class ProgressBarUIBase {
                 this.htmlRoot.append(this.htmlContainer);
             }
         });
-        Object.defineProperty(this, "showFullSection", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: (value) => {
-                this.showSection = value;
-                this.htmlContainer.style.display = this.showSection ? 'flex' : 'none';
-            }
-        });
-        Object.defineProperty(this, "showFullSectionOnDemand", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: (value) => {
-                this.htmlContainer.style.display = value ? 'flex' : 'none';
-            }
-        });
         this.createRoot();
-        this.showFullSection(this.showSection);
     }
 }

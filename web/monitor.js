@@ -551,9 +551,9 @@ class CrystoolsMonitor {
             configurable: true,
             writable: true,
             value: (monitorSettings) => {
-                const value = app.ui.settings.getSettingValue(monitorSettings.id, monitorSettings.defaultValue);
-                if (monitorSettings.htmlMonitorRef) {
-                    monitorSettings.htmlMonitorRef.style.display = value ? 'flex' : 'none';
+                if (this.monitorUI) {
+                    const value = app.ui.settings.getSettingValue(monitorSettings.id, monitorSettings.defaultValue);
+                    this.monitorUI.showMonitor(monitorSettings, value);
                 }
             }
         });
@@ -637,7 +637,7 @@ class CrystoolsMonitor {
                 this.createSettings();
                 const currentRate = parseFloat(app.ui.settings.getSettingValue(this.settingsRate.id, this.settingsRate.defaultValue));
                 this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
-                this.monitorUI = new MonitorUI(this.monitorCPUElement, this.monitorRAMElement, this.monitorHDDElement, this.monitorGPUSettings, this.monitorVRAMSettings, this.monitorTemperatureSettings, currentRate, (this.newMenu === NewMenuOptions.Disabled));
+                this.monitorUI = new MonitorUI(this.monitorCPUElement, this.monitorRAMElement, this.monitorHDDElement, this.monitorGPUSettings, this.monitorVRAMSettings, this.monitorTemperatureSettings, currentRate);
                 this.updateDisplay();
                 this.registerListeners();
             }

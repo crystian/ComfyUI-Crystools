@@ -404,19 +404,12 @@ class CrystoolsMonitor {
     });
   };
 
-  // eslint-disable-next-line complexity
   moveMonitor = (position: NewMenuOptions): void => {
     let parentElement: Element | null | undefined;
 
     switch (position) {
       case NewMenuOptions.Disabled:
         parentElement = document.getElementById('queue-button');
-        // TODO remove this
-        if (document.getElementById('ProgressBarUI')) {
-          // @ts-ignore
-          document.getElementById('ProgressBarUI').style.display = 'flex';
-
-        }
         if (parentElement && this.monitorUI.htmlRoot) {
           parentElement.insertAdjacentElement('afterend', this.monitorUI.htmlRoot);
         } else {
@@ -426,26 +419,16 @@ class CrystoolsMonitor {
 
       case NewMenuOptions.Top:
       case NewMenuOptions.Bottom:
-        // TODO remove this
-        if (document.getElementById('ProgressBarUI')) {
-          // @ts-ignore
-          document.getElementById('ProgressBarUI').style.display = 'none';
-        }
-        //comfyui-button-group
-        this.monitorUI.htmlRoot.classList.add('comfyui-button-group');
-        // this.monitorUI.htmlRoot.classList.add('comfyui-menu-mobile-collapse');
+        this.monitorUI.htmlRoot?.classList.add('comfyui-button-group');
         parentElement = document.getElementsByClassName('comfyui-menu-push')[0];
 
         if (parentElement && this.monitorUI.htmlRoot) {
           parentElement.insertAdjacentElement('afterend', this.monitorUI.htmlRoot);
-          // parentElement.appendChild(this.monitorUI.htmlRoot);
         } else {
           console.error('Crystools: parentElement to move monitors not found!', parentElement);
         }
         break;
     }
-
-
   };
 
   updateAllWidget = (): void => {
@@ -469,9 +452,9 @@ class CrystoolsMonitor {
    * @param monitorSettings
    */
   updateWidget = (monitorSettings: TMonitorSettings): void => {
-    const value = app.ui.settings.getSettingValue(monitorSettings.id, monitorSettings.defaultValue);
-    if (monitorSettings.htmlMonitorRef) {
-      monitorSettings.htmlMonitorRef.style.display = value ? 'flex' : 'none';
+    if (this.monitorUI) {
+      const value = app.ui.settings.getSettingValue(monitorSettings.id, monitorSettings.defaultValue);
+      this.monitorUI.showMonitor(monitorSettings, value);
     }
   };
 
@@ -544,7 +527,6 @@ class CrystoolsMonitor {
       this.monitorVRAMSettings,
       this.monitorTemperatureSettings,
       currentRate,
-      (this.newMenu === NewMenuOptions.Disabled),
     );
 
     this.updateDisplay();

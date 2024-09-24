@@ -13,9 +13,8 @@ export class MonitorUI extends ProgressBarUIBase {
     private monitorVRAMSettings: TMonitorSettings[],
     private monitorTemperatureSettings: TMonitorSettings[],
     private currentRate: number,
-    showSection: boolean,
   ) {
-    super('queue-button', 'crystools-root', showSection);
+    super('queue-button', 'crystools-root');
     this.createDOM();
 
     this.styleSheet = createStyleSheet('crystools-monitors-size');
@@ -117,12 +116,7 @@ export class MonitorUI extends ProgressBarUIBase {
     });
   };
 
-  // eslint-disable-next-line complexity
   updateMonitor = (monitorSettings: TMonitorSettings, percent: number, used?: number, total?: number): void => {
-    if (!this.showSection) {
-      return;
-    }
-
     if (!(monitorSettings.htmlMonitorSliderRef && monitorSettings.htmlMonitorLabelRef)) {
       return;
     }
@@ -132,6 +126,7 @@ export class MonitorUI extends ProgressBarUIBase {
     }
 
     // console.log('updateMonitor', monitorSettings.id, percent);
+
     const prefix = monitorSettings.monitorTitle ? monitorSettings.monitorTitle + ' - ' : '';
     let title = `${Math.floor(percent)}${monitorSettings.symbol}`;
     let postfix = '';
@@ -221,5 +216,11 @@ export class MonitorUI extends ProgressBarUIBase {
     .comfyui-menu #crystools-root .crystools-monitor .crystools-content {
       height: ${height}px; width: ${width}px;
      }`;
+  };
+
+  showMonitor = (monitorSettings: TMonitorSettings, value: boolean): void => {
+    if (monitorSettings.htmlMonitorRef) {
+      monitorSettings.htmlMonitorRef.style.display = value ? 'flex' : 'none';
+    }
   };
 }

@@ -6,13 +6,13 @@ export class ProgressBarUI extends ProgressBarUIBase {
   currentStatus: EStatus;
   timeStart: number;
   currentProgress: number;
-  progressBar: boolean;
+  showProgressBarFlag: boolean;
 
   constructor(
-    showSection: boolean,
+    public showSectionFlag: boolean,
     private centerNode: () => void,
   ) {
-    super('queue-button', 'crystools-root', showSection);
+    super('queue-button', 'crystools-root');
     this.createDOM();
   }
 
@@ -41,11 +41,7 @@ export class ProgressBarUI extends ProgressBarUIBase {
 
   // eslint-disable-next-line complexity
   updateDisplay = (currentStatus: EStatus, timeStart: number, currentProgress: number): void => {
-    if (!this.showSection) {
-      return;
-    }
-
-    if (!this.progressBar) {
+    if (!(this.showSectionFlag && this.showProgressBarFlag)) {
       return;
     }
 
@@ -84,9 +80,18 @@ export class ProgressBarUI extends ProgressBarUIBase {
 
   };
 
+  public showSection = (value: boolean): void => {
+    this.showSectionFlag = value;
+    this.displaySection();
+  };
+
   // remember it can't have more parameters because it is used on settings automatically
   public showProgressBar = (value: boolean): void => {
-    this.progressBar = value;
-    this.htmlContainer.style.display = this.progressBar ? 'block' : 'none';
+    this.showProgressBarFlag = value;
+    this.displaySection();
+  };
+
+  private displaySection = (): void => {
+    this.htmlContainer.style.display = (this.showSectionFlag && this.showProgressBarFlag) ? 'block' : 'none';
   };
 }
