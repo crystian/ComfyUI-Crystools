@@ -65,13 +65,30 @@ export class ProgressBarUIBase {
                         console.error('Crystools: parentElement not found', this.parentId);
                     }
                 }
-                this.showSection = true;
                 this.htmlContainer = document.createElement('div');
                 this.htmlContainer.classList.add(this.htmlClassMonitor);
                 this.htmlContainer.setAttribute('id', this.constructor.name);
                 this.htmlRoot.append(this.htmlContainer);
             }
         });
+        Object.defineProperty(this, "showFullSection", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: (value) => {
+                this.showSection = value;
+                this.htmlContainer.style.display = this.showSection ? 'flex' : 'none';
+            }
+        });
+        Object.defineProperty(this, "showFullSectionOnDemand", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: (value) => {
+                this.htmlContainer.style.display = value ? 'flex' : 'none';
+            }
+        });
         this.createRoot();
+        this.showFullSection(this.showSection);
     }
 }

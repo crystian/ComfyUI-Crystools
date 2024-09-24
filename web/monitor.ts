@@ -431,10 +431,14 @@ class CrystoolsMonitor {
           // @ts-ignore
           document.getElementById('ProgressBarUI').style.display = 'none';
         }
+        //comfyui-button-group
+        this.monitorUI.htmlRoot.classList.add('comfyui-button-group');
+        // this.monitorUI.htmlRoot.classList.add('comfyui-menu-mobile-collapse');
         parentElement = document.getElementsByClassName('comfyui-menu-push')[0];
 
         if (parentElement && this.monitorUI.htmlRoot) {
-          parentElement.appendChild(this.monitorUI.htmlRoot);
+          parentElement.insertAdjacentElement('afterend', this.monitorUI.htmlRoot);
+          // parentElement.appendChild(this.monitorUI.htmlRoot);
         } else {
           console.error('Crystools: parentElement to move monitors not found!', parentElement);
         }

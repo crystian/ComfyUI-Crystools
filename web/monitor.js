@@ -506,9 +506,6 @@ class CrystoolsMonitor {
                 switch (position) {
                     case NewMenuOptions.Disabled:
                         parentElement = document.getElementById('queue-button');
-                        if (document.getElementById('ProgressBarUI')) {
-                            document.getElementById('ProgressBarUI').style.display = 'flex';
-                        }
                         if (parentElement && this.monitorUI.htmlRoot) {
                             parentElement.insertAdjacentElement('afterend', this.monitorUI.htmlRoot);
                         }
@@ -518,12 +515,10 @@ class CrystoolsMonitor {
                         break;
                     case NewMenuOptions.Top:
                     case NewMenuOptions.Bottom:
-                        if (document.getElementById('ProgressBarUI')) {
-                            document.getElementById('ProgressBarUI').style.display = 'none';
-                        }
+                        this.monitorUI.htmlRoot?.classList.add('comfyui-button-group');
                         parentElement = document.getElementsByClassName('comfyui-menu-push')[0];
                         if (parentElement && this.monitorUI.htmlRoot) {
-                            parentElement.appendChild(this.monitorUI.htmlRoot);
+                            parentElement.insertAdjacentElement('afterend', this.monitorUI.htmlRoot);
                         }
                         else {
                             console.error('Crystools: parentElement to move monitors not found!', parentElement);

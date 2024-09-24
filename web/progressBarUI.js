@@ -2,6 +2,12 @@ import { EStatus, ProgressBarUIBase } from './progressBarUIBase.js';
 export class ProgressBarUI extends ProgressBarUIBase {
     constructor(showSection, centerNode) {
         super('queue-button', 'crystools-root', showSection);
+        Object.defineProperty(this, "showSection", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: showSection
+        });
         Object.defineProperty(this, "centerNode", {
             enumerable: true,
             configurable: true,
@@ -73,10 +79,7 @@ export class ProgressBarUI extends ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: (currentStatus, timeStart, currentProgress) => {
-                if (!this.showSection) {
-                    return;
-                }
-                if (!this.progressBar) {
+                if (!(this.showSection && this.progressBar)) {
                     return;
                 }
                 if (!(this.htmlProgressLabelRef && this.htmlProgressSliderRef)) {
@@ -111,7 +114,7 @@ export class ProgressBarUI extends ProgressBarUIBase {
             writable: true,
             value: (value) => {
                 this.progressBar = value;
-                this.htmlContainer.style.display = this.progressBar ? 'block' : 'none';
+                this.showFullSectionOnDemand(this.progressBar && this.showSection);
             }
         });
         this.createDOM();

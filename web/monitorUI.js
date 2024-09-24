@@ -45,6 +45,12 @@ export class MonitorUI extends ProgressBarUIBase {
             writable: true,
             value: currentRate
         });
+        Object.defineProperty(this, "showSection", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: showSection
+        });
         Object.defineProperty(this, "lastMonitor", {
             enumerable: true,
             configurable: true,

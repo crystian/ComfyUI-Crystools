@@ -85,15 +85,14 @@ class CrystoolsProgressBar {
             configurable: true,
             writable: true,
             value: () => {
-                const newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
-                if (newMenu !== this.newMenu) {
-                    this.newMenu = newMenu;
-                    this.progressBarUI.showSection = (this.newMenu === NewMenuOptions.Disabled);
-                    if (this.progressBarUI.showSection) {
-                        this.setup();
+                setTimeout(() => {
+                    const newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
+                    if (newMenu !== this.newMenu) {
+                        this.newMenu = newMenu;
+                        this.progressBarUI.showFullSection(this.newMenu === NewMenuOptions.Disabled);
                     }
-                }
-                this.progressBarUI.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
+                    this.progressBarUI.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
+                });
             }
         });
         Object.defineProperty(this, "setup", {

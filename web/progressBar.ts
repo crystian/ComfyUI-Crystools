@@ -58,6 +58,7 @@ class CrystoolsProgressBar {
       return;
     }
 
+
     this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
     this.progressBarUI = new ProgressBarUI((this.newMenu === NewMenuOptions.Disabled), this.centerNode);
 
