@@ -27,7 +27,11 @@ This provides better nodes to load/save images, previews, etc, and see "hidden" 
 
 **🎉Finally, you can see the resources used by ComfyUI (CPU, GPU, RAM, VRAM, GPU Temp and space) on the menu in real-time!**
 
-![Monitors](./docs/monitor.webp)
+Horizontal:  
+![Monitors](./docs/monitor1.webp)
+
+Vertical:  
+![Monitors](./docs/monitor3.webp)
 
 Now you can identify the bottlenecks in your workflow and know when it's time to restart the server, unload models or even close some tabs!
 
@@ -511,6 +515,9 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 ## Changelog
 
 ### Crystools
+
+### 1.19.0 (06/10/2024)
+- HORIZONTAL UI! New version is ready! 🎉
 
 ### 1.18.0 (21/09/2024)
 - HORIZONTAL UI! 🎉
