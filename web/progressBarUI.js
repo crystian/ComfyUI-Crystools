@@ -1,7 +1,19 @@
 import { EStatus, ProgressBarUIBase } from './progressBarUIBase.js';
 export class ProgressBarUI extends ProgressBarUIBase {
-    constructor(showSection, centerNode) {
-        super('queue-button', 'crystools-root', showSection);
+    constructor(rootElement, showSectionFlag, centerNode) {
+        super('crystools-progressBar-root', rootElement);
+        Object.defineProperty(this, "rootElement", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: rootElement
+        });
+        Object.defineProperty(this, "showSectionFlag", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: showSectionFlag
+        });
         Object.defineProperty(this, "centerNode", {
             enumerable: true,
             configurable: true,
@@ -38,7 +50,7 @@ export class ProgressBarUI extends ProgressBarUIBase {
             writable: true,
             value: void 0
         });
-        Object.defineProperty(this, "progressBar", {
+        Object.defineProperty(this, "showProgressBarFlag", {
             enumerable: true,
             configurable: true,
             writable: true,
@@ -49,14 +61,11 @@ export class ProgressBarUI extends ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: () => {
-                const htmlContainer = document.createElement('div');
-                htmlContainer.setAttribute('title', 'click to see the current working node');
-                htmlContainer.addEventListener('click', this.centerNode);
-                this.htmlContainer.append(htmlContainer);
-                this.htmlContainer.style.order = '1';
+                this.rootElement.setAttribute('title', 'click to see the current working node');
+                this.rootElement.addEventListener('click', this.centerNode);
                 const progressBar = document.createElement('div');
                 progressBar.classList.add('crystools-progress-bar');
-                htmlContainer.append(progressBar);
+                this.rootElement.append(progressBar);
                 const progressSlider = document.createElement('div');
                 this.htmlProgressSliderRef = progressSlider;
                 progressSlider.classList.add('crystools-slider');
@@ -73,10 +82,7 @@ export class ProgressBarUI extends ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: (currentStatus, timeStart, currentProgress) => {
-                if (!this.showSection) {
-                    return;
-                }
-                if (!this.progressBar) {
+                if (!(this.showSectionFlag && this.showProgressBarFlag)) {
                     return;
                 }
                 if (!(this.htmlProgressLabelRef && this.htmlProgressSliderRef)) {
@@ -105,13 +111,30 @@ export class ProgressBarUI extends ProgressBarUIBase {
                 }
             }
         });
+        Object.defineProperty(this, "showSection", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: (value) => {
+                this.showSectionFlag = value;
+                this.displaySection();
+            }
+        });
         Object.defineProperty(this, "showProgressBar", {
             enumerable: true,
             configurable: true,
             writable: true,
             value: (value) => {
-                this.progressBar = value;
-                this.htmlContainer.style.display = this.progressBar ? 'block' : 'none';
+                this.showProgressBarFlag = value;
+                this.displaySection();
+            }
+        });
+        Object.defineProperty(this, "displaySection", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: () => {
+                this.rootElement.style.display = (this.showSectionFlag && this.showProgressBarFlag) ? 'block' : 'none';
             }
         });
         this.createDOM();

@@ -90,13 +90,3 @@ export function displayContext(
 //     }
 //   }
 // };
-
-// HACKS
-// for settings using break lines on label
-const style = document.createElement('style');
-style.innerHTML = `
-  #comfy-settings-dialog label[for^=Crystools-] {
-    white-space: pre-line;
-  }
-`;
-document.head.appendChild(style);

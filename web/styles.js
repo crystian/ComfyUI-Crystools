@@ -1,6 +1,5 @@
-import { injectCss } from './utils.js';
-void injectCss('extensions/ComfyUI-Crystools/monitor.css').then(() => {
-});
+import { utils } from './comfy/index.js';
+utils.addStylesheet('extensions/ComfyUI-Crystools/monitor.css');
 export var Styles;
 (function (Styles) {
     Styles["BARS"] = "BARS";

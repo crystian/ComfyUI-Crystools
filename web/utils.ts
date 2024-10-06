@@ -44,27 +44,6 @@ export function convertNumberToPascalCase(num: number): string {
   return toPascalCase(numberToWords(num).split(' '));
 }
 
-/**
- * Injects CSS into the page with a promise when complete.
- */
-export function injectCss(href: string): Promise<void> {
-  if (document.querySelector(`link[href^='${href}']`)) {
-    return Promise.resolve();
-  }
-  return new Promise((resolve) => {
-    const link = document.createElement('link');
-    link.setAttribute('rel', 'stylesheet');
-    link.setAttribute('type', 'text/css');
-    const timeout = setTimeout(resolve, 1000);
-    link.addEventListener('load', (_e) => {
-      clearInterval(timeout);
-      resolve();
-    });
-    link.href = href;
-    document.head.appendChild(link);
-  });
-}
-
 export function formatBytes(bytes: number): string {
   if (bytes === 0) return '0 Bytes';
 

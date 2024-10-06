@@ -1,8 +1,14 @@
 import { ProgressBarUIBase } from './progressBarUIBase.js';
 import { createStyleSheet, formatBytes } from './utils.js';
 export class MonitorUI extends ProgressBarUIBase {
-    constructor(monitorCPUElement, monitorRAMElement, monitorHDDElement, monitorGPUSettings, monitorVRAMSettings, monitorTemperatureSettings, currentRate, showSection) {
-        super('queue-button', 'crystools-root', showSection);
+    constructor(rootElement, monitorCPUElement, monitorRAMElement, monitorHDDElement, monitorGPUSettings, monitorVRAMSettings, monitorTemperatureSettings, currentRate) {
+        super('crystools-monitors-root', rootElement);
+        Object.defineProperty(this, "rootElement", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: rootElement
+        });
         Object.defineProperty(this, "monitorCPUElement", {
             enumerable: true,
             configurable: true,
@@ -62,10 +68,12 @@ export class MonitorUI extends ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: () => {
-                this.htmlContainer.style.order = '2';
-                this.htmlContainer.append(this.createMonitor(this.monitorCPUElement));
-                this.htmlContainer.append(this.createMonitor(this.monitorRAMElement));
-                this.htmlContainer.append(this.createMonitor(this.monitorHDDElement));
+                if (!this.rootElement) {
+                    throw Error('Crystools: MonitorUI - Container not found');
+                }
+                this.rootElement.appendChild(this.createMonitor(this.monitorCPUElement));
+                this.rootElement.appendChild(this.createMonitor(this.monitorRAMElement));
+                this.rootElement.appendChild(this.createMonitor(this.monitorHDDElement));
                 this.updateAllAnimationDuration(this.currentRate);
             }
         });
@@ -74,10 +82,10 @@ export class MonitorUI extends ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: (monitorSettings) => {
-                if (!monitorSettings) {
+                if (!(monitorSettings && this.rootElement)) {
                     return;
                 }
-                this.htmlContainer.append(this.createMonitor(monitorSettings));
+                this.rootElement.appendChild(this.createMonitor(monitorSettings));
                 this.updateAllAnimationDuration(this.currentRate);
             }
         });
@@ -157,9 +165,6 @@ export class MonitorUI extends ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: (monitorSettings, percent, used, total) => {
-                if (!this.showSection) {
-                    return;
-                }
                 if (!(monitorSettings.htmlMonitorSliderRef && monitorSettings.htmlMonitorLabelRef)) {
                     return;
                 }
@@ -257,10 +262,17 @@ export class MonitorUI extends ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: (width, height) => {
-                this.styleSheet.innerText = `
-    .comfyui-menu #crystools-root .crystools-monitor .crystools-content {
-      height: ${height}px; width: ${width}px;
-     }`;
+                this.styleSheet.innerText = `.comfyui-menu #crystools-monitors-root .crystools-monitor .crystools-content {height: ${height}px; width: ${width}px;}`;
+            }
+        });
+        Object.defineProperty(this, "showMonitor", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: (monitorSettings, value) => {
+                if (monitorSettings.htmlMonitorRef) {
+                    monitorSettings.htmlMonitorRef.style.display = value ? 'flex' : 'none';
+                }
             }
         });
         this.createDOM();
