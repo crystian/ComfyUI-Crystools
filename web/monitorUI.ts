@@ -6,6 +6,7 @@ export class MonitorUI extends ProgressBarUIBase {
   styleSheet: HTMLStyleElement;
 
   constructor(
+    public override rootElement: HTMLElement,
     private monitorCPUElement: TMonitorSettings,
     private monitorRAMElement: TMonitorSettings,
     private monitorHDDElement: TMonitorSettings,
@@ -14,26 +15,30 @@ export class MonitorUI extends ProgressBarUIBase {
     private monitorTemperatureSettings: TMonitorSettings[],
     private currentRate: number,
   ) {
-    super('queue-button', 'crystools-root');
+    super('crystools-monitors-root', rootElement);
     this.createDOM();
 
     this.styleSheet = createStyleSheet('crystools-monitors-size');
   }
 
   createDOM = (): void => {
-    this.htmlContainer.style.order = '2';
-    this.htmlContainer.append(this.createMonitor(this.monitorCPUElement));
-    this.htmlContainer.append(this.createMonitor(this.monitorRAMElement));
-    this.htmlContainer.append(this.createMonitor(this.monitorHDDElement));
+    if (!this.rootElement) {
+      throw Error('Crystools: MonitorUI - Container not found');
+    }
+
+    // this.container.style.order = '2';
+    this.rootElement.appendChild(this.createMonitor(this.monitorCPUElement));
+    this.rootElement.appendChild(this.createMonitor(this.monitorRAMElement));
+    this.rootElement.appendChild(this.createMonitor(this.monitorHDDElement));
     this.updateAllAnimationDuration(this.currentRate);
   };
 
   createDOMGPUMonitor = (monitorSettings?: TMonitorSettings): void => {
-    if (!monitorSettings) {
+    if (!(monitorSettings && this.rootElement)) {
       return;
     }
 
-    this.htmlContainer.append(this.createMonitor(monitorSettings));
+    this.rootElement.appendChild(this.createMonitor(monitorSettings));
     this.updateAllAnimationDuration(this.currentRate);
   };
 
@@ -42,18 +47,18 @@ export class MonitorUI extends ProgressBarUIBase {
       // @ts-ignore
       this.monitorCPUElement.htmlMonitorRef.style.order = '' + this.lastMonitor++;
       // @ts-ignore
-      this.monitorRAMElement.htmlMonitorRef.style.order = ''+ this.lastMonitor++;
+      this.monitorRAMElement.htmlMonitorRef.style.order = '' + this.lastMonitor++;
       // @ts-ignore
       this.monitorGPUSettings.forEach((_monitorSettings, index) => {
         // @ts-ignore
-        this.monitorGPUSettings[index].htmlMonitorRef.style.order = ''+ this.lastMonitor++;
+        this.monitorGPUSettings[index].htmlMonitorRef.style.order = '' + this.lastMonitor++;
         // @ts-ignore
-        this.monitorVRAMSettings[index].htmlMonitorRef.style.order = ''+ this.lastMonitor++;
+        this.monitorVRAMSettings[index].htmlMonitorRef.style.order = '' + this.lastMonitor++;
         // @ts-ignore
-        this.monitorTemperatureSettings[index].htmlMonitorRef.style.order = ''+ this.lastMonitor++;
+        this.monitorTemperatureSettings[index].htmlMonitorRef.style.order = '' + this.lastMonitor++;
       });
       // @ts-ignore
-      this.monitorHDDElement.htmlMonitorRef.style.order = ''+ this.lastMonitor++;
+      this.monitorHDDElement.htmlMonitorRef.style.order = '' + this.lastMonitor++;
     } catch (error) {
       console.error('orderMonitors', error);
     }
@@ -131,12 +136,12 @@ export class MonitorUI extends ProgressBarUIBase {
     let title = `${Math.floor(percent)}${monitorSettings.symbol}`;
     let postfix = '';
 
-    if(used !== undefined && total !== undefined) {
+    if (used !== undefined && total !== undefined) {
       postfix = ` - ${formatBytes(used)} / ${formatBytes(total)} GB`;
     }
     title = `${prefix}${title}${postfix}`;
 
-    if(monitorSettings.htmlMonitorRef){
+    if (monitorSettings.htmlMonitorRef) {
       monitorSettings.htmlMonitorRef.title = title;
     }
     monitorSettings.htmlMonitorLabelRef.innerHTML = `${Math.floor(percent)}${monitorSettings.symbol}`;
@@ -212,10 +217,8 @@ export class MonitorUI extends ProgressBarUIBase {
   };
 
   updateMonitorSize = (width: number, height: number): void => {
-    this.styleSheet.innerText = `
-    .comfyui-menu #crystools-root .crystools-monitor .crystools-content {
-      height: ${height}px; width: ${width}px;
-     }`;
+    // eslint-disable-next-line max-len
+    this.styleSheet.innerText = `.comfyui-menu #crystools-monitors-root .crystools-monitor .crystools-content {height: ${height}px; width: ${width}px;}`;
   };
 
   showMonitor = (monitorSettings: TMonitorSettings, value: boolean): void => {

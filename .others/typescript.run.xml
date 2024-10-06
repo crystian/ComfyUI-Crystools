@@ -5,7 +5,7 @@
     <scripts>
       <script value="start" />
     </scripts>
-    <node-interpreter value="project" />
+    <node-interpreter value="W:/!Workstation/nodejs/node" />
     <envs />
     <method v="2" />
   </configuration>

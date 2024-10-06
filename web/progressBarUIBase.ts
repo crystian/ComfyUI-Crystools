@@ -4,47 +4,29 @@ export enum EStatus {
   execution_error = 'Execution error',
 }
 
-export enum NewMenuOptions {
+export const ComfyKeyMenuDisplayOption = 'Comfy.UseNewMenu';
+export enum MenuDisplayOptions {
   'Disabled' = 'Disabled',
   'Top' = 'Top',
   'Bottom' = 'Bottom',
 }
 
 export abstract class ProgressBarUIBase {
-  public htmlRoot: HTMLElement | null;
-  public htmlContainer: HTMLDivElement;
-  protected htmlClassMonitor = 'crystools-monitor-container';
+  protected htmlClassMonitor = 'crystools-monitors-container';
 
   protected constructor(
-    public parentId: string,
     public rootId: string,
+    public rootElement: HTMLElement | null | undefined,
   ) {
-    this.createRoot();
+    // IMPORTANT duplicate on crystools-save
+    if (this.rootElement && this.rootElement.children.length === 0) {
+      this.rootElement.setAttribute('id', this.rootId);
+      this.rootElement.classList.add(this.htmlClassMonitor);
+      this.rootElement.classList.add(this.constructor.name);
+    } else {
+      // it was created before
+    }
   }
 
-  private createRoot = (): void => {
-    // IMPORTANT duplicate on crystools-save
-    this.htmlRoot = document.getElementById(this.rootId);
-    if (!this.htmlRoot) {
-      this.htmlRoot = document.createElement('div');
-      this.htmlRoot.setAttribute('id', this.rootId);
-
-      // the best parentElement:
-      const parentElement: Element | null | undefined = document.getElementById(this.parentId);
-      if (parentElement) {
-        parentElement.insertAdjacentElement('afterend', this.htmlRoot);
-      } else {
-        console.error('Crystools: parentElement not found', this.parentId);
-      }
-    }
-
-    this.htmlContainer = document.createElement('div');
-    this.htmlContainer.classList.add(this.htmlClassMonitor);
-    this.htmlContainer.setAttribute('id', this.constructor.name);
-    this.htmlRoot.append(this.htmlContainer);
-  };
-
   abstract createDOM(): void;
-
-  // abstract updateDisplay(currentStatus: EStatus, timeStart: number, currentProgress: number): void;
 }

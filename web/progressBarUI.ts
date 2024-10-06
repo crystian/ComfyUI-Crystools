@@ -9,23 +9,21 @@ export class ProgressBarUI extends ProgressBarUIBase {
   showProgressBarFlag: boolean;
 
   constructor(
+    public override rootElement: HTMLElement,
     public showSectionFlag: boolean,
     private centerNode: () => void,
   ) {
-    super('queue-button', 'crystools-root');
+    super('crystools-progressBar-root', rootElement);
     this.createDOM();
   }
 
   createDOM = (): void => {
-    const htmlContainer = document.createElement('div');
-    htmlContainer.setAttribute('title', 'click to see the current working node');
-    htmlContainer.addEventListener('click', this.centerNode);
-    this.htmlContainer.append(htmlContainer);
-    this.htmlContainer.style.order = '1';
+    this.rootElement.setAttribute('title', 'click to see the current working node');
+    this.rootElement.addEventListener('click', this.centerNode);
 
     const progressBar = document.createElement('div');
     progressBar.classList.add('crystools-progress-bar');
-    htmlContainer.append(progressBar);
+    this.rootElement.append(progressBar);
 
     const progressSlider = document.createElement('div');
     this.htmlProgressSliderRef = progressSlider;
@@ -92,6 +90,6 @@ export class ProgressBarUI extends ProgressBarUIBase {
   };
 
   private displaySection = (): void => {
-    this.htmlContainer.style.display = (this.showSectionFlag && this.showProgressBarFlag) ? 'block' : 'none';
+    this.rootElement.style.display = (this.showSectionFlag && this.showProgressBarFlag) ? 'block' : 'none';
   };
 }

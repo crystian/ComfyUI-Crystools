@@ -3,18 +3,16 @@ export declare enum EStatus {
     executed = "Executed",
     execution_error = "Execution error"
 }
-export declare enum NewMenuOptions {
+export declare const ComfyKeyMenuDisplayOption = "Comfy.UseNewMenu";
+export declare enum MenuDisplayOptions {
     'Disabled' = "Disabled",
     'Top' = "Top",
     'Bottom' = "Bottom"
 }
 export declare abstract class ProgressBarUIBase {
-    parentId: string;
     rootId: string;
-    htmlRoot: HTMLElement | null;
-    htmlContainer: HTMLDivElement;
+    rootElement: HTMLElement | null | undefined;
     protected htmlClassMonitor: string;
-    protected constructor(parentId: string, rootId: string);
-    private createRoot;
+    protected constructor(rootId: string, rootElement: HTMLElement | null | undefined);
     abstract createDOM(): void;
 }

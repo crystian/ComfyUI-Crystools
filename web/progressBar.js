@@ -1,7 +1,7 @@
 import { app, api } from './comfy/index.js';
 import { commonPrefix } from './common.js';
 import { ProgressBarUI } from './progressBarUI.js';
-import { EStatus, NewMenuOptions } from './progressBarUIBase.js';
+import { ComfyKeyMenuDisplayOption, EStatus, MenuDisplayOptions } from './progressBarUIBase.js';
 class CrystoolsProgressBar {
     constructor() {
         Object.defineProperty(this, "idExtensionName", {
@@ -28,11 +28,11 @@ class CrystoolsProgressBar {
             writable: true,
             value: commonPrefix
         });
-        Object.defineProperty(this, "newMenu", {
+        Object.defineProperty(this, "menuDisplayOption", {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: NewMenuOptions.Disabled
+            value: MenuDisplayOptions.Disabled
         });
         Object.defineProperty(this, "currentStatus", {
             enumerable: true,
@@ -73,7 +73,7 @@ class CrystoolsProgressBar {
                     id: this.idShowProgressBar,
                     name: 'Show progress bar',
                     category: ['Crystools', this.menuPrefix + ' Progress Bar', 'Show'],
-                    tooltip: 'This apply only on old menu',
+                    tooltip: 'This apply only on "Disabled" (old) menu',
                     type: 'boolean',
                     defaultValue: this.defaultShowStatus,
                     onChange: this.progressBarUI.showProgressBar,
@@ -84,15 +84,15 @@ class CrystoolsProgressBar {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: () => {
-                setTimeout(() => {
-                    const newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
-                    if (newMenu !== this.newMenu) {
-                        this.newMenu = newMenu;
-                        this.progressBarUI.showSection(this.newMenu === NewMenuOptions.Disabled);
-                    }
+            value: (menuDisplayOption) => {
+                if (menuDisplayOption !== this.menuDisplayOption) {
+                    this.menuDisplayOption = menuDisplayOption;
+                    this.progressBarUI.showSection(this.menuDisplayOption === MenuDisplayOptions.Disabled);
+                }
+                if (this.menuDisplayOption === MenuDisplayOptions.Disabled && this.progressBarUI.showProgressBarFlag) {
+                    console.log('updateDisplay progress bar');
                     this.progressBarUI.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
-                });
+                }
             }
         });
         Object.defineProperty(this, "setup", {
@@ -105,10 +105,23 @@ class CrystoolsProgressBar {
                         .showProgressBar(app.ui.settings.getSettingValue(this.idShowProgressBar, this.defaultShowStatus));
                     return;
                 }
-                this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
-                this.progressBarUI = new ProgressBarUI((this.newMenu === NewMenuOptions.Disabled), this.centerNode);
+                this.menuDisplayOption = app.ui.settings.getSettingValue(ComfyKeyMenuDisplayOption, MenuDisplayOptions.Disabled);
+                app.ui.settings.addEventListener(`${ComfyKeyMenuDisplayOption}.change`, (e) => {
+                    console.log('Comfy.UseNewMenu.change desde progress bar', e.detail.value);
+                    this.updateDisplay(e.detail.value);
+                });
+                const progressBarElement = document.createElement('div');
+                progressBarElement.classList.add('crystools-monitors-container');
+                this.progressBarUI = new ProgressBarUI(progressBarElement, (this.menuDisplayOption === MenuDisplayOptions.Disabled), this.centerNode);
+                const parentElement = document.getElementById('queue-button');
+                if (parentElement) {
+                    parentElement.insertAdjacentElement('afterend', progressBarElement);
+                }
+                else {
+                    console.error('Crystools: parentElement to move monitors not found!', parentElement);
+                }
                 this.createSettings();
-                this.updateDisplay();
+                this.updateDisplay(this.menuDisplayOption);
                 this.registerListeners();
             }
         });
@@ -123,7 +136,7 @@ class CrystoolsProgressBar {
                     if (queueRemaining) {
                         this.currentStatus = EStatus.executing;
                     }
-                    this.updateDisplay();
+                    this.updateDisplay(this.menuDisplayOption);
                 }, false);
                 api.addEventListener('progress', ({ detail }) => {
                     const { value, max, node } = detail;
@@ -132,22 +145,22 @@ class CrystoolsProgressBar {
                         this.currentProgress = progress;
                         this.currentNode = node;
                     }
-                    this.updateDisplay();
+                    this.updateDisplay(this.menuDisplayOption);
                 }, false);
                 api.addEventListener('executed', ({ detail }) => {
                     if (detail?.node) {
                         this.currentNode = detail.node;
                     }
-                    this.updateDisplay();
+                    this.updateDisplay(this.menuDisplayOption);
                 }, false);
                 api.addEventListener('execution_start', ({ _detail }) => {
                     this.currentStatus = EStatus.executing;
                     this.timeStart = Date.now();
-                    this.updateDisplay();
+                    this.updateDisplay(this.menuDisplayOption);
                 }, false);
                 api.addEventListener('execution_error', ({ _detail }) => {
                     this.currentStatus = EStatus.execution_error;
-                    this.updateDisplay();
+                    this.updateDisplay(this.menuDisplayOption);
                 }, false);
             }
         });
@@ -167,7 +180,6 @@ class CrystoolsProgressBar {
                 app.canvas.centerOnNode(node);
             }
         });
-        window.addEventListener('resize', this.updateDisplay);
     }
 }
 const crystoolsProgressBar = new CrystoolsProgressBar();

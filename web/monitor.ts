@@ -1,14 +1,15 @@
-import { app, api } from './comfy/index.js';
+import { app, api, ComfyButtonGroup } from './comfy/index.js';
 import { commonPrefix } from './common.js';
 import { MonitorUI } from './monitorUI.js';
 import { Colors } from './styles.js';
 import { convertNumberToPascalCase } from './utils.js';
-import { NewMenuOptions } from './progressBarUIBase.js';
+import { ComfyKeyMenuDisplayOption, MenuDisplayOptions } from './progressBarUIBase.js';
 
 class CrystoolsMonitor {
   readonly idExtensionName = 'Crystools.monitor';
   private readonly menuPrefix = commonPrefix;
-  private newMenu: NewMenuOptions = NewMenuOptions.Disabled;
+  private menuDisplayOption: MenuDisplayOptions = MenuDisplayOptions.Disabled;
+  private crystoolsButtonGroup: ComfyButtonGroup = null;
 
   private settingsRate: TMonitorSettings;
   private settingsMonitorHeight: TMonitorSettings;
@@ -27,10 +28,6 @@ class CrystoolsMonitor {
   private readonly monitorWidth = 60;
   private readonly monitorHeightId = 'Crystools.MonitorHeight';
   private readonly monitorHeight = 30;
-
-  constructor() {
-    window.addEventListener('resize', this.updateDisplay);
-  }
 
   createSettingsRate = (): void => {
     this.settingsRate = {
@@ -294,7 +291,7 @@ class CrystoolsMonitor {
       id: this.monitorWidthId,
       name: 'Pixel Width',
       category: ['Crystools', this.menuPrefix + ' Configuration', 'width'],
-      tooltip: 'The width of the monitor in pixels on the UI (only on horizontal UI)',
+      tooltip: 'The width of the monitor in pixels on the UI (only on floating UI)',
       type: 'slider',
       attrs: {
         min: 60,
@@ -327,7 +324,7 @@ class CrystoolsMonitor {
       id: this.monitorHeightId,
       name: 'Pixel Height',
       category: ['Crystools', this.menuPrefix + ' Configuration', 'height'],
-      tooltip: 'The height of the monitor in pixels on the UI (only on horizontal UI)',
+      tooltip: 'The height of the monitor in pixels on the UI (only on floating UI)',
       type: 'slider',
       attrs: {
         min: 16,
@@ -336,7 +333,7 @@ class CrystoolsMonitor {
       },
       defaultValue: this.monitorHeight,
       // @ts-ignore
-      onChange: (value: string): void => {
+      onChange: async(value: string): void => {
         let valueNumber: number;
 
         try {
@@ -349,7 +346,7 @@ class CrystoolsMonitor {
           return;
         }
 
-        const w = app.ui.settings.getSettingValue(this.monitorWidthId, this.monitorWidth);
+        const w = await app.ui.settings.getSettingValue(this.monitorWidthId, this.monitorWidth);
         this.monitorUI?.updateMonitorSize(w, valueNumber);
       },
     };
@@ -387,48 +384,38 @@ class CrystoolsMonitor {
   finishedLoad = (): void => {
     this.monitorUI.orderMonitors();
     this.updateAllWidget();
-    this.moveMonitor(this.newMenu);
+    this.moveMonitor(this.menuDisplayOption);
 
     const w = app.ui.settings.getSettingValue(this.monitorWidthId, this.monitorWidth);
     const h = app.ui.settings.getSettingValue(this.monitorHeightId, this.monitorHeight);
     this.monitorUI.updateMonitorSize(w, h);
   };
 
-  updateDisplay = (): void => {
-    setTimeout(() => {
-      const newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
-      if (newMenu !== this.newMenu) {
-        this.newMenu = newMenu;
-        this.moveMonitor(this.newMenu);
-      }
-    });
+  updateDisplay = (value: MenuDisplayOptions): void => {
+    if (value !== this.menuDisplayOption) {
+      this.menuDisplayOption = value;
+      this.moveMonitor(this.menuDisplayOption);
+    }
   };
 
-  moveMonitor = (position: NewMenuOptions): void => {
+  moveMonitor = (position: MenuDisplayOptions): void => {
     let parentElement: Element | null | undefined;
 
     switch (position) {
-      case NewMenuOptions.Disabled:
+      case MenuDisplayOptions.Disabled:
         parentElement = document.getElementById('queue-button');
-        if (parentElement && this.monitorUI.htmlRoot) {
-          parentElement.insertAdjacentElement('afterend', this.monitorUI.htmlRoot);
+        if (parentElement && this.monitorUI.rootElement) {
+          parentElement.insertAdjacentElement('afterend', this.crystoolsButtonGroup.element);
         } else {
           console.error('Crystools: parentElement to move monitors not found!', parentElement);
         }
         break;
 
-      case NewMenuOptions.Top:
-      case NewMenuOptions.Bottom:
-        this.monitorUI.htmlRoot?.classList.add('comfyui-button-group');
-        parentElement = document.getElementsByClassName('comfyui-menu-push')[0];
-
-        if (parentElement && this.monitorUI.htmlRoot) {
-          parentElement.insertAdjacentElement('afterend', this.monitorUI.htmlRoot);
-        } else {
-          console.error('Crystools: parentElement to move monitors not found!', parentElement);
-        }
-        break;
+      case MenuDisplayOptions.Top:
+      case MenuDisplayOptions.Bottom:
+        app.menu?.settingsGroup.element.before(this.crystoolsButtonGroup.element);
     }
+
   };
 
   updateAllWidget = (): void => {
@@ -503,7 +490,6 @@ class CrystoolsMonitor {
 
   setup = (): void => {
     if (this.monitorUI) {
-      // this.monitorUIOld.render(0);
       return;
     }
 
@@ -518,8 +504,17 @@ class CrystoolsMonitor {
     const currentRate =
       parseFloat(app.ui.settings.getSettingValue(this.settingsRate.id, this.settingsRate.defaultValue));
 
-    this.newMenu = app.ui.settings.getSettingValue('Comfy.UseNewMenu', 'Disabled');
+    this.menuDisplayOption = app.ui.settings.getSettingValue(ComfyKeyMenuDisplayOption, MenuDisplayOptions.Disabled);
+    app.ui.settings.addEventListener(`${ComfyKeyMenuDisplayOption}.change`, (e: any) => {
+        this.updateDisplay(e.detail.value);
+      },
+    );
+
+    this.crystoolsButtonGroup = new ComfyButtonGroup();
+    app.menu?.settingsGroup.element.before(this.crystoolsButtonGroup.element);
+
     this.monitorUI = new MonitorUI(
+      this.crystoolsButtonGroup.element,
       this.monitorCPUElement,
       this.monitorRAMElement,
       this.monitorHDDElement,
@@ -529,7 +524,7 @@ class CrystoolsMonitor {
       currentRate,
     );
 
-    this.updateDisplay();
+    this.updateDisplay(this.menuDisplayOption);
     this.registerListeners();
   };
 

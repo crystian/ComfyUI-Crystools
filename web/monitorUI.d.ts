@@ -1,5 +1,6 @@
 import { ProgressBarUIBase } from './progressBarUIBase.js';
 export declare class MonitorUI extends ProgressBarUIBase {
+    rootElement: HTMLElement;
     private monitorCPUElement;
     private monitorRAMElement;
     private monitorHDDElement;
@@ -9,7 +10,7 @@ export declare class MonitorUI extends ProgressBarUIBase {
     private currentRate;
     lastMonitor: number;
     styleSheet: HTMLStyleElement;
-    constructor(monitorCPUElement: TMonitorSettings, monitorRAMElement: TMonitorSettings, monitorHDDElement: TMonitorSettings, monitorGPUSettings: TMonitorSettings[], monitorVRAMSettings: TMonitorSettings[], monitorTemperatureSettings: TMonitorSettings[], currentRate: number);
+    constructor(rootElement: HTMLElement, monitorCPUElement: TMonitorSettings, monitorRAMElement: TMonitorSettings, monitorHDDElement: TMonitorSettings, monitorGPUSettings: TMonitorSettings[], monitorVRAMSettings: TMonitorSettings[], monitorTemperatureSettings: TMonitorSettings[], currentRate: number);
     createDOM: () => void;
     createDOMGPUMonitor: (monitorSettings?: TMonitorSettings) => void;
     orderMonitors: () => void;
