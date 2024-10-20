@@ -516,6 +516,9 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### Crystools
 
+### 1.20.0 (21/10/2024)
+- BETA of JSON file reader and extractor, to allow you to read your own JSON files and extract the values to use in your workflow 
+
 ### 1.19.0 (06/10/2024)
 - HORIZONTAL UI! New version is ready! 🎉
 

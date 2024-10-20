@@ -1,7 +1,6 @@
 import { app } from './comfy/index.js';
 import { displayContext } from './common.js';
 const crystoolsExtensionsSerialized = {
-    'External parameter from JSON file [Crystools]': 'Crystools.Utils.ExternalParameterFromJson',
     'Read JSON file [Crystools]': 'Crystools.Utils.ReadJsonFile',
     'JSON extractor [Crystools]': 'Crystools.Utils.JsonExtractor',
 };

@@ -3,7 +3,7 @@ import type { ComfyNode } from './comfy/index.js';
 import { displayContext } from './common.js';
 
 const crystoolsExtensionsSerialized: Record<string, string> = {
-  'External parameter from JSON file [Crystools]': 'Crystools.Utils.ExternalParameterFromJson',
+  // 'External parameter from JSON file [Crystools]': 'Crystools.Utils.ExternalParameterFromJson',
   'Read JSON file [Crystools]': 'Crystools.Utils.ReadJsonFile',
   'JSON extractor [Crystools]': 'Crystools.Utils.JsonExtractor',
 };

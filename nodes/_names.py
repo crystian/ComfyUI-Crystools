@@ -68,11 +68,11 @@ class CLASSES(Enum):
     CUTILS_STAT_SYSTEM_NAME = 'Stats system [Crystools]'
     CUTILS_STAT_SYSTEM_DESC = prefix + 'Stats system (powered by WAS)'
 
-    CPARAMETERS_NAME = 'External parameter from JSON file [Crystools]'
-    CPARAMETERS_DESC = prefix + 'External parameters from JSON file'
+    # CPARAMETERS_NAME = 'External parameter from JSON file [Crystools]'
+    # CPARAMETERS_DESC = prefix + 'External parameters from JSON file'
 
     CJSONFILE_NAME = 'Read JSON file [Crystools]'
-    CJSONFILE_DESC = prefix + 'Read JSON file'
+    CJSONFILE_DESC = prefix + 'Read JSON file (BETA)'
 
     CJSONEXTRACTOR_NAME = 'JSON extractor [Crystools]'
-    CJSONEXTRACTOR_DESC = prefix + 'JSON extractor'
+    CJSONEXTRACTOR_DESC = prefix + 'JSON extractor (BETA)'
