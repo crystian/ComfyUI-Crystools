@@ -14,7 +14,7 @@
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-    <option name="PARAMETERS" value="--windows-standalone-build --extra-model-paths-config ..\extra_model_paths.yaml --output-directory ..\..\comfyUI.output --input-directory ..\..\comfyUI.input --disable-auto-launch --preview-size 1024 --front-end-version Comfy-Org/ComfyUI_frontend@latest" />
+    <option name="PARAMETERS" value="--extra-model-paths-config ..\extra_model_paths.yaml --output-directory ..\..\comfyUI.output --input-directory ..\..\comfyUI.input --disable-auto-launch --preview-size 1024 --front-end-version aComfy-Org/ComfyUI_frontend@latest" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />

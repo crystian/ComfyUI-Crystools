@@ -63,7 +63,16 @@ class CLASSES(Enum):
     CMETADATA_COMPARATOR_NAME = 'Metadata comparator [Crystools]'
     CMETADATA_COMPARATOR_DESC = prefix + 'Metadata comparator'
 
-    CUTILS_JSON_COMPARATOR_NAME = 'Json comparator [Crystools]'
-    CUTILS_JSON_COMPARATOR_DESC = prefix + 'Json comparator'
+    CUTILS_JSON_COMPARATOR_NAME = 'JSON comparator [Crystools]'
+    CUTILS_JSON_COMPARATOR_DESC = prefix + 'JSON comparator'
     CUTILS_STAT_SYSTEM_NAME = 'Stats system [Crystools]'
     CUTILS_STAT_SYSTEM_DESC = prefix + 'Stats system (powered by WAS)'
+
+    CPARAMETERS_NAME = 'External parameter from JSON file [Crystools]'
+    CPARAMETERS_DESC = prefix + 'External parameters from JSON file'
+
+    CJSONFILE_NAME = 'Read JSON file [Crystools]'
+    CJSONFILE_DESC = prefix + 'Read JSON file'
+
+    CJSONEXTRACTOR_NAME = 'JSON extractor [Crystools]'
+    CJSONEXTRACTOR_DESC = prefix + 'JSON extractor'

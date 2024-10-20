@@ -21,6 +21,7 @@ from .nodes.list import CListAny, CListString
 from .nodes.pipe import CPipeToAny, CPipeFromAny
 from .nodes.utils import CUtilsCompareJsons, CUtilsStatSystem
 from .nodes.metadata import CMetadataExtractor, CMetadataCompare
+from .nodes.parameters import CParameter, CJsonFile, CJsonExtractor
 from .server import *
 from .general import *
 
@@ -56,7 +57,10 @@ NODE_CLASS_MAPPINGS = {
     CLASSES.CMETADATA_EXTRACTOR_NAME.value: CMetadataExtractor,
     CLASSES.CMETADATA_COMPARATOR_NAME.value: CMetadataCompare,
     CLASSES.CUTILS_JSON_COMPARATOR_NAME.value: CUtilsCompareJsons,
-    CLASSES.CUTILS_STAT_SYSTEM_NAME.value: CUtilsStatSystem
+    CLASSES.CUTILS_STAT_SYSTEM_NAME.value: CUtilsStatSystem,
+    CLASSES.CPARAMETERS_NAME.value: CParameter,
+    CLASSES.CJSONFILE_NAME.value: CJsonFile,
+    CLASSES.CJSONEXTRACTOR_NAME.value: CJsonExtractor,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -93,6 +97,10 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 
     CLASSES.CUTILS_JSON_COMPARATOR_NAME.value: CLASSES.CUTILS_JSON_COMPARATOR_DESC.value,
     CLASSES.CUTILS_STAT_SYSTEM_NAME.value: CLASSES.CUTILS_STAT_SYSTEM_DESC.value,
+
+    CLASSES.CPARAMETERS_NAME.value: CLASSES.CPARAMETERS_DESC.value,
+    CLASSES.CJSONFILE_NAME.value: CLASSES.CJSONFILE_DESC.value,
+    CLASSES.CJSONEXTRACTOR_NAME.value: CLASSES.CJSONEXTRACTOR_DESC.value,
 }
 
 
