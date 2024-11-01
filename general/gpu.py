@@ -8,9 +8,6 @@ def is_jetson() -> bool:
     """
     Determines if the Python environment is running on a Jetson device by checking the device model
     information or the platform release.
-
-    Returns:
-        bool: True if running on a Jetson device, False otherwise.
     """
     PROC_DEVICE_MODEL = ''
     try:
@@ -57,6 +54,7 @@ class CGPUInfo:
             try:
                 from jtop import jtop
                 self.jtopInstance = jtop()
+                self.jtopInstance.start()
                 self.jtopLoaded = True
                 logger.info('jtop initialized on Jetson device.')
             except ImportError as e:
@@ -240,8 +238,8 @@ class CGPUInfo:
 
             return gpuName
         elif self.jtopLoaded:
-            with self.jtopInstance:
-                gpu_name = self.jtopInstance.gpu['name']
+            # Access the GPU name from self.jtopInstance.board
+            gpu_name = self.jtopInstance.board.get('GPU', 'Unknown GPU')
             return gpu_name
         else:
             return ''
@@ -259,8 +257,8 @@ class CGPUInfo:
         if self.pynvmlLoaded:
             return self.pynvml.nvmlDeviceGetUtilizationRates(deviceHandle).gpu
         elif self.jtopLoaded:
-            with self.jtopInstance:
-                utilization = self.jtopInstance.stats['GPU']
+            # GPU utilization from jtop stats
+            utilization = self.jtopInstance.stats.get('GPU', -1)
             return utilization
         else:
             return 0
@@ -270,12 +268,11 @@ class CGPUInfo:
             mem = self.pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
             return {'total': mem.total, 'used': mem.used}
         elif self.jtopLoaded:
-            with self.jtopInstance:
-                # Jetson devices have unified memory; adjust as needed
-                ram_info = self.jtopInstance.ram
-                total = ram_info['tot'] * 1024 * 1024  # Convert MB to bytes
-                used = ram_info['use'] * 1024 * 1024
-                return {'total': total, 'used': used}
+            # On Jetson devices, GPU shares memory with RAM
+            ram_info = self.jtopInstance.stats.get('RAM', {})
+            total = ram_info.get('tot', -1) * 1024 * 1024  # Convert MB to bytes
+            used = ram_info.get('use', -1) * 1024 * 1024
+            return {'total': total, 'used': used}
         else:
             return {'total': 1, 'used': 1}
 
@@ -283,8 +280,7 @@ class CGPUInfo:
         if self.pynvmlLoaded:
             return self.pynvml.nvmlDeviceGetTemperature(deviceHandle, self.pynvml.NVML_TEMPERATURE_GPU)
         elif self.jtopLoaded:
-            with self.jtopInstance:
-                temperature = self.jtopInstance.stats['Temp GPU']
+            temperature = self.jtopInstance.stats.get('Temp GPU', -1)
             return temperature
         else:
             return 0
