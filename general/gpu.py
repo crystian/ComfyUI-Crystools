@@ -170,18 +170,25 @@ class CGPUInfo:
                             self.switchGPU = False
 
                     # VRAM
-                    if self.switchVRAM and self.gpusVRAM[deviceIndex]:
-                        try:
-                            memory = self.deviceGetMemoryInfo(deviceHandle)
-                            vramUsed = memory['used']
-                            vramTotal = memory['total']
+                    if IS_JETSON:
+                        # On Jetson devices, VRAM metrics are not applicable
+                        vramUsed = None
+                        vramTotal = None
+                        vramPercent = None
+                        self.switchVRAM = False
+                    else:
+                        if self.switchVRAM and self.gpusVRAM[deviceIndex]:
+                            try:
+                                memory = self.deviceGetMemoryInfo(deviceHandle)
+                                vramUsed = memory['used']
+                                vramTotal = memory['total']
 
-                            # Check if vramTotal is not zero or None
-                            if vramTotal and vramTotal != 0:
-                                vramPercent = vramUsed / vramTotal * 100
-                        except Exception as e:
-                            logger.error('Could not get GPU memory info. ' + str(e))
-                            self.switchVRAM = False
+                                # Check if vramTotal is not zero or None
+                                if vramTotal and vramTotal != 0:
+                                    vramPercent = vramUsed / vramTotal * 100
+                            except Exception as e:
+                                logger.error('Could not get GPU memory info. ' + str(e))
+                                self.switchVRAM = False
 
                     # Temperature
                     if self.switchTemperature and self.gpusTemperature[deviceIndex]:
@@ -277,15 +284,8 @@ class CGPUInfo:
             mem = self.pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
             return {'total': mem.total, 'used': mem.used}
         elif self.jtopLoaded:
-            # On Jetson devices, use self.jtopInstance.memory
-            try:
-                ram_info = self.jtopInstance.memory
-                total = ram_info.get('total', -1)  # in bytes
-                used = ram_info.get('used', -1)    # in bytes
-                return {'total': total, 'used': used}
-            except Exception as e:
-                logger.error('Could not get memory info from jtop. ' + str(e))
-                return {'total': -1, 'used': -1}
+            # On Jetson devices, VRAM metrics are not applicable
+            return {'total': None, 'used': None}
         else:
             return {'total': 1, 'used': 1}
 
