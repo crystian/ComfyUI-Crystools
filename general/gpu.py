@@ -238,9 +238,14 @@ class CGPUInfo:
 
             return gpuName
         elif self.jtopLoaded:
-            # Access the GPU name from self.jtopInstance.board
-            gpu_name = self.jtopInstance.board.get('GPU', 'Unknown GPU')
-            return gpu_name
+            # Access the GPU name from self.jtopInstance.gpu
+            try:
+                gpu_info = self.jtopInstance.gpu
+                gpu_name = next(iter(gpu_info.keys()))
+                return gpu_name
+            except Exception as e:
+                logger.error('Could not get GPU name. ' + str(e))
+                return 'Unknown GPU'
         else:
             return ''
 
@@ -258,8 +263,12 @@ class CGPUInfo:
             return self.pynvml.nvmlDeviceGetUtilizationRates(deviceHandle).gpu
         elif self.jtopLoaded:
             # GPU utilization from jtop stats
-            utilization = self.jtopInstance.stats.get('GPU', -1)
-            return utilization
+            try:
+                gpu_util = self.jtopInstance.stats.get('GPU', -1)
+                return gpu_util
+            except Exception as e:
+                logger.error('Could not get GPU utilization. ' + str(e))
+                return -1
         else:
             return 0
 
@@ -268,11 +277,15 @@ class CGPUInfo:
             mem = self.pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
             return {'total': mem.total, 'used': mem.used}
         elif self.jtopLoaded:
-            # On Jetson devices, GPU shares memory with RAM
-            ram_info = self.jtopInstance.stats.get('RAM', {})
-            total = ram_info.get('tot', -1) * 1024 * 1024  # Convert MB to bytes
-            used = ram_info.get('use', -1) * 1024 * 1024
-            return {'total': total, 'used': used}
+            # On Jetson devices, use self.jtopInstance.memory
+            try:
+                ram_info = self.jtopInstance.memory
+                total = ram_info.get('total', -1)  # in bytes
+                used = ram_info.get('used', -1)    # in bytes
+                return {'total': total, 'used': used}
+            except Exception as e:
+                logger.error('Could not get memory info from jtop. ' + str(e))
+                return {'total': -1, 'used': -1}
         else:
             return {'total': 1, 'used': 1}
 
@@ -280,8 +293,12 @@ class CGPUInfo:
         if self.pynvmlLoaded:
             return self.pynvml.nvmlDeviceGetTemperature(deviceHandle, self.pynvml.NVML_TEMPERATURE_GPU)
         elif self.jtopLoaded:
-            temperature = self.jtopInstance.stats.get('Temp GPU', -1)
-            return temperature
+            try:
+                temperature = self.jtopInstance.stats.get('Temp GPU', -1)
+                return temperature
+            except Exception as e:
+                logger.error('Could not get GPU temperature. ' + str(e))
+                return -1
         else:
             return 0
 
