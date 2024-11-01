@@ -5,4 +5,4 @@ Pillow>=9.5.0
 pynvml
 py-cpuinfo
 piexif
-"jtop; platform_machine == 'aarch64'",
+jtop; platform_machine == 'aarch64'"
