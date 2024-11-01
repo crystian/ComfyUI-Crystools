@@ -2,11 +2,12 @@ import torch
 import comfy.model_management
 from ..core import logger
 import os
+import platform
 
 def is_jetson() -> bool:
     """
     Determines if the Python environment is running on a Jetson device by checking the device model
-    information.
+    information or the platform release.
 
     Returns:
         bool: True if running on a Jetson device, False otherwise.
@@ -16,11 +17,18 @@ def is_jetson() -> bool:
         with open('/proc/device-tree/model', 'r') as f:
             PROC_DEVICE_MODEL = f.read().strip()
             logger.info(f"Device model: {PROC_DEVICE_MODEL}")
+            return "NVIDIA" in PROC_DEVICE_MODEL
     except Exception as e:
         logger.error(f"Could not read /proc/device-tree/model: {e}")
-        return False
-
-    return "NVIDIA" in PROC_DEVICE_MODEL
+        # If /proc/device-tree/model is not available, check platform.release()
+        platform_release = platform.release()
+        logger.info(f"Platform release: {platform_release}")
+        if 'tegra' in platform_release.lower():
+            logger.info("Detected 'tegra' in platform release. Assuming Jetson device.")
+            return True
+        else:
+            logger.warning("Could not detect Jetson device.")
+            return False
 
 IS_JETSON = is_jetson()
 
