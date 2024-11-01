@@ -57,7 +57,6 @@ class CGPUInfo:
             try:
                 from jtop import jtop
                 self.jtopInstance = jtop()
-                self.jtopInstance.start()
                 self.jtopLoaded = True
                 logger.info('jtop initialized on Jetson device.')
             except ImportError as e:
@@ -241,8 +240,8 @@ class CGPUInfo:
 
             return gpuName
         elif self.jtopLoaded:
-            self.jtopInstance.update()
-            gpu_name = self.jtopInstance.gpu.get('name', 'Unknown GPU')
+            with self.jtopInstance:
+                gpu_name = self.jtopInstance.gpu['name']
             return gpu_name
         else:
             return ''
@@ -260,8 +259,9 @@ class CGPUInfo:
         if self.pynvmlLoaded:
             return self.pynvml.nvmlDeviceGetUtilizationRates(deviceHandle).gpu
         elif self.jtopLoaded:
-            self.jtopInstance.update()
-            return self.jtopInstance.stats.get('GPU', -1)
+            with self.jtopInstance:
+                utilization = self.jtopInstance.stats['GPU']
+            return utilization
         else:
             return 0
 
@@ -270,13 +270,12 @@ class CGPUInfo:
             mem = self.pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
             return {'total': mem.total, 'used': mem.used}
         elif self.jtopLoaded:
-            self.jtopInstance.update()
-            gpu_info = self.jtopInstance.gpu
-            # Since Jetson devices share memory with system, this might not be accurate
-            # Adjust according to actual data provided by jtop
-            vramTotal = gpu_info['freq'].get('max', 0) * 1024 * 1024  # Assuming freq in MHz, converting to bytes
-            vramUsed = gpu_info['freq'].get('cur', 0) * 1024 * 1024
-            return {'total': vramTotal, 'used': vramUsed}
+            with self.jtopInstance:
+                # Jetson devices have unified memory; adjust as needed
+                ram_info = self.jtopInstance.ram
+                total = ram_info['tot'] * 1024 * 1024  # Convert MB to bytes
+                used = ram_info['use'] * 1024 * 1024
+                return {'total': total, 'used': used}
         else:
             return {'total': 1, 'used': 1}
 
@@ -284,8 +283,9 @@ class CGPUInfo:
         if self.pynvmlLoaded:
             return self.pynvml.nvmlDeviceGetTemperature(deviceHandle, self.pynvml.NVML_TEMPERATURE_GPU)
         elif self.jtopLoaded:
-            self.jtopInstance.update()
-            return self.jtopInstance.stats.get('Temp GPU', -1)
+            with self.jtopInstance:
+                temperature = self.jtopInstance.stats['Temp GPU']
+            return temperature
         else:
             return 0
 
