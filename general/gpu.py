@@ -7,9 +7,6 @@ def is_jetson() -> bool:
     """
     Determines if the Python environment is running on a Jetson device by checking the device model
     information.
-
-    Returns:
-        (bool): True if running on a Jetson device, False otherwise.
     """
     PROC_DEVICE_MODEL = ''
     try:
@@ -47,11 +44,14 @@ class CGPUInfo:
             try:
                 from jtop import jtop
                 self.jtop = jtop
-                self.jtopInstance = None
+                self.jtopInstance = self.jtop()
+                self.jtopInstance.start()
                 self.jtopLoaded = True
                 logger.info('jtop initialized on Jetson device.')
             except ImportError as e:
                 logger.error('jtop is not installed. ' + str(e))
+            except Exception as e:
+                logger.error('Could not initialize jtop. ' + str(e))
         else:
             # Try to import pynvml for non-Jetson devices
             try:
@@ -162,13 +162,17 @@ class CGPUInfo:
 
                     # VRAM
                     if self.switchVRAM and self.gpusVRAM[deviceIndex]:
-                        memory = self.deviceGetMemoryInfo(deviceHandle)
-                        vramUsed = memory['used']
-                        vramTotal = memory['total']
+                        try:
+                            memory = self.deviceGetMemoryInfo(deviceHandle)
+                            vramUsed = memory['used']
+                            vramTotal = memory['total']
 
-                        # Check if vramTotal is not zero or None
-                        if vramTotal and vramTotal != 0:
-                            vramPercent = vramUsed / vramTotal * 100
+                            # Check if vramTotal is not zero or None
+                            if vramTotal and vramTotal != 0:
+                                vramPercent = vramUsed / vramTotal * 100
+                        except Exception as e:
+                            logger.error('Could not get GPU memory info. ' + str(e))
+                            self.switchVRAM = False
 
                     # Temperature
                     if self.switchTemperature and self.gpusTemperature[deviceIndex]:
@@ -225,9 +229,6 @@ class CGPUInfo:
 
             return gpuName
         elif self.jtopLoaded:
-            if self.jtopInstance is None:
-                self.jtopInstance = self.jtop()
-                self.jtopInstance.start()
             return self.jtopInstance.jetson.gpu['name']
         else:
             return ''
@@ -237,7 +238,7 @@ class CGPUInfo:
             return f'NVIDIA Driver: {self.pynvml.nvmlSystemGetDriverVersion()}'
         elif self.jtopLoaded:
             # jtop does not provide driver version directly
-            return 'NVIDIA Driver: (version unknown)'
+            return f'NVIDIA Driver: {self.jtopInstance.jetson.software["NV Power Mode"]}'
         else:
             return 'Driver unknown'
 
@@ -245,24 +246,17 @@ class CGPUInfo:
         if self.pynvmlLoaded:
             return self.pynvml.nvmlDeviceGetUtilizationRates(deviceHandle).gpu
         elif self.jtopLoaded:
-            if self.jtopInstance is None:
-                self.jtopInstance = self.jtop()
-                self.jtopInstance.start()
             return self.jtopInstance.stats['GPU']
         else:
             return 0
 
     def deviceGetMemoryInfo(self, deviceHandle):
         if self.pynvmlLoaded:
-            mem = self.pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
-            return {'total': mem.total, 'used': mem.used}
+            return self.pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
         elif self.jtopLoaded:
-            if self.jtopInstance is None:
-                self.jtopInstance = self.jtop()
-                self.jtopInstance.start()
-            ram_info = self.jtopInstance.jetson.ram
-            total = ram_info['total'] * 1024 * 1024  # Convert MB to bytes
-            used = ram_info['used'] * 1024 * 1024
+            gpu_info = self.jtopInstance.jetson.gpu
+            total = gpu_info['freq']['max'] * 1024 * 1024  # Assuming max freq as total memory (adjust as needed)
+            used = gpu_info['freq']['cur'] * 1024 * 1024   # Assuming current freq as used memory (adjust as needed)
             return {'total': total, 'used': used}
         else:
             return {'total': 1, 'used': 1}
@@ -271,9 +265,6 @@ class CGPUInfo:
         if self.pynvmlLoaded:
             return self.pynvml.nvmlDeviceGetTemperature(deviceHandle, self.pynvml.NVML_TEMPERATURE_GPU)
         elif self.jtopLoaded:
-            if self.jtopInstance is None:
-                self.jtopInstance = self.jtop()
-                self.jtopInstance.start()
             return self.jtopInstance.stats['Temp GPU']
         else:
             return 0
