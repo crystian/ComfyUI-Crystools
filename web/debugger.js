@@ -1,7 +1,5 @@
-import { app } from '/scripts/app.js';
-import { api } from '/scripts/api.js';
+import { app, api, ComfyWidgets, LiteGraph, TLGraphNode } from './comfy/index.js';
 import { commonPrefix, displayContext } from './common.js';
-import { LiteGraph, TLGraphNode, ComfyWidgets } from './liteGraph.js';
 app.registerExtension({
     name: 'Crystools.Debugger.ConsoleAny',
     beforeRegisterNodeDef(nodeType, nodeData, appFromArg) {
@@ -20,7 +18,7 @@ app.registerExtension({
                     enumerable: true,
                     configurable: true,
                     writable: true,
-                    value: async () => {
+                    value: () => {
                         return app.graphToPrompt()
                             .then((workflow) => {
                             let result = 'inactive';
@@ -56,25 +54,17 @@ app.registerExtension({
                 this.serialize_widgets = false;
                 this.isVirtualNode = true;
                 const widget = ComfyWidgets.STRING(this, '', [
-                    '', {
-                        default: '', multiline: true,
-                    },
+                    '', { default: '', multiline: true },
                 ], app).widget;
                 widget.inputEl.readOnly = true;
                 ComfyWidgets.BOOLEAN(this, 'Active', [
-                    '', {
-                        default: true,
-                    },
+                    '', { default: true },
                 ]);
                 ComfyWidgets.BOOLEAN(this, 'Parsed', [
-                    '', {
-                        default: true,
-                    },
+                    '', { default: true },
                 ]);
                 ComfyWidgets.COMBO(this, 'What', [
-                    ['Prompt', 'Workflow'], {
-                        default: 'Prompt',
-                    },
+                    ['Prompt', 'Workflow'], { default: 'Prompt' },
                 ]);
                 api.addEventListener('executed', this.fillMetadataWidget, false);
             }

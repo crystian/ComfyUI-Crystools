@@ -1,7 +1,12 @@
-import { app } from '/scripts/app.js';
+import { app, TLGraphNode, ComfyApp } from './comfy/index.js';
+import type { ComfyNode } from './comfy/index.js';
 import { displayContext } from './common.js';
-import type { ComfyNode, ComfyApp } from './liteGraph.types';
-import { TLGraphNode } from './liteGraph';
+
+const crystoolsExtensionsSerialized: Record<string, string> = {
+  // 'External parameter from JSON file [Crystools]': 'Crystools.Utils.ExternalParameterFromJson',
+  'Read JSON file [Crystools]': 'Crystools.Utils.ReadJsonFile',
+  'JSON extractor [Crystools]': 'Crystools.Utils.JsonExtractor',
+};
 
 const crystoolsExtensions: Record<string, string> = {
   'Get resolution [Crystools]': 'Crystools.Image.GetResolution',
@@ -12,12 +17,21 @@ const crystoolsExtensions: Record<string, string> = {
   'Show any to JSON [Crystools]': 'Crystools.Debugger.ConsoleAnyToJson',
 };
 
+Object.keys(crystoolsExtensionsSerialized).forEach(prop => {
+  // @ts-ignore
+  crystoolsExtensions[prop] = crystoolsExtensionsSerialized[prop];
+});
+
 Object.keys(crystoolsExtensions).forEach(key => {
   app.registerExtension({
     name: crystoolsExtensions[key],
     beforeRegisterNodeDef(nodeType: ComfyNode, nodeData: TLGraphNode, appFromArg: ComfyApp) {
       if (nodeData.name === key) {
-        displayContext(nodeType, appFromArg, 0);
+        if (nodeData.name in crystoolsExtensionsSerialized) {
+          displayContext(nodeType, appFromArg, 0, true); // serialize_widgets = true
+        } else {
+          displayContext(nodeType, appFromArg, 0);
+        }
       }
     },
   });

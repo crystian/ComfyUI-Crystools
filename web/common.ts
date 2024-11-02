@@ -1,5 +1,5 @@
-import type { ComfyApp, TLGraphNode } from './liteGraph.js';
-import { ComfyWidgets } from './liteGraph.js';
+import type { TLGraphNode } from './comfy/index.js';
+import { ComfyWidgets, ComfyApp } from './comfy/index.js';
 
 export const commonPrefix = '🪛';
 
@@ -25,9 +25,7 @@ export function displayContext(
     this.isVirtualNode = isVirtualNode;
 
     const widget = ComfyWidgets.STRING(this, 'text', [
-      'STRING', {
-        multiline: true,
-      },
+      'STRING', { multiline: true },
     ], appFromArg).widget;
     widget.inputEl.readOnly = true;
     widget.inputEl.style.opacity = 0.6;
@@ -53,10 +51,12 @@ export function displayContext(
   }
 
   // When the node is executed we will be sent the input text, display this in the widget
+
   // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   const onExecutedOriginal = nodeType.prototype.onExecuted;
-  // @ts-ignore
   nodeType.prototype.onExecuted = function(message: { text: string }): void {
+    // @ts-ignore
     onExecutedOriginal?.apply(this, arguments);
     populate.call(this, message.text);
   };
@@ -90,13 +90,3 @@ export function displayContext(
 //     }
 //   }
 // };
-
-// HACKS
-// for settings using break lines on label
-const style = document.createElement('style');
-style.innerHTML = `
-  #comfy-settings-dialog label[for^=Crystools-] {
-    white-space: pre-line;
-  }
-`;
-document.head.appendChild(style);

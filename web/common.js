@@ -1,4 +1,4 @@
-import { ComfyWidgets } from './liteGraph.js';
+import { ComfyWidgets } from './comfy/index.js';
 export const commonPrefix = '🪛';
 export function displayContext(nodeType, appFromArg, index = 0, serialize_widgets = false, isVirtualNode = false) {
     function populate(text) {
@@ -14,9 +14,7 @@ export function displayContext(nodeType, appFromArg, index = 0, serialize_widget
         this.serialize_widgets = serialize_widgets;
         this.isVirtualNode = isVirtualNode;
         const widget = ComfyWidgets.STRING(this, 'text', [
-            'STRING', {
-                multiline: true,
-            },
+            'STRING', { multiline: true },
         ], appFromArg).widget;
         widget.inputEl.readOnly = true;
         widget.inputEl.style.opacity = 0.6;
@@ -50,10 +48,3 @@ export function displayContext(nodeType, appFromArg, index = 0, serialize_widget
         }
     };
 }
-const style = document.createElement('style');
-style.innerHTML = `
-  #comfy-settings-dialog label[for^=Crystools-] {
-    white-space: pre-line;
-  }
-`;
-document.head.appendChild(style);

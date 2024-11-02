@@ -1,7 +1,7 @@
 #!/bin/bash
 # REMEMBER TO COPY THIS FILE INTO .git/hooks/pre-commit
 
-cd ../comfyUI/ComfyUI
+cd ../comfy/ComfyUI
 rm ./custom_nodes/ComfyUI-Crystools/web/*.js -f
 
 LOCAL_COMMAND="npm --prefix ./custom_nodes/ComfyUI-Crystools run validate"

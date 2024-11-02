@@ -1,20 +1,7 @@
-export * from '/scripts/widgets.js';
 export class TLGraphNode extends LGraphNode {
     constructor() {
         super(...arguments);
-        Object.defineProperty(this, "widgets", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
         Object.defineProperty(this, "isVirtualNode", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
-        });
-        Object.defineProperty(this, "onResize", {
             enumerable: true,
             configurable: true,
             writable: true,

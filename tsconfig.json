@@ -6,19 +6,16 @@
     "typeRoots": [
       // "./web/ts/typings",
     ],
-    "baseUrl": ".",
+//     "rootDir": "../",
+    "baseUrl": "../../web",
+//    "baseUrl": "./",
     "paths": {
-      "/scripts/*": ["../../web/scripts/*"],
-      "/lib/*": ["../../web/lib/*"],
-      "/extensions/*": ["../../web/extensions/*"],
-      "/types/*": ["../../web/types/*"]
+//      "/scripts/*": ["../../web/scripts/*"], // works
     },
-    // "rootDir": "./web/src",
-    // "rootDir": "../../",
-    // "rootDirs": [
-    //   "../../web",
-    //   "web/src"
-    // ],
+     "rootDirs": [
+       "../../web",
+//       "web"
+     ],
     "preserveSymlinks": true,
     "checkJs": false,
     "allowJs": true,
@@ -58,7 +55,11 @@
     "noEmit": false
   },
   "include": [
-    "./web/*.ts"
+//    "./custom_nodes/ComfyUI-Crystools/web/*.ts",
+//    "../../../web/*.ts",
+//    "../../web/*.ts",
+    "web/*.ts",
+//    "web/types.d.ts"
   ],
   "exclude": [
     "node_modules"

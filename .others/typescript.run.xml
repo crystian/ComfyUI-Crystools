@@ -1,11 +1,11 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="typescript" type="js.build_tools.npm">
-    <package-json value="$PROJECT_DIR$/custom_nodes/ComfyUI-Crystools/package.json" />
+    <package-json value="$PROJECT_DIR$/package.json" />
     <command value="run" />
     <scripts>
       <script value="start" />
     </scripts>
-    <node-interpreter value="project" />
+    <node-interpreter value="W:/!Workstation/nodejs/node" />
     <envs />
     <method v="2" />
   </configuration>
