@@ -294,7 +294,7 @@ class CGPUInfo:
             return self.pynvml.nvmlDeviceGetTemperature(deviceHandle, self.pynvml.NVML_TEMPERATURE_GPU)
         elif self.jtopLoaded:
             try:
-                temperature = self.jtopInstance.stats.get('Temp GPU', -1)
+                temperature = self.jtopInstance.temperature.get('GPU', -1)
                 return temperature
             except Exception as e:
                 logger.error('Could not get GPU temperature. ' + str(e))
