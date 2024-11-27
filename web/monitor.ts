@@ -560,7 +560,7 @@ class CrystoolsMonitor {
     const currentRate =
       parseFloat(app.ui.settings.getSettingValue(this.settingsRate.id, this.settingsRate.defaultValue));
 
-    this.menuDisplayOption = app.ui.settings.getSettingValue(ComfyKeyMenuDisplayOption, MenuDisplayOptions.Disabled);
+    this.menuDisplayOption = app.extensionManager.setting.get(ComfyKeyMenuDisplayOption);
     app.ui.settings.addEventListener(`${ComfyKeyMenuDisplayOption}.change`, (e: any) => {
         this.updateDisplay(e.detail.value);
       },
