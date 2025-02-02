@@ -1,5 +1,5 @@
 /* Vertical UI */
-.comfy-menu {
+.comfy-menu, .side-bar-panel {
   #crystools-monitors-root {
     /*background-color: red;*/
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
@@ -88,6 +88,15 @@
       color: var(--input-text);
       font-size: 14px;
     }
+  }
+}
+
+/* side-bar-panel */
+.side-bar-panel {
+  #crystools-monitors-root {
+    width: 230px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 

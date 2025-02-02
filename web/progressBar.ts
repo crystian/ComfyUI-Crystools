@@ -36,7 +36,6 @@ class CrystoolsProgressBar {
       this.progressBarUI.showSection(this.menuDisplayOption === MenuDisplayOptions.Disabled);
     }
     if (this.menuDisplayOption === MenuDisplayOptions.Disabled && this.progressBarUI.showProgressBarFlag) {
-      console.log('updateDisplay progress bar');
       this.progressBarUI.updateDisplay(this.currentStatus, this.timeStart, this.currentProgress);
     }
   };
@@ -51,7 +50,6 @@ class CrystoolsProgressBar {
 
     this.menuDisplayOption = app.ui.settings.getSettingValue(ComfyKeyMenuDisplayOption, MenuDisplayOptions.Disabled);
     app.ui.settings.addEventListener(`${ComfyKeyMenuDisplayOption}.change`, (e: any) => {
-        console.log('Comfy.UseNewMenu.change desde progress bar', e.detail.value);
         this.updateDisplay(e.detail.value);
       },
     );

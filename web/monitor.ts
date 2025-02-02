@@ -5,12 +5,19 @@ import { Colors } from './styles.js';
 import { convertNumberToPascalCase } from './utils.js';
 import { ComfyKeyMenuDisplayOption, MenuDisplayOptions } from './progressBarUIBase.js';
 
+enum MonitorPoistion {
+  'Top' = 'Top',
+  'Sidebar' = 'Sidebar',
+  'Floating' = 'Floating',
+}
+
 class CrystoolsMonitor {
   readonly idExtensionName = 'Crystools.monitor';
   private readonly menuPrefix = commonPrefix;
   private menuDisplayOption: MenuDisplayOptions = MenuDisplayOptions.Disabled;
   private crystoolsButtonGroup: ComfyButtonGroup = null;
 
+  private settingsMonitorPosition: TMonitorSettings;
   private settingsRate: TMonitorSettings;
   private settingsMonitorHeight: TMonitorSettings;
   private settingsMonitorWidth: TMonitorSettings;
@@ -24,10 +31,47 @@ class CrystoolsMonitor {
 
   private monitorUI: MonitorUI;
 
+  private readonly monitorPositionId = 'Crystools.MonitorPosition';
+  private readonly monitorPosition: MonitorPoistion = MonitorPoistion.Top;
   private readonly monitorWidthId = 'Crystools.MonitorWidth';
   private readonly monitorWidth = 60;
   private readonly monitorHeightId = 'Crystools.MonitorHeight';
   private readonly monitorHeight = 30;
+
+  createSettingsMonitorPosition = (): void => {
+    this.settingsMonitorPosition = {
+      id: this.monitorPositionId,
+      name: 'Position (floating not implemented yet)',
+      category: ['Crystools', this.menuPrefix + ' Configuration', 'position'],
+      tooltip: 'Only for new UI',
+      experimental: true,
+      data: [],
+      type: 'combo',
+      options: (value: string): any => {
+        const position = app.ui.settings.getSettingValue(this.monitorPositionId, this.monitorPosition);
+        return [{
+          value: MonitorPoistion.Top,
+          text: MonitorPoistion.Top,
+          selected: value === position,
+        }, {
+          value: MonitorPoistion.Sidebar,
+          text: MonitorPoistion.Sidebar,
+          selected: value === position,
+        }, {
+          value: MonitorPoistion.Floating,
+          text: MonitorPoistion.Floating,
+          selected: value === position,
+        }];
+      },
+      defaultValue: this.monitorPosition,
+      // @ts-ignore
+      onChange: (_value: string): void => {
+        if (this.monitorUI) {
+          this.moveMonitor(this.menuDisplayOption);
+        }
+      },
+    };
+  };
 
   createSettingsRate = (): void => {
     this.settingsRate = {
@@ -88,6 +132,72 @@ class CrystoolsMonitor {
         }
 
         this.monitorUI?.updateAllAnimationDuration(valueNumber);
+      },
+    };
+  };
+
+  createSettingsMonitorWidth = (): void => {
+    this.settingsMonitorWidth = {
+      id: this.monitorWidthId,
+      name: 'Pixel Width',
+      category: ['Crystools', this.menuPrefix + ' Configuration', 'width'],
+      tooltip: 'The width of the monitor in pixels on the UI (only on top/bottom UI)',
+      type: 'slider',
+      attrs: {
+        min: 60,
+        max: 100,
+        step: 1,
+      },
+      defaultValue: this.monitorWidth,
+      // @ts-ignore
+      onChange: (value: string): void => {
+        let valueNumber: number;
+
+        try {
+          valueNumber = parseInt(value);
+          if (isNaN(valueNumber)) {
+            throw new Error('invalid value');
+          }
+        } catch (error) {
+          console.error(error);
+          return;
+        }
+
+        const h = app.ui.settings.getSettingValue(this.monitorHeightId, this.monitorHeight);
+        this.monitorUI?.updateMonitorSize(valueNumber, h);
+      },
+    };
+  };
+
+  createSettingsMonitorHeight = (): void => {
+    this.settingsMonitorHeight = {
+      id: this.monitorHeightId,
+      name: 'Pixel Height',
+      category: ['Crystools', this.menuPrefix + ' Configuration', 'height'],
+      tooltip: 'The height of the monitor in pixels on the UI (only on top/bottom UI)',
+      type: 'slider',
+      attrs: {
+        min: 16,
+        max: 50,
+        step: 1,
+      },
+      defaultValue: this.monitorHeight,
+      // @ts-ignore
+      onChange: async(value: string): void => {
+        let valueNumber: number;
+
+        try {
+          valueNumber = parseInt(value);
+          if (isNaN(valueNumber)) {
+            throw new Error('invalid value');
+          }
+        } catch (error) {
+          console.error(error);
+          return;
+        }
+
+        const w = await app.ui.settings.getSettingValue(this.monitorWidthId, this.monitorWidth);
+        this.monitorUI?.updateMonitorSize(w, valueNumber);
       },
     };
   };
@@ -286,76 +396,11 @@ class CrystoolsMonitor {
     };
   };
 
-  createSettingsMonitorWidth = (): void => {
-    this.settingsMonitorWidth = {
-      id: this.monitorWidthId,
-      name: 'Pixel Width',
-      category: ['Crystools', this.menuPrefix + ' Configuration', 'width'],
-      tooltip: 'The width of the monitor in pixels on the UI (only on floating UI)',
-      type: 'slider',
-      attrs: {
-        min: 60,
-        max: 100,
-        step: 1,
-      },
-      defaultValue: this.monitorWidth,
-      // @ts-ignore
-      onChange: (value: string): void => {
-        let valueNumber: number;
-
-        try {
-          valueNumber = parseInt(value);
-          if (isNaN(valueNumber)) {
-            throw new Error('invalid value');
-          }
-        } catch (error) {
-          console.error(error);
-          return;
-        }
-
-        const h = app.ui.settings.getSettingValue(this.monitorHeightId, this.monitorHeight);
-        this.monitorUI?.updateMonitorSize(valueNumber, h);
-      },
-    };
-  };
-
-  createSettingsMonitorHeight = (): void => {
-    this.settingsMonitorHeight = {
-      id: this.monitorHeightId,
-      name: 'Pixel Height',
-      category: ['Crystools', this.menuPrefix + ' Configuration', 'height'],
-      tooltip: 'The height of the monitor in pixels on the UI (only on floating UI)',
-      type: 'slider',
-      attrs: {
-        min: 16,
-        max: 50,
-        step: 1,
-      },
-      defaultValue: this.monitorHeight,
-      // @ts-ignore
-      onChange: async(value: string): void => {
-        let valueNumber: number;
-
-        try {
-          valueNumber = parseInt(value);
-          if (isNaN(valueNumber)) {
-            throw new Error('invalid value');
-          }
-        } catch (error) {
-          console.error(error);
-          return;
-        }
-
-        const w = await app.ui.settings.getSettingValue(this.monitorWidthId, this.monitorWidth);
-        this.monitorUI?.updateMonitorSize(w, valueNumber);
-      },
-    };
-  };
-
   createSettings = (): void => {
     app.ui.settings.addSetting(this.settingsRate);
     app.ui.settings.addSetting(this.settingsMonitorHeight);
     app.ui.settings.addSetting(this.settingsMonitorWidth);
+    app.ui.settings.addSetting(this.settingsMonitorPosition);
     app.ui.settings.addSetting(this.monitorRAMElement);
     app.ui.settings.addSetting(this.monitorCPUElement);
 
@@ -398,10 +443,10 @@ class CrystoolsMonitor {
     }
   };
 
-  moveMonitor = (position: MenuDisplayOptions): void => {
+  moveMonitor = (menuPosition: MenuDisplayOptions): void => {
     let parentElement: Element | null | undefined;
 
-    switch (position) {
+    switch (menuPosition) {
       case MenuDisplayOptions.Disabled:
         parentElement = document.getElementById('queue-button');
         if (parentElement && this.monitorUI.rootElement) {
@@ -413,9 +458,19 @@ class CrystoolsMonitor {
 
       case MenuDisplayOptions.Top:
       case MenuDisplayOptions.Bottom:
-        app.menu?.settingsGroup.element.before(this.crystoolsButtonGroup.element);
+        const position = app.ui.settings.getSettingValue(this.monitorPositionId, this.monitorPosition);
+        if(position === MonitorPoistion.Top) {
+          app.menu?.settingsGroup.element.before(this.crystoolsButtonGroup.element);
+        } else {
+          parentElement = document.getElementsByClassName('side-bar-panel')[0];
+          if(parentElement){
+            parentElement.insertBefore(this.crystoolsButtonGroup.element, parentElement.firstChild);
+          } else {
+            console.error('Crystools: parentElement to move monitors not found! back to top');
+            app.ui.settings.setSettingValue(this.monitorPositionId, MonitorPoistion.Top);
+          }
+        }
     }
-
   };
 
   updateAllWidget = (): void => {
@@ -493,6 +548,7 @@ class CrystoolsMonitor {
       return;
     }
 
+    this.createSettingsMonitorPosition();
     this.createSettingsRate();
     this.createSettingsMonitorHeight();
     this.createSettingsMonitorWidth();
