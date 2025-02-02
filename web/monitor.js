@@ -4,12 +4,6 @@ import { MonitorUI } from './monitorUI.js';
 import { Colors } from './styles.js';
 import { convertNumberToPascalCase } from './utils.js';
 import { ComfyKeyMenuDisplayOption, MenuDisplayOptions } from './progressBarUIBase.js';
-var MonitorPoistion;
-(function (MonitorPoistion) {
-    MonitorPoistion["Top"] = "Top";
-    MonitorPoistion["Sidebar"] = "Sidebar";
-    MonitorPoistion["Floating"] = "Floating";
-})(MonitorPoistion || (MonitorPoistion = {}));
 class CrystoolsMonitor {
     constructor() {
         Object.defineProperty(this, "idExtensionName", {
@@ -35,12 +29,6 @@ class CrystoolsMonitor {
             configurable: true,
             writable: true,
             value: null
-        });
-        Object.defineProperty(this, "settingsMonitorPosition", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: void 0
         });
         Object.defineProperty(this, "settingsRate", {
             enumerable: true,
@@ -108,18 +96,6 @@ class CrystoolsMonitor {
             writable: true,
             value: void 0
         });
-        Object.defineProperty(this, "monitorPositionId", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: 'Crystools.MonitorPosition'
-        });
-        Object.defineProperty(this, "monitorPosition", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: MonitorPoistion.Top
-        });
         Object.defineProperty(this, "monitorWidthId", {
             enumerable: true,
             configurable: true,
@@ -143,44 +119,6 @@ class CrystoolsMonitor {
             configurable: true,
             writable: true,
             value: 30
-        });
-        Object.defineProperty(this, "createSettingsMonitorPosition", {
-            enumerable: true,
-            configurable: true,
-            writable: true,
-            value: () => {
-                this.settingsMonitorPosition = {
-                    id: this.monitorPositionId,
-                    name: 'Position (floating not implemented yet)',
-                    category: ['Crystools', this.menuPrefix + ' Configuration', 'position'],
-                    tooltip: 'Only for new UI',
-                    experimental: true,
-                    data: [],
-                    type: 'combo',
-                    options: (value) => {
-                        const position = app.ui.settings.getSettingValue(this.monitorPositionId, this.monitorPosition);
-                        return [{
-                                value: MonitorPoistion.Top,
-                                text: MonitorPoistion.Top,
-                                selected: value === position,
-                            }, {
-                                value: MonitorPoistion.Sidebar,
-                                text: MonitorPoistion.Sidebar,
-                                selected: value === position,
-                            }, {
-                                value: MonitorPoistion.Floating,
-                                text: MonitorPoistion.Floating,
-                                selected: value === position,
-                            }];
-                    },
-                    defaultValue: this.monitorPosition,
-                    onChange: (_value) => {
-                        if (this.monitorUI) {
-                            this.moveMonitor(this.menuDisplayOption);
-                        }
-                    },
-                };
-            }
         });
         Object.defineProperty(this, "createSettingsRate", {
             enumerable: true,
@@ -274,7 +212,7 @@ class CrystoolsMonitor {
                             console.error(error);
                             return;
                         }
-                        const h = app.ui.settings.getSettingValue(this.monitorHeightId, this.monitorHeight);
+                        const h = app.extensionManager.setting.get(this.monitorHeightId);
                         this.monitorUI?.updateMonitorSize(valueNumber, h);
                     },
                 };
@@ -309,7 +247,7 @@ class CrystoolsMonitor {
                             console.error(error);
                             return;
                         }
-                        const w = await app.ui.settings.getSettingValue(this.monitorWidthId, this.monitorWidth);
+                        const w = await app.extensionManager.setting.get(this.monitorWidthId);
                         this.monitorUI?.updateMonitorSize(w, valueNumber);
                     },
                 };
@@ -494,15 +432,7 @@ class CrystoolsMonitor {
                     category: ['Crystools', this.menuPrefix + ' Show Hard Disk', 'Which'],
                     type: 'combo',
                     defaultValue: '/',
-                    data: [],
-                    options: (value) => {
-                        const which = app.ui.settings.getSettingValue(this.settingsHDD.id, this.settingsHDD.defaultValue);
-                        return this.settingsHDD.data.map((m) => ({
-                            value: m,
-                            text: m,
-                            selected: !value ? m === which : m === value,
-                        }));
-                    },
+                    options: [],
                     onChange: async (value) => {
                         await this.updateServer({ whichHDD: value });
                     },
@@ -517,11 +447,10 @@ class CrystoolsMonitor {
                 app.ui.settings.addSetting(this.settingsRate);
                 app.ui.settings.addSetting(this.settingsMonitorHeight);
                 app.ui.settings.addSetting(this.settingsMonitorWidth);
-                app.ui.settings.addSetting(this.settingsMonitorPosition);
                 app.ui.settings.addSetting(this.monitorRAMElement);
                 app.ui.settings.addSetting(this.monitorCPUElement);
                 void this.getHDDsFromServer().then((data) => {
-                    this.settingsHDD.data = data;
+                    this.settingsHDD.options = data;
                     app.ui.settings.addSetting(this.settingsHDD);
                 });
                 app.ui.settings.addSetting(this.monitorHDDElement);
@@ -547,8 +476,8 @@ class CrystoolsMonitor {
                 this.monitorUI.orderMonitors();
                 this.updateAllWidget();
                 this.moveMonitor(this.menuDisplayOption);
-                const w = app.ui.settings.getSettingValue(this.monitorWidthId, this.monitorWidth);
-                const h = app.ui.settings.getSettingValue(this.monitorHeightId, this.monitorHeight);
+                const w = app.extensionManager.setting.get(this.monitorWidthId);
+                const h = app.extensionManager.setting.get(this.monitorHeightId);
                 this.monitorUI.updateMonitorSize(w, h);
             }
         });
@@ -568,6 +497,7 @@ class CrystoolsMonitor {
             configurable: true,
             writable: true,
             value: (menuPosition) => {
+                console.log('moveMonitor', menuPosition);
                 let parentElement;
                 switch (menuPosition) {
                     case MenuDisplayOptions.Disabled:
@@ -581,20 +511,7 @@ class CrystoolsMonitor {
                         break;
                     case MenuDisplayOptions.Top:
                     case MenuDisplayOptions.Bottom:
-                        const position = app.ui.settings.getSettingValue(this.monitorPositionId, this.monitorPosition);
-                        if (position === MonitorPoistion.Top) {
-                            app.menu?.settingsGroup.element.before(this.crystoolsButtonGroup.element);
-                        }
-                        else {
-                            parentElement = document.getElementsByClassName('side-bar-panel')[0];
-                            if (parentElement) {
-                                parentElement.insertBefore(this.crystoolsButtonGroup.element, parentElement.firstChild);
-                            }
-                            else {
-                                console.error('Crystools: parentElement to move monitors not found! back to top');
-                                app.ui.settings.setSettingValue(this.monitorPositionId, MonitorPoistion.Top);
-                            }
-                        }
+                        app.menu?.settingsGroup.element.before(this.crystoolsButtonGroup.element);
                 }
             }
         });
@@ -623,7 +540,7 @@ class CrystoolsMonitor {
             writable: true,
             value: (monitorSettings) => {
                 if (this.monitorUI) {
-                    const value = app.ui.settings.getSettingValue(monitorSettings.id, monitorSettings.defaultValue);
+                    const value = app.extensionManager.setting.get(monitorSettings.id);
                     this.monitorUI.showMonitor(monitorSettings, value);
                 }
             }
@@ -699,7 +616,6 @@ class CrystoolsMonitor {
                 if (this.monitorUI) {
                     return;
                 }
-                this.createSettingsMonitorPosition();
                 this.createSettingsRate();
                 this.createSettingsMonitorHeight();
                 this.createSettingsMonitorWidth();
@@ -707,8 +623,8 @@ class CrystoolsMonitor {
                 this.createSettingsRAM();
                 this.createSettingsHDD();
                 this.createSettings();
-                const currentRate = parseFloat(app.ui.settings.getSettingValue(this.settingsRate.id, this.settingsRate.defaultValue));
-                this.menuDisplayOption = app.ui.settings.getSettingValue(ComfyKeyMenuDisplayOption, MenuDisplayOptions.Disabled);
+                const currentRate = parseFloat(app.extensionManager.setting.get(this.settingsRate.id));
+                this.menuDisplayOption = app.extensionManager.setting.get(ComfyKeyMenuDisplayOption);
                 app.ui.settings.addEventListener(`${ComfyKeyMenuDisplayOption}.change`, (e) => {
                     this.updateDisplay(e.detail.value);
                 });

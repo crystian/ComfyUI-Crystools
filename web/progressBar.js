@@ -101,10 +101,10 @@ class CrystoolsProgressBar {
             value: () => {
                 if (this.progressBarUI) {
                     this.progressBarUI
-                        .showProgressBar(app.ui.settings.getSettingValue(this.idShowProgressBar, this.defaultShowStatus));
+                        .showProgressBar(app.extensionManager.setting.get(this.idShowProgressBar));
                     return;
                 }
-                this.menuDisplayOption = app.ui.settings.getSettingValue(ComfyKeyMenuDisplayOption, MenuDisplayOptions.Disabled);
+                this.menuDisplayOption = app.extensionManager.setting.get(ComfyKeyMenuDisplayOption);
                 app.ui.settings.addEventListener(`${ComfyKeyMenuDisplayOption}.change`, (e) => {
                     this.updateDisplay(e.detail.value);
                 });
