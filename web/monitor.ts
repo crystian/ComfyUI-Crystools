@@ -5,11 +5,11 @@ import { Colors } from './styles.js';
 import { convertNumberToPascalCase } from './utils.js';
 import { ComfyKeyMenuDisplayOption, MenuDisplayOptions } from './progressBarUIBase.js';
 
-enum MonitorPoistion {
-  'Top' = 'Top',
-  'Sidebar' = 'Sidebar',
-  'Floating' = 'Floating',
-}
+// enum MonitorPosition {
+//   'Top' = 'Top',
+//   'Sidebar' = 'Sidebar',
+//   'Floating' = 'Floating',
+// }
 
 class CrystoolsMonitor {
   readonly idExtensionName = 'Crystools.monitor';
@@ -17,7 +17,7 @@ class CrystoolsMonitor {
   private menuDisplayOption: MenuDisplayOptions = MenuDisplayOptions.Disabled;
   private crystoolsButtonGroup: ComfyButtonGroup = null;
 
-  private settingsMonitorPosition: TMonitorSettings;
+  // private settingsMonitorPosition: TMonitorSettings;
   private settingsRate: TMonitorSettings;
   private settingsMonitorHeight: TMonitorSettings;
   private settingsMonitorWidth: TMonitorSettings;
@@ -31,47 +31,40 @@ class CrystoolsMonitor {
 
   private monitorUI: MonitorUI;
 
-  private readonly monitorPositionId = 'Crystools.MonitorPosition';
-  private readonly monitorPosition: MonitorPoistion = MonitorPoistion.Top;
+  // private readonly monitorPositionId = 'Crystools.MonitorPosition';
   private readonly monitorWidthId = 'Crystools.MonitorWidth';
   private readonly monitorWidth = 60;
   private readonly monitorHeightId = 'Crystools.MonitorHeight';
   private readonly monitorHeight = 30;
 
-  createSettingsMonitorPosition = (): void => {
-    this.settingsMonitorPosition = {
-      id: this.monitorPositionId,
-      name: 'Position (floating not implemented yet)',
-      category: ['Crystools', this.menuPrefix + ' Configuration', 'position'],
-      tooltip: 'Only for new UI',
-      experimental: true,
-      data: [],
-      type: 'combo',
-      options: (value: string): any => {
-        const position = app.ui.settings.getSettingValue(this.monitorPositionId, this.monitorPosition);
-        return [{
-          value: MonitorPoistion.Top,
-          text: MonitorPoistion.Top,
-          selected: value === position,
-        }, {
-          value: MonitorPoistion.Sidebar,
-          text: MonitorPoistion.Sidebar,
-          selected: value === position,
-        }, {
-          value: MonitorPoistion.Floating,
-          text: MonitorPoistion.Floating,
-          selected: value === position,
-        }];
-      },
-      defaultValue: this.monitorPosition,
-      // @ts-ignore
-      onChange: (_value: string): void => {
-        if (this.monitorUI) {
-          this.moveMonitor(this.menuDisplayOption);
-        }
-      },
-    };
-  };
+  // NO POSIBLE TO IMPLEMENT INSIDE THE PANEL
+  // createSettingsMonitorPosition = (): void => {
+  //   const position = app.extensionManager.setting.get(this.monitorPositionId);
+  //   console.log('position', position);
+  //   this.settingsMonitorPosition = {
+  //     id: this.monitorPositionId,
+  //     name: 'Position (floating not implemented yet)',
+  //     category: ['Crystools', this.menuPrefix + ' Configuration', 'position'],
+  //     tooltip: 'Only for new UI',
+  //     experimental: true,
+  //     // data: [],
+  //     type: 'combo',
+  //     options: [
+  //       MonitorPoistion.Top,
+  //       MonitorPoistion.Sidebar,
+  //       MonitorPoistion.Floating
+  //     ],
+  //
+  //     defaultValue: MonitorPoistion.Sidebar,
+  //     // @ts-ignore
+  //     onChange: (_value: string): void => {
+  //       // if (this.monitorUI) {
+  //       // console.log('onChange', _value);
+  //       //   this.moveMonitor(this.menuDisplayOption);
+  //       // }
+  //     },
+  //   };
+  // };
 
   createSettingsRate = (): void => {
     this.settingsRate = {
@@ -163,7 +156,7 @@ class CrystoolsMonitor {
           return;
         }
 
-        const h = app.ui.settings.getSettingValue(this.monitorHeightId, this.monitorHeight);
+        const h = app.extensionManager.setting.get(this.monitorHeightId);
         this.monitorUI?.updateMonitorSize(valueNumber, h);
       },
     };
@@ -196,7 +189,7 @@ class CrystoolsMonitor {
           return;
         }
 
-        const w = await app.ui.settings.getSettingValue(this.monitorWidthId, this.monitorWidth);
+        const w = await app.extensionManager.setting.get(this.monitorWidthId);
         this.monitorUI?.updateMonitorSize(w, valueNumber);
       },
     };
@@ -379,16 +372,7 @@ class CrystoolsMonitor {
       category: ['Crystools', this.menuPrefix + ' Show Hard Disk', 'Which'],
       type: 'combo',
       defaultValue: '/',
-      data: [],
-      // @ts-ignore bad definition from comfyUI: `options?: undefined;`??
-      options: (value: string): any => {
-        const which = app.ui.settings.getSettingValue(this.settingsHDD.id, this.settingsHDD.defaultValue);
-        return this.settingsHDD.data.map((m: any) => ({
-          value: m,
-          text: m,
-          selected: !value ? m === which : m === value,
-        }));
-      },
+      options: [],
       // @ts-ignore
       onChange: async(value: string): Promise<void> => {
         await this.updateServer({whichHDD: value});
@@ -400,12 +384,13 @@ class CrystoolsMonitor {
     app.ui.settings.addSetting(this.settingsRate);
     app.ui.settings.addSetting(this.settingsMonitorHeight);
     app.ui.settings.addSetting(this.settingsMonitorWidth);
-    app.ui.settings.addSetting(this.settingsMonitorPosition);
+    // app.ui.settings.addSetting(this.settingsMonitorPosition);
     app.ui.settings.addSetting(this.monitorRAMElement);
     app.ui.settings.addSetting(this.monitorCPUElement);
 
     void this.getHDDsFromServer().then((data: string[]): void => {
-      this.settingsHDD.data = data;
+      // @ts-ignore
+      this.settingsHDD.options = data;
       app.ui.settings.addSetting(this.settingsHDD);
     });
     app.ui.settings.addSetting(this.monitorHDDElement);
@@ -431,8 +416,8 @@ class CrystoolsMonitor {
     this.updateAllWidget();
     this.moveMonitor(this.menuDisplayOption);
 
-    const w = app.ui.settings.getSettingValue(this.monitorWidthId, this.monitorWidth);
-    const h = app.ui.settings.getSettingValue(this.monitorHeightId, this.monitorHeight);
+    const w = app.extensionManager.setting.get(this.monitorWidthId);
+    const h = app.extensionManager.setting.get(this.monitorHeightId);
     this.monitorUI.updateMonitorSize(w, h);
   };
 
@@ -444,33 +429,36 @@ class CrystoolsMonitor {
   };
 
   moveMonitor = (menuPosition: MenuDisplayOptions): void => {
-    let parentElement: Element | null | undefined;
+    console.log('moveMonitor', menuPosition);
+    // setTimeout(() => {
+      let parentElement: Element | null | undefined;
 
-    switch (menuPosition) {
-      case MenuDisplayOptions.Disabled:
-        parentElement = document.getElementById('queue-button');
-        if (parentElement && this.monitorUI.rootElement) {
-          parentElement.insertAdjacentElement('afterend', this.crystoolsButtonGroup.element);
-        } else {
-          console.error('Crystools: parentElement to move monitors not found!', parentElement);
-        }
-        break;
-
-      case MenuDisplayOptions.Top:
-      case MenuDisplayOptions.Bottom:
-        const position = app.ui.settings.getSettingValue(this.monitorPositionId, this.monitorPosition);
-        if(position === MonitorPoistion.Top) {
-          app.menu?.settingsGroup.element.before(this.crystoolsButtonGroup.element);
-        } else {
-          parentElement = document.getElementsByClassName('side-bar-panel')[0];
-          if(parentElement){
-            parentElement.insertBefore(this.crystoolsButtonGroup.element, parentElement.firstChild);
+      switch (menuPosition) {
+        case MenuDisplayOptions.Disabled:
+          parentElement = document.getElementById('queue-button');
+          if (parentElement && this.monitorUI.rootElement) {
+            parentElement.insertAdjacentElement('afterend', this.crystoolsButtonGroup.element);
           } else {
-            console.error('Crystools: parentElement to move monitors not found! back to top');
-            app.ui.settings.setSettingValue(this.monitorPositionId, MonitorPoistion.Top);
+            console.error('Crystools: parentElement to move monitors not found!', parentElement);
           }
-        }
-    }
+          break;
+
+        case MenuDisplayOptions.Top:
+        case MenuDisplayOptions.Bottom:
+          // const position = app.extensionManager.setting.get(this.monitorPositionId);
+          // if(position === MonitorPosition.Top) {
+            app.menu?.settingsGroup.element.before(this.crystoolsButtonGroup.element);
+          // } else {
+          //   parentElement = document.getElementsByClassName('comfy-vue-side-bar-header')[0];
+          //   if(parentElement){
+          //     parentElement.insertBefore(this.crystoolsButtonGroup.element, parentElement.firstChild);
+          //   } else {
+          //     console.error('Crystools: parentElement to move monitors not found! back to top');
+          //     app.ui.settings.setSettingValue(this.monitorPositionId, MonitorPoistion.Top);
+          //   }
+          // }
+      }
+    // }, 100);
   };
 
   updateAllWidget = (): void => {
@@ -495,7 +483,7 @@ class CrystoolsMonitor {
    */
   updateWidget = (monitorSettings: TMonitorSettings): void => {
     if (this.monitorUI) {
-      const value = app.ui.settings.getSettingValue(monitorSettings.id, monitorSettings.defaultValue);
+      const value = app.extensionManager.setting.get(monitorSettings.id);
       this.monitorUI.showMonitor(monitorSettings, value);
     }
   };
@@ -547,8 +535,7 @@ class CrystoolsMonitor {
     if (this.monitorUI) {
       return;
     }
-
-    this.createSettingsMonitorPosition();
+    // this.createSettingsMonitorPosition();
     this.createSettingsRate();
     this.createSettingsMonitorHeight();
     this.createSettingsMonitorWidth();
@@ -558,9 +545,9 @@ class CrystoolsMonitor {
     this.createSettings();
 
     const currentRate =
-      parseFloat(app.ui.settings.getSettingValue(this.settingsRate.id, this.settingsRate.defaultValue));
+      parseFloat(app.extensionManager.setting.get(this.settingsRate.id));
 
-    this.menuDisplayOption = app.ui.settings.getSettingValue(ComfyKeyMenuDisplayOption, MenuDisplayOptions.Disabled);
+    this.menuDisplayOption = app.extensionManager.setting.get(ComfyKeyMenuDisplayOption);
     app.ui.settings.addEventListener(`${ComfyKeyMenuDisplayOption}.change`, (e: any) => {
         this.updateDisplay(e.detail.value);
       },
