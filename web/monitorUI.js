@@ -63,6 +63,12 @@ export class MonitorUI extends ProgressBarUIBase {
             writable: true,
             value: void 0
         });
+        Object.defineProperty(this, "maxVRAMUsed", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: {}
+        });
         Object.defineProperty(this, "createDOM", {
             enumerable: true,
             configurable: true,
@@ -175,7 +181,15 @@ export class MonitorUI extends ProgressBarUIBase {
                 let title = `${Math.floor(percent)}${monitorSettings.symbol}`;
                 let postfix = '';
                 if (used !== undefined && total !== undefined) {
-                    postfix = ` - ${formatBytes(used)} / ${formatBytes(total)} GB`;
+                    const gpuIndex = parseInt(monitorSettings.monitorTitle?.split(':')[0] || '0');
+                    if (!this.maxVRAMUsed[gpuIndex] || this.maxVRAMUsed[gpuIndex] > total) {
+                        this.maxVRAMUsed[gpuIndex] = 0;
+                    }
+                    if (used > this.maxVRAMUsed[gpuIndex]) {
+                        this.maxVRAMUsed[gpuIndex] = used;
+                    }
+                    postfix = ` - ${formatBytes(used)} / ${formatBytes(total)}`;
+                    postfix += ` Max: ${formatBytes(this.maxVRAMUsed[gpuIndex])}`;
                 }
                 title = `${prefix}${title}${postfix}`;
                 if (monitorSettings.htmlMonitorRef) {
@@ -273,6 +287,14 @@ export class MonitorUI extends ProgressBarUIBase {
                 if (monitorSettings.htmlMonitorRef) {
                     monitorSettings.htmlMonitorRef.style.display = value ? 'flex' : 'none';
                 }
+            }
+        });
+        Object.defineProperty(this, "resetMaxVRAM", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: () => {
+                this.maxVRAMUsed = {};
             }
         });
         this.createDOM();
