@@ -169,26 +169,18 @@ class CGPUInfo:
                             logger.error('Monitor of GPU is turning off.')
                             self.switchGPU = False
 
-                    # VRAM
-                    if IS_JETSON:
-                        # On Jetson devices, VRAM metrics are not applicable
-                        vramUsed = None
-                        vramTotal = None
-                        vramPercent = None
-                        self.switchVRAM = False
-                    else:
-                        if self.switchVRAM and self.gpusVRAM[deviceIndex]:
-                            try:
-                                memory = self.deviceGetMemoryInfo(deviceHandle)
-                                vramUsed = memory['used']
-                                vramTotal = memory['total']
+                    if self.switchVRAM and self.gpusVRAM[deviceIndex]:
+                        try:
+                            memory = self.deviceGetMemoryInfo(deviceHandle)
+                            vramUsed = memory['used']
+                            vramTotal = memory['total']
 
-                                # Check if vramTotal is not zero or None
-                                if vramTotal and vramTotal != 0:
-                                    vramPercent = vramUsed / vramTotal * 100
-                            except Exception as e:
-                                logger.error('Could not get GPU memory info. ' + str(e))
-                                self.switchVRAM = False
+                            # Check if vramTotal is not zero or None
+                            if vramTotal and vramTotal != 0:
+                                vramPercent = vramUsed / vramTotal * 100
+                        except Exception as e:
+                            logger.error('Could not get GPU memory info. ' + str(e))
+                            self.switchVRAM = False
 
                     # Temperature
                     if self.switchTemperature and self.gpusTemperature[deviceIndex]:
@@ -284,8 +276,14 @@ class CGPUInfo:
             mem = self.pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
             return {'total': mem.total, 'used': mem.used}
         elif self.jtopLoaded:
-            # On Jetson devices, VRAM metrics are not applicable
-            return {'total': None, 'used': None}
+            mem_data = self.jtopInstance.memory['RAM']
+            total = mem_data['tot']
+            shared = mem_data['shared']
+            print(mem_data)
+            print(total)
+            print(shared)
+            
+            return {'total': total, 'used': shared}
         else:
             return {'total': 1, 'used': 1}
 
@@ -294,8 +292,7 @@ class CGPUInfo:
             return self.pynvml.nvmlDeviceGetTemperature(deviceHandle, self.pynvml.NVML_TEMPERATURE_GPU)
         elif self.jtopLoaded:
             try:
-                temperature = self.jtopInstance.temperature.get('Temp gpu', -1)
-                print(temperature)
+                temperature = self.jtopInstance.stats.get('Temp gpu', -1)
                 return temperature
             except Exception as e:
                 logger.error('Could not get GPU temperature. ' + str(e))
