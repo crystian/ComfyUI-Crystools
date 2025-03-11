@@ -278,8 +278,8 @@ class CGPUInfo:
         elif self.jtopLoaded:
             mem_data = self.jtopInstance.memory['RAM']
             total = mem_data['tot']
-            shared = mem_data['shared']
-            return {'total': total, 'used': shared}
+            used = mem_data['used']
+            return {'total': total, 'used': used}
         else:
             return {'total': 1, 'used': 1}
 
