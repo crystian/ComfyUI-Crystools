@@ -295,6 +295,7 @@ class CGPUInfo:
         elif self.jtopLoaded:
             try:
                 temperature = self.jtopInstance.temperature.get('Temp gpu', -1)
+                print(temperature)
                 return temperature
             except Exception as e:
                 logger.error('Could not get GPU temperature. ' + str(e))
