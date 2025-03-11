@@ -10,6 +10,9 @@ export declare class MonitorUI extends ProgressBarUIBase {
     private currentRate;
     lastMonitor: number;
     styleSheet: HTMLStyleElement;
+    maxVRAMUsed: {
+        [key: number]: number;
+    };
     constructor(rootElement: HTMLElement, monitorCPUElement: TMonitorSettings, monitorRAMElement: TMonitorSettings, monitorHDDElement: TMonitorSettings, monitorGPUSettings: TMonitorSettings[], monitorVRAMSettings: TMonitorSettings[], monitorTemperatureSettings: TMonitorSettings[], currentRate: number);
     createDOM: () => void;
     createDOMGPUMonitor: (monitorSettings?: TMonitorSettings) => void;
@@ -21,4 +24,5 @@ export declare class MonitorUI extends ProgressBarUIBase {
     createMonitor: (monitorSettings?: TMonitorSettings) => HTMLDivElement;
     updateMonitorSize: (width: number, height: number) => void;
     showMonitor: (monitorSettings: TMonitorSettings, value: boolean) => void;
+    resetMaxVRAM: () => void;
 }
