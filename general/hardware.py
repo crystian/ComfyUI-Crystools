@@ -72,9 +72,9 @@ class CHardwareInfo:
         arch_string_raw = 'Arch unknown'
 
         try:
-          arch_string_raw = DataSource.arch_string_raw
+            arch_string_raw = DataSource.arch_string_raw
         except:
-          pass
+            pass
 
         specName = 'CPU: ' + brand
         specArch = 'Arch: ' + arch_string_raw
@@ -106,10 +106,16 @@ class CHardwareInfo:
             ramUsedPercent = ram.percent
 
         if self.switchHDD:
-            hdd = psutil.disk_usage(self.whichHDD)
-            hddTotal = hdd.total
-            hddUsed = hdd.used
-            hddUsedPercent = hdd.percent
+            try:
+                hdd = psutil.disk_usage(self.whichHDD)
+                hddTotal = hdd.total
+                hddUsed = hdd.used
+                hddUsedPercent = hdd.percent
+            except Exception as e:
+                logger.error(f"Error getting disk usage for {self.whichHDD}: {e}")
+                hddTotal = -1
+                hddUsed = -1
+                hddUsedPercent = -1
 
         getStatus = self.GPUInfo.getStatus()
 
