@@ -9,8 +9,8 @@ class CSwitchBooleanAny:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "on_true": (any, {}),
-                "on_false": (any, {}),
+                "on_true": (any, {"lazy": True}),
+                "on_false": (any, {"lazy": True}),
                 "boolean": BOOLEAN,
             }
         }
@@ -19,6 +19,10 @@ class CSwitchBooleanAny:
     RETURN_TYPES = (any,)
 
     FUNCTION = "execute"
+
+    def check_lazy_status(self, on_true=None, on_false=None, boolean=True):
+        needed = "on_true" if boolean else "on_false"
+        return [needed]
 
     def execute(self, on_true, on_false, boolean=True):
         logger.debug("Any switch: " + str(boolean))
@@ -37,8 +41,8 @@ class CSwitchBooleanString:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "on_true": STRING,
-                "on_false": STRING,
+                "on_true": (STRING, {"lazy": True}),
+                "on_false": (STRING, {"lazy": True}),
                 "boolean": BOOLEAN,
             }
         }
@@ -48,6 +52,10 @@ class CSwitchBooleanString:
     RETURN_NAMES = ("string",)
 
     FUNCTION = "execute"
+
+    def check_lazy_status(self, on_true=None, on_false=None, boolean=True):
+        needed = "on_true" if boolean else "on_false"
+        return [needed]
 
     def execute(self, on_true, on_false, boolean=True):
         logger.debug("String switch: " + str(boolean))
@@ -66,8 +74,8 @@ class CSwitchBooleanConditioning:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "on_true": ("CONDITIONING",),
-                "on_false": ("CONDITIONING",),
+                "on_true": ("CONDITIONING", {"lazy": True}),
+                "on_false": ("CONDITIONING", {"lazy": True}),
                 "boolean": BOOLEAN,
             }
         }
@@ -77,6 +85,10 @@ class CSwitchBooleanConditioning:
     RETURN_NAMES = ("conditioning",)
 
     FUNCTION = "execute"
+
+    def check_lazy_status(self, on_true=None, on_false=None, boolean=True):
+        needed = "on_true" if boolean else "on_false"
+        return [needed]
 
     def execute(self, on_true, on_false, boolean=True):
         logger.debug("Conditioning switch: " + str(boolean))
@@ -95,8 +107,8 @@ class CSwitchBooleanImage:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "on_true": ("IMAGE",),
-                "on_false": ("IMAGE",),
+                "on_true": ("IMAGE", {"lazy": True}),
+                "on_false": ("IMAGE", {"lazy": True}),
                 "boolean": BOOLEAN,
             }
         }
@@ -107,6 +119,10 @@ class CSwitchBooleanImage:
 
     FUNCTION = "execute"
 
+    def check_lazy_status(self, on_true=None, on_false=None, boolean=True):
+        needed = "on_true" if boolean else "on_false"
+        return [needed]
+
     def execute(self, on_true, on_false, boolean=True):
         logger.debug("Image switch: " + str(boolean))
 
@@ -114,6 +130,7 @@ class CSwitchBooleanImage:
             return (on_true,)
         else:
             return (on_false,)
+
 
 class CSwitchBooleanLatent:
     def __init__(self):
@@ -123,8 +140,8 @@ class CSwitchBooleanLatent:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "on_true": ("LATENT",),
-                "on_false": ("LATENT",),
+                "on_true": ("LATENT", {"lazy": True}),
+                "on_false": ("LATENT", {"lazy": True}),
                 "boolean": BOOLEAN,
             }
         }
@@ -134,6 +151,10 @@ class CSwitchBooleanLatent:
     RETURN_NAMES = ("latent",)
 
     FUNCTION = "execute"
+
+    def check_lazy_status(self, on_true=None, on_false=None, boolean=True):
+        needed = "on_true" if boolean else "on_false"
+        return [needed]
 
     def execute(self, on_true, on_false, boolean=True):
         logger.debug("Latent switch: " + str(boolean))
@@ -152,8 +173,8 @@ class CSwitchBooleanMask:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "on_true": ("MASK",),
-                "on_false": ("MASK",),
+                "on_true": ("MASK", {"lazy": True}),
+                "on_false": ("MASK", {"lazy": True}),
                 "boolean": BOOLEAN,
             }
         }
@@ -163,6 +184,10 @@ class CSwitchBooleanMask:
     RETURN_NAMES = ("mask",)
 
     FUNCTION = "execute"
+
+    def check_lazy_status(self, on_true=None, on_false=None, boolean=True):
+        needed = "on_true" if boolean else "on_false"
+        return [needed]
 
     def execute(self, on_true, on_false, boolean=True):
         logger.debug("Mask switch: " + str(boolean))
