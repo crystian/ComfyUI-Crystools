@@ -271,8 +271,8 @@ class CrystoolsMonitor {
                     htmlMonitorLabelRef: undefined,
                     cssColor: Colors.CPU,
                     onChange: async (value) => {
-                        this.updateWidget(this.monitorCPUElement);
                         await this.updateServer({ switchCPU: value });
+                        this.updateWidget(this.monitorCPUElement);
                     },
                 };
             }
@@ -295,8 +295,8 @@ class CrystoolsMonitor {
                     htmlMonitorLabelRef: undefined,
                     cssColor: Colors.RAM,
                     onChange: async (value) => {
-                        this.updateWidget(this.monitorRAMElement);
                         await this.updateServer({ switchRAM: value });
+                        this.updateWidget(this.monitorRAMElement);
                     },
                 };
             }
@@ -326,8 +326,8 @@ class CrystoolsMonitor {
                     htmlMonitorLabelRef: undefined,
                     cssColor: Colors.GPU,
                     onChange: async (value) => {
+                        await this.updateServerGPU(index, { utilization: value });
                         this.updateWidget(monitorGPUNElement);
-                        void await this.updateServerGPU(index, { utilization: value });
                     },
                 };
                 this.monitorGPUSettings[index] = monitorGPUNElement;
@@ -360,8 +360,8 @@ class CrystoolsMonitor {
                     htmlMonitorLabelRef: undefined,
                     cssColor: Colors.VRAM,
                     onChange: async (value) => {
+                        await this.updateServerGPU(index, { vram: value });
                         this.updateWidget(monitorVRAMNElement);
-                        void await this.updateServerGPU(index, { vram: value });
                     },
                 };
                 this.monitorVRAMSettings[index] = monitorVRAMNElement;
@@ -395,8 +395,8 @@ class CrystoolsMonitor {
                     cssColor: Colors.TEMP_START,
                     cssColorFinal: Colors.TEMP_END,
                     onChange: async (value) => {
+                        await this.updateServerGPU(index, { temperature: value });
                         this.updateWidget(monitorTemperatureNElement);
-                        void await this.updateServerGPU(index, { temperature: value });
                     },
                 };
                 this.monitorTemperatureSettings[index] = monitorTemperatureNElement;
@@ -422,8 +422,8 @@ class CrystoolsMonitor {
                     htmlMonitorLabelRef: undefined,
                     cssColor: Colors.DISK,
                     onChange: async (value) => {
-                        this.updateWidget(this.monitorHDDElement);
                         await this.updateServer({ switchHDD: value });
+                        this.updateWidget(this.monitorHDDElement);
                     },
                 };
                 this.settingsHDD = {
@@ -497,7 +497,6 @@ class CrystoolsMonitor {
             configurable: true,
             writable: true,
             value: (menuPosition) => {
-                console.log('moveMonitor', menuPosition);
                 let parentElement;
                 switch (menuPosition) {
                     case MenuDisplayOptions.Disabled:
