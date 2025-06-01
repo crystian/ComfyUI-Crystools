@@ -4,7 +4,7 @@ import { createStyleSheet, formatBytes } from './utils.js';
 export class MonitorUI extends ProgressBarUIBase {
   lastMonitor = 1; // just for order on monitors section
   styleSheet: HTMLStyleElement;
-  maxVRAMUsed: { [key: number]: number } = {}; // Add this to track max VRAM per GPU
+  maxVRAMUsed: Record<number, number> = {}; // Add this to track max VRAM per GPU
 
   constructor(
     public override rootElement: HTMLElement,
@@ -122,6 +122,7 @@ export class MonitorUI extends ProgressBarUIBase {
     });
   };
 
+  // eslint-disable-next-line complexity
   updateMonitor = (monitorSettings: TMonitorSettings, percent: number, used?: number, total?: number): void => {
     if (!(monitorSettings.htmlMonitorSliderRef && monitorSettings.htmlMonitorLabelRef)) {
       return;
@@ -139,22 +140,22 @@ export class MonitorUI extends ProgressBarUIBase {
     if (used !== undefined && total !== undefined) {
       // Extract GPU index from monitorTitle (assuming format "X: GPU Name")
       const gpuIndex = parseInt(monitorSettings.monitorTitle?.split(':')[0] || '0');
-      
+
       // Initialize max VRAM if not set or  glitch
-      if (!this.maxVRAMUsed[gpuIndex] || this.maxVRAMUsed[gpuIndex] > total) {
+      if (!this.maxVRAMUsed[gpuIndex] || this.maxVRAMUsed[gpuIndex]! > total) {
         this.maxVRAMUsed[gpuIndex] = 0;
       }
 
       // Update max VRAM if current usage is higher
-      if ( used > this.maxVRAMUsed[gpuIndex]) {
+      if ( used > this.maxVRAMUsed[gpuIndex]!) {
         this.maxVRAMUsed[gpuIndex] = used;
       }
 
       postfix = ` - ${formatBytes(used)} / ${formatBytes(total)}`;
       // Add max VRAM to tooltip
-      postfix += ` Max: ${formatBytes(this.maxVRAMUsed[gpuIndex])}`;
+      postfix += ` Max: ${formatBytes(this.maxVRAMUsed[gpuIndex]!)}`;
     }
-    
+
     title = `${prefix}${title}${postfix}`;
 
     if (monitorSettings.htmlMonitorRef) {
