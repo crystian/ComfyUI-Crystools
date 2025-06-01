@@ -211,8 +211,8 @@ class CrystoolsMonitor {
       cssColor: Colors.CPU,
       // @ts-ignore
       onChange: async(value: boolean): Promise<void> => {
-        this.updateWidget(this.monitorCPUElement);
         await this.updateServer({switchCPU: value});
+        this.updateWidget(this.monitorCPUElement);
       },
     };
   };
@@ -233,8 +233,8 @@ class CrystoolsMonitor {
       cssColor: Colors.RAM,
       // @ts-ignore
       onChange: async(value: boolean): Promise<void> => {
-        this.updateWidget(this.monitorRAMElement);
         await this.updateServer({switchRAM: value});
+        this.updateWidget(this.monitorRAMElement);
       },
     };
   };
@@ -263,8 +263,8 @@ class CrystoolsMonitor {
       cssColor: Colors.GPU,
       // @ts-ignore
       onChange: async(value: boolean): Promise<void> => {
+        await this.updateServerGPU(index, {utilization: value});
         this.updateWidget(monitorGPUNElement);
-        void await this.updateServerGPU(index, {utilization: value});
       },
     };
 
@@ -298,8 +298,8 @@ class CrystoolsMonitor {
       cssColor: Colors.VRAM,
       // @ts-ignore
       onChange: async(value: boolean): Promise<void> => {
+        await this.updateServerGPU(index, {vram: value});
         this.updateWidget(monitorVRAMNElement);
-        void await this.updateServerGPU(index, {vram: value});
       },
     };
 
@@ -334,8 +334,8 @@ class CrystoolsMonitor {
       cssColorFinal: Colors.TEMP_END,
       // @ts-ignore
       onChange: async(value: boolean): Promise<void> => {
+        await this.updateServerGPU(index, {temperature: value});
         this.updateWidget(monitorTemperatureNElement);
-        void await this.updateServerGPU(index, {temperature: value});
       },
     };
 
@@ -361,8 +361,8 @@ class CrystoolsMonitor {
       cssColor: Colors.DISK,
       // @ts-ignore
       onChange: async(value: boolean): Promise<void> => {
-        this.updateWidget(this.monitorHDDElement);
         await this.updateServer({switchHDD: value});
+        this.updateWidget(this.monitorHDDElement);
       },
     };
 
@@ -429,7 +429,7 @@ class CrystoolsMonitor {
   };
 
   moveMonitor = (menuPosition: MenuDisplayOptions): void => {
-    console.log('moveMonitor', menuPosition);
+    // console.log('moveMonitor', menuPosition);
     // setTimeout(() => {
       let parentElement: Element | null | undefined;
 

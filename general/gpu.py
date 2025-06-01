@@ -1,9 +1,33 @@
 import torch
-import pynvml
 import comfy.model_management
 from ..core import logger
-# from ctypes import *
-# from pyrsmi import rocml
+import os
+import platform
+
+def is_jetson() -> bool:
+    """
+    Determines if the Python environment is running on a Jetson device by checking the device model
+    information or the platform release.
+    """
+    PROC_DEVICE_MODEL = ''
+    try:
+        with open('/proc/device-tree/model', 'r') as f:
+            PROC_DEVICE_MODEL = f.read().strip()
+            logger.info(f"Device model: {PROC_DEVICE_MODEL}")
+            return "NVIDIA" in PROC_DEVICE_MODEL
+    except Exception as e:
+        # logger.warning(f"JETSON: Could not read /proc/device-tree/model: {e} (If you're not using Jetson, ignore this warning)")
+        # If /proc/device-tree/model is not available, check platform.release()
+        platform_release = platform.release()
+        logger.info(f"Platform release: {platform_release}")
+        if 'tegra' in platform_release.lower():
+            logger.info("Detected 'tegra' in platform release. Assuming Jetson device.")
+            return True
+        else:
+            logger.info("JETSON: Not detected.")
+            return False
+
+IS_JETSON = is_jetson()
 
 class CGPUInfo:
     """
@@ -11,8 +35,7 @@ class CGPUInfo:
     """
     cuda = False
     pynvmlLoaded = False
-    # pyamdLoaded = False
-    # anygpuLoaded = False
+    jtopLoaded = False
     cudaAvailable = False
     torchDevice = 'cpu'
     cudaDevice = 'cpu'
@@ -26,78 +49,86 @@ class CGPUInfo:
     gpusTemperature = []
 
     def __init__(self):
-        try:
-            pynvml.nvmlInit()
-            self.pynvmlLoaded = True
-            logger.info('Pynvml (Nvidia) initialized.')
-        except Exception as e:
-            logger.error('Could not init pynvml (Nvidia).' + str(e))
+        if IS_JETSON:
+            # Try to import jtop for Jetson devices
+            try:
+                from jtop import jtop
+                self.jtopInstance = jtop()
+                self.jtopInstance.start()
+                self.jtopLoaded = True
+                logger.info('jtop initialized on Jetson device.')
+            except ImportError as e:
+                logger.error('jtop is not installed. ' + str(e))
+            except Exception as e:
+                logger.error('Could not initialize jtop. ' + str(e))
+        else:
+            # Try to import pynvml for non-Jetson devices
+            try:
+                import pynvml
+                self.pynvml = pynvml
+                self.pynvml.nvmlInit()
+                self.pynvmlLoaded = True
+                logger.info('pynvml (NVIDIA) initialized.')
+            except ImportError as e:
+                logger.error('pynvml is not installed. ' + str(e))
+            except Exception as e:
+                logger.error('Could not init pynvml (NVIDIA). ' + str(e))
 
-        # if not self.pynvmlLoaded:
-        #     try:
-        #         rocml.smi_initialize()
-        #         self.pyamdLoaded = True
-        #         logger.info('Pyrsmi (AMD) initialized.')
-        #     except Exception as e:
-        #         logger.error('Could not init pyrsmi (AMD).' + str(e))
-
-        # self.anygpuLoaded = self.pynvmlLoaded or self.pyamdLoaded
-        self.anygpuLoaded = self.pynvmlLoaded
+        self.anygpuLoaded = self.pynvmlLoaded or self.jtopLoaded
 
         try:
             self.torchDevice = comfy.model_management.get_torch_device_name(comfy.model_management.get_torch_device())
         except Exception as e:
-            logger.error('Could not pick default device.' + str(e))
+            logger.error('Could not pick default device. ' + str(e))
 
-        # ZLUDA Check, self.torchDevice has 'ZLUDA' in it.
-        if 'zluda' in self.torchDevice or 'ZLUDA' in self.torchDevice or 'Zluda' in self.torchDevice:
-            logger.warn('ZLUDA detected. GPU monitoring will be disabled.')
+        # ZLUDA Check
+        if 'zluda' in self.torchDevice.lower():
+            logger.warning('ZLUDA detected. GPU monitoring will be disabled.')
             self.anygpuLoaded = False
-            # self.pyamdLoaded = False
             self.pynvmlLoaded = False
+            self.jtopLoaded = False
 
-        if self.anygpuLoaded and self.deviceGetCount() > 0:
-            self.cudaDevicesFound = self.deviceGetCount()
+        if self.anygpuLoaded:
+            if self.deviceGetCount() > 0:
+                self.cudaDevicesFound = self.deviceGetCount()
 
-            logger.info(f"GPU/s:")
+                logger.info(f"GPU/s:")
 
-            # for simulate multiple GPUs (for testing) interchange these comments:
-            # for deviceIndex in range(3):
-            #     deviceHandle = pynvml.nvmlDeviceGetHandleByIndex(0)
-            for deviceIndex in range(self.cudaDevicesFound):
-                deviceHandle = self.deviceGetHandleByIndex(deviceIndex)
+                for deviceIndex in range(self.cudaDevicesFound):
+                    deviceHandle = self.deviceGetHandleByIndex(deviceIndex)
 
-                gpuName = self.deviceGetName(deviceHandle, deviceIndex)
+                    gpuName = self.deviceGetName(deviceHandle, deviceIndex)
 
-                logger.info(f"{deviceIndex}) {gpuName}")
+                    logger.info(f"{deviceIndex}) {gpuName}")
 
-                self.gpus.append({
-                    'index': deviceIndex,
-                    'name': gpuName,
-                })
+                    self.gpus.append({
+                        'index': deviceIndex,
+                        'name': gpuName,
+                    })
 
-                # same index as gpus, with default values
-                self.gpusUtilization.append(True)
-                self.gpusVRAM.append(True)
-                self.gpusTemperature.append(True)
+                    # Same index as gpus, with default values
+                    self.gpusUtilization.append(True)
+                    self.gpusVRAM.append(True)
+                    self.gpusTemperature.append(True)
 
-            self.cuda = True
-            logger.info(self.systemGetDriverVersion())
+                self.cuda = True
+                logger.info(self.systemGetDriverVersion())
+            else:
+                logger.warning('No GPU with CUDA detected.')
         else:
-            logger.warn('No GPU with CUDA detected.')
+            logger.warning('No GPU monitoring libraries available.')
 
         self.cudaDevice = 'cpu' if self.torchDevice == 'cpu' else 'cuda'
         self.cudaAvailable = torch.cuda.is_available()
 
         if self.cuda and self.cudaAvailable and self.torchDevice == 'cpu':
-            logger.warn('CUDA is available, but torch is using CPU.')
+            logger.warning('CUDA is available, but torch is using CPU.')
 
     def getInfo(self):
         logger.debug('Getting GPUs info...')
         return self.gpus
 
     def getStatus(self):
-        # logger.debug('CGPUInfo getStatus')
         gpuUtilization = -1
         gpuTemperature = -1
         vramUsed = -1
@@ -120,9 +151,6 @@ class CGPUInfo:
             gpuType = self.cudaDevice
 
             if self.anygpuLoaded and self.cuda and self.cudaAvailable:
-                # for simulate multiple GPUs (for testing) interchange these comments:
-                # for deviceIndex in range(3):
-                #     deviceHandle = self.deviceGetHandleByIndex(0)
                 for deviceIndex in range(self.cudaDevicesFound):
                     deviceHandle = self.deviceGetHandleByIndex(deviceIndex)
 
@@ -137,28 +165,22 @@ class CGPUInfo:
                         try:
                             gpuUtilization = self.deviceGetUtilizationRates(deviceHandle)
                         except Exception as e:
-                            if str(e) == "Unknown Error":
-                                logger.error('For some reason, pynvml is not working in a laptop with only battery, try to connect and turn on the monitor')
-                            else:
-                                logger.error('Could not get GPU utilization.' + str(e))
-
-                            logger.error('Monitor of GPU is turning off (not on UI!)')
+                            logger.error('Could not get GPU utilization. ' + str(e))
+                            logger.error('Monitor of GPU is turning off.')
                             self.switchGPU = False
 
-                    # VRAM
                     if self.switchVRAM and self.gpusVRAM[deviceIndex]:
-                        # Torch or pynvml?, pynvml is more accurate with the system, torch is more accurate with comfyUI
-                        memory = self.deviceGetMemoryInfo(deviceHandle)
-                        vramUsed = memory['used']
-                        vramTotal = memory['total']
+                        try:
+                            memory = self.deviceGetMemoryInfo(deviceHandle)
+                            vramUsed = memory['used']
+                            vramTotal = memory['total']
 
-                        # device = torch.device(gpuType)
-                        # vramUsed = torch.cuda.memory_allocated(device)
-                        # vramTotal = torch.cuda.get_device_properties(device).total_memory
-
-                        # check if vramTotal is not zero or None
-                        if vramTotal and vramTotal != 0:
-                            vramPercent = vramUsed / vramTotal * 100
+                            # Check if vramTotal is not zero or None
+                            if vramTotal and vramTotal != 0:
+                                vramPercent = vramUsed / vramTotal * 100
+                        except Exception as e:
+                            logger.error('Could not get GPU memory info. ' + str(e))
+                            self.switchVRAM = False
 
                     # Temperature
                     if self.switchTemperature and self.gpusTemperature[deviceIndex]:
@@ -183,17 +205,18 @@ class CGPUInfo:
 
     def deviceGetCount(self):
         if self.pynvmlLoaded:
-            return pynvml.nvmlDeviceGetCount()
-        # elif self.pyamdLoaded:
-        #     return rocml.smi_get_device_count()
+            return self.pynvml.nvmlDeviceGetCount()
+        elif self.jtopLoaded:
+            # For Jetson devices, we assume there's one GPU
+            return 1
         else:
             return 0
 
     def deviceGetHandleByIndex(self, index):
         if self.pynvmlLoaded:
-            return pynvml.nvmlDeviceGetHandleByIndex(index)
-        # elif self.pyamdLoaded:
-        #     return index
+            return self.pynvml.nvmlDeviceGetHandleByIndex(index)
+        elif self.jtopLoaded:
+            return index  # On Jetson, index acts as handle
         else:
             return 0
 
@@ -202,57 +225,77 @@ class CGPUInfo:
             gpuName = 'Unknown GPU'
 
             try:
-                gpuName = pynvml.nvmlDeviceGetName(deviceHandle)
+                gpuName = self.pynvml.nvmlDeviceGetName(deviceHandle)
                 try:
                     gpuName = gpuName.decode('utf-8', errors='ignore')
-                except AttributeError as e:
+                except AttributeError:
                     pass
 
             except UnicodeDecodeError as e:
                 gpuName = 'Unknown GPU (decoding error)'
-                print(f"UnicodeDecodeError: {e}")
+                logger.error(f"UnicodeDecodeError: {e}")
 
             return gpuName
-        # elif self.pyamdLoaded:
-        #     return rocml.smi_get_device_name(deviceIndex)
+        elif self.jtopLoaded:
+            # Access the GPU name from self.jtopInstance.gpu
+            try:
+                gpu_info = self.jtopInstance.gpu
+                gpu_name = next(iter(gpu_info.keys()))
+                return gpu_name
+            except Exception as e:
+                logger.error('Could not get GPU name. ' + str(e))
+                return 'Unknown GPU'
         else:
             return ''
 
     def systemGetDriverVersion(self):
         if self.pynvmlLoaded:
-            return f'NVIDIA Driver: {pynvml.nvmlSystemGetDriverVersion()}'
-        # elif self.pyamdLoaded:
-        #     ver_str = create_string_buffer(256)
-        #     rocml.rocm_lib.rsmi_version_str_get(0, ver_str, 256)
-        #     return f'AMD Driver: {ver_str.value.decode()}'
+            return f'NVIDIA Driver: {self.pynvml.nvmlSystemGetDriverVersion()}'
+        elif self.jtopLoaded:
+            # No direct method to get driver version from jtop
+            return 'NVIDIA Driver: unknown'
         else:
             return 'Driver unknown'
 
     def deviceGetUtilizationRates(self, deviceHandle):
         if self.pynvmlLoaded:
-            return pynvml.nvmlDeviceGetUtilizationRates(deviceHandle).gpu
-        # elif self.pyamdLoaded:
-        #     return rocml.smi_get_device_utilization(deviceHandle)
+            return self.pynvml.nvmlDeviceGetUtilizationRates(deviceHandle).gpu
+        elif self.jtopLoaded:
+            # GPU utilization from jtop stats
+            try:
+                gpu_util = self.jtopInstance.stats.get('GPU', -1)
+                return gpu_util
+            except Exception as e:
+                logger.error('Could not get GPU utilization. ' + str(e))
+                return -1
         else:
             return 0
 
     def deviceGetMemoryInfo(self, deviceHandle):
         if self.pynvmlLoaded:
-            mem = pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
+            mem = self.pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
             return {'total': mem.total, 'used': mem.used}
-        # elif self.pyamdLoaded:
-        #     mem_used = rocml.smi_get_device_memory_used(deviceHandle)
-        #     mem_total = rocml.smi_get_device_memory_total(deviceHandle)
-        #     return {'total': mem_total, 'used': mem_used}
+        elif self.jtopLoaded:
+            mem_data = self.jtopInstance.memory['RAM']
+            total = mem_data['tot']
+            used = mem_data['used']
+            return {'total': total, 'used': used}
         else:
             return {'total': 1, 'used': 1}
 
     def deviceGetTemperature(self, deviceHandle):
         if self.pynvmlLoaded:
-            return pynvml.nvmlDeviceGetTemperature(deviceHandle, pynvml.NVML_TEMPERATURE_GPU)
-        # elif self.pyamdLoaded:
-        #     temp = c_int64(0)
-        #     rocml.rocm_lib.rsmi_dev_temp_metric_get(deviceHandle, 1, 0, byref(temp))
-        #     return temp.value / 1000
+            return self.pynvml.nvmlDeviceGetTemperature(deviceHandle, self.pynvml.NVML_TEMPERATURE_GPU)
+        elif self.jtopLoaded:
+            try:
+                temperature = self.jtopInstance.stats.get('Temp gpu', -1)
+                return temperature
+            except Exception as e:
+                logger.error('Could not get GPU temperature. ' + str(e))
+                return -1
         else:
             return 0
+
+    def close(self):
+        if self.jtopLoaded and self.jtopInstance is not None:
+            self.jtopInstance.close()
