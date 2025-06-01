@@ -24,7 +24,7 @@ def is_jetson() -> bool:
             logger.info("Detected 'tegra' in platform release. Assuming Jetson device.")
             return True
         else:
-            logger.warning("JETSON: Not detected.")
+            logger.info("JETSON: Not detected.")
             return False
 
 IS_JETSON = is_jetson()
