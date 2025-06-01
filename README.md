@@ -516,6 +516,9 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### Crystools
 
+### 1.24.0 (02/06/2025)
+- PR by community merged
+
 ### 1.23.0 (02/06/2025)
 - Jetson support added by @johnnynunez
 - some ui fixes

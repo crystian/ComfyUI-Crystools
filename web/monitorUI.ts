@@ -4,6 +4,7 @@ import { createStyleSheet, formatBytes } from './utils.js';
 export class MonitorUI extends ProgressBarUIBase {
   lastMonitor = 1; // just for order on monitors section
   styleSheet: HTMLStyleElement;
+  maxVRAMUsed: Record<number, number> = {}; // Add this to track max VRAM per GPU
 
   constructor(
     public override rootElement: HTMLElement,
@@ -121,6 +122,7 @@ export class MonitorUI extends ProgressBarUIBase {
     });
   };
 
+  // eslint-disable-next-line complexity
   updateMonitor = (monitorSettings: TMonitorSettings, percent: number, used?: number, total?: number): void => {
     if (!(monitorSettings.htmlMonitorSliderRef && monitorSettings.htmlMonitorLabelRef)) {
       return;
@@ -130,15 +132,30 @@ export class MonitorUI extends ProgressBarUIBase {
       return;
     }
 
-    // console.log('updateMonitor', monitorSettings.id, percent);
-
     const prefix = monitorSettings.monitorTitle ? monitorSettings.monitorTitle + ' - ' : '';
     let title = `${Math.floor(percent)}${monitorSettings.symbol}`;
     let postfix = '';
 
+    // Add max VRAM tracking for VRAM monitors
     if (used !== undefined && total !== undefined) {
-      postfix = ` - ${formatBytes(used)} / ${formatBytes(total)} GB`;
+      // Extract GPU index from monitorTitle (assuming format "X: GPU Name")
+      const gpuIndex = parseInt(monitorSettings.monitorTitle?.split(':')[0] || '0');
+
+      // Initialize max VRAM if not set or  glitch
+      if (!this.maxVRAMUsed[gpuIndex] || this.maxVRAMUsed[gpuIndex]! > total) {
+        this.maxVRAMUsed[gpuIndex] = 0;
+      }
+
+      // Update max VRAM if current usage is higher
+      if ( used > this.maxVRAMUsed[gpuIndex]!) {
+        this.maxVRAMUsed[gpuIndex] = used;
+      }
+
+      postfix = ` - ${formatBytes(used)} / ${formatBytes(total)}`;
+      // Add max VRAM to tooltip
+      postfix += ` Max: ${formatBytes(this.maxVRAMUsed[gpuIndex]!)}`;
     }
+
     title = `${prefix}${title}${postfix}`;
 
     if (monitorSettings.htmlMonitorRef) {
@@ -225,5 +242,9 @@ export class MonitorUI extends ProgressBarUIBase {
     if (monitorSettings.htmlMonitorRef) {
       monitorSettings.htmlMonitorRef.style.display = value ? 'flex' : 'none';
     }
+  };
+
+  resetMaxVRAM = (): void => {
+    this.maxVRAMUsed = {};
   };
 }
