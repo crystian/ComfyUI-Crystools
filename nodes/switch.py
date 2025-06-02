@@ -1,6 +1,33 @@
 from ..core import BOOLEAN, STRING, CATEGORY, any, logger
 
 
+class CSwitchFromAny:
+    def __init__(self):
+        pass
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "any": (any, ),
+                "boolean": BOOLEAN,
+            }
+        }
+
+    CATEGORY = CATEGORY.MAIN.value + CATEGORY.SWITCH.value
+    RETURN_TYPES = (any, any,)
+    RETURN_NAMES = ("on_true", "on_false",)
+
+    FUNCTION = "execute"
+
+    def execute(self, any,boolean=True):
+        logger.debug("Any switch: " + str(boolean))
+
+        if boolean:
+            return any, None
+        else:
+            return None, any
+
 class CSwitchBooleanAny:
     def __init__(self):
         pass
