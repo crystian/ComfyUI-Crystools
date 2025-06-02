@@ -1,3 +1,4 @@
+import fnmatch
 import os
 import random
 import sys
@@ -234,12 +235,17 @@ class CImageLoadWithMetadata:
     @classmethod
     def INPUT_TYPES(cls):
         input_dir = folder_paths.get_input_directory()
-        exclude_folders = ["clipspace"]
+
+        exclude_files = {"Thumbs.db", "*.DS_Store", "desktop.ini", "*.lock" }
+        exclude_folders = {"clipspace", ".*"}
+
         file_list = []
 
         for root, dirs, files in os.walk(input_dir):
             # Exclude specific folders
-            dirs[:] = [d for d in dirs if d not in exclude_folders]
+            dirs[:] = [d for d in dirs if not any(fnmatch.fnmatch(d, exclude) for exclude in exclude_folders)]
+            files = [f for f in files if not any(fnmatch.fnmatch(f, exclude) for exclude in exclude_files)]
+
 
             for file in files:
                 relpath = os.path.relpath(os.path.join(root, file), start=input_dir)

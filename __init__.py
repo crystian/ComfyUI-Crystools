@@ -13,7 +13,7 @@ logger.info(f'Crystools version: {version}')
 from .nodes._names import CLASSES
 from .nodes.primitive import CBoolean, CText, CTextML, CInteger, CFloat
 from .nodes.switch import CSwitchBooleanAny, CSwitchBooleanLatent, CSwitchBooleanConditioning, CSwitchBooleanImage, \
-  CSwitchBooleanString, CSwitchBooleanMask
+  CSwitchBooleanString, CSwitchBooleanMask, CSwitchFromAny
 from .nodes.debugger import CConsoleAny, CConsoleAnyToJson
 from .nodes.image import CImagePreviewFromImage, CImageLoadWithMetadata, CImageGetResolution, CImagePreviewFromMetadata, \
     CImageSaveWithExtraMetadata
@@ -38,6 +38,7 @@ NODE_CLASS_MAPPINGS = {
     CLASSES.CLIST_ANY_NAME.value: CListAny,
     CLASSES.CLIST_STRING_NAME.value: CListString,
 
+    CLASSES.CSWITCH_FROM_ANY_NAME.value: CSwitchFromAny,
     CLASSES.CSWITCH_ANY_NAME.value: CSwitchBooleanAny,
     CLASSES.CSWITCH_LATENT_NAME.value: CSwitchBooleanLatent,
     CLASSES.CSWITCH_CONDITIONING_NAME.value: CSwitchBooleanConditioning,
@@ -75,6 +76,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     CLASSES.CLIST_ANY_NAME.value: CLASSES.CLIST_ANY_DESC.value,
     CLASSES.CLIST_STRING_NAME.value: CLASSES.CLIST_STRING_DESC.value,
 
+    CLASSES.CSWITCH_FROM_ANY_NAME.value: CLASSES.CSWITCH_FROM_ANY_DESC.value,
     CLASSES.CSWITCH_ANY_NAME.value: CLASSES.CSWITCH_ANY_DESC.value,
     CLASSES.CSWITCH_LATENT_NAME.value: CLASSES.CSWITCH_LATENT_DESC.value,
     CLASSES.CSWITCH_CONDITIONING_NAME.value: CLASSES.CSWITCH_CONDITIONING_DESC.value,
