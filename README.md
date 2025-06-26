@@ -612,7 +612,7 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### Install from GitHub
 1. Install [ComfyUi](https://github.com/comfyanonymous/ComfyUI).
-2. Clone this repo into `custom_modules`:
+2. Clone this repo into `custom_nodes`:
     ```
     cd ComfyUI/custom_nodes
     git clone https://github.com/crystian/ComfyUI-Crystools.git
