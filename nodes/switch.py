@@ -68,8 +68,8 @@ class CSwitchBooleanString:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "on_true": (STRING, {"lazy": True}),
-                "on_false": (STRING, {"lazy": True}),
+                "on_true": ("STRING", {"default": "", "lazy": True}),
+                "on_false": ("STRING", {"default": "", "lazy": True}),
                 "boolean": BOOLEAN,
             }
         }
