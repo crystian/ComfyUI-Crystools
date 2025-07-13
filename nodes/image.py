@@ -241,7 +241,7 @@ class CImageLoadWithMetadata:
 
         file_list = []
 
-        for root, dirs, files in os.walk(input_dir):
+        for root, dirs, files in os.walk(input_dir, followlinks=True):
             # Exclude specific folders
             dirs[:] = [d for d in dirs if not any(fnmatch.fnmatch(d, exclude) for exclude in exclude_folders)]
             files = [f for f in files if not any(fnmatch.fnmatch(f, exclude) for exclude in exclude_files)]
