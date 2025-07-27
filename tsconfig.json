@@ -55,7 +55,7 @@
     "noEmit": false
   },
   "include": [
-//    "./custom_nodes/ComfyUI-Crystools/web/*.ts",
+//    "./custom_nodes/comfyui-crystools/web/*.ts",
 //    "../../../web/*.ts",
 //    "../../web/*.ts",
     "web/*.ts",

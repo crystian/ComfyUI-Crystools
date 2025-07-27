@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="lint" type="js.build_tools.npm">
-    <package-json value="$PROJECT_DIR$/custom_nodes/ComfyUI-Crystools/package.json" />
+    <package-json value="$PROJECT_DIR$/custom_nodes/comfyui-crystools/package.json" />
     <command value="run" />
     <scripts>
       <script value="lint" />

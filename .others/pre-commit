@@ -2,15 +2,15 @@
 # REMEMBER TO COPY THIS FILE INTO .git/hooks/pre-commit
 
 cd ../comfy/ComfyUI
-rm ./custom_nodes/ComfyUI-Crystools/web/*.js -f
+rm ./custom_nodes/comfyui-crystools/web/*.js -f
 
-LOCAL_COMMAND="npm --prefix ./custom_nodes/ComfyUI-Crystools run validate"
+LOCAL_COMMAND="npm --prefix ./custom_nodes/comfyui-crystools run validate"
 OUTPUT=$($LOCAL_COMMAND 2>&1)
 EXIT_CODE=$?
 
 if [ $EXIT_CODE -eq 0 ]; then
     echo "Validate ok"
-    cd ../../ComfyUI-Crystools
+    cd ../../comfyui-crystools
 else
     echo "Validate KO!"
     echo $OUTPUT
