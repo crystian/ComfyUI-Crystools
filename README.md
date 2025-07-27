@@ -516,6 +516,9 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### Crystools
 
+### 1.25.3 (27/07/2025)
+- change the name to lower case
+
 ### 1.25.1 (02/06/2025)
 - fix issues with switches on settings menu
 - node: "Switch from any" added
@@ -598,7 +601,7 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 - First release
 
 
-### Crystools-save
+### Crystools-save - DEPRECATED (01/06/2025)
 
 ### 1.1.0 (07/01/2024)
 - Labeling updated according to the new version of Crystools (this project)
