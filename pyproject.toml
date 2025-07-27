@@ -1,14 +1,21 @@
 [project]
-name = "comfyui-crystools"
+name = "crystools"
 description = "With this suit, you can see the resources monitor, progress bar & time elapsed, metadata and compare between two images, compare between two JSONs, show any value to console/display, pipes, and more!\nThis provides better nodes to load/save images, previews, etc, and see \"hidden\" data without loading a new workflow."
-version = "1.26.0"
+version = "1.26.1"
 license = { file = "LICENSE" }
 dependencies = ["deepdiff", "torch", "numpy", "Pillow", "pynvml", "py-cpuinfo"]
 
+classifiers = [
+  "Operating System :: OS Independent",
+  "Environment :: GPU :: NVIDIA CUDA",    # NVIDIA CUDA support
+]
+
 [project.urls]
 Repository = "https://github.com/crystian/comfyui-crystools"
+Documentation = "https://github.com/crystian/comfyui-crystools/blob/main/README.md"
+"Bug Tracker" = "https://github.com/crystian/comfyui-crystools/issues"
 
 [tool.comfy]
 PublisherId = "crystian"
-DisplayName = "comfyui-crystools"
+DisplayName = "Crystools"
 Icon = "https://raw.githubusercontent.com/crystian/comfyui-crystools/main/docs/screwdriver.png"
