@@ -2,7 +2,7 @@
 @author: Crystian
 @title: Crystools
 @nickname: Crystools
-@version: 1.25.2
+@version: 1.26.0
 @project: "https://github.com/crystian/comfyui-crystools",
 @description: Plugins for multiples uses, mainly for debugging, you need them! IG: https://www.instagram.com/crystian.ia
 """
