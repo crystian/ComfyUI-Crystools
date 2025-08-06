@@ -81,6 +81,12 @@ class CGPUInfo:
         except Exception as e:
             logger.error('Could not pick default device. ' + str(e))
 
+        if self.pynvmlLoaded and not self.jtopLoaded and not self.deviceGetCount():
+            logger.warning('No GPU detected, disabling GPU monitoring.')
+            self.anygpuLoaded = False
+            self.pynvmlLoaded = False
+            self.jtopLoaded = False
+
         if self.anygpuLoaded:
             if self.deviceGetCount() > 0:
                 self.cudaDevicesFound = self.deviceGetCount()
