@@ -516,6 +516,10 @@ You have predefined switches (string, latent, image, conditioning) but you can u
 
 ### Crystools
 
+### 1.27.0 (17/08/2025)
+- revert the lower case on name, cannot change on registry ¯\_(ツ)_/¯
+- zluda check removed, it is not necessary anymore
+
 ### 1.25.3 (27/07/2025)
 - change the name to lower case
 
