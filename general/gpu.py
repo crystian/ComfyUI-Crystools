@@ -96,7 +96,11 @@ class CGPUInfo:
                 for deviceIndex in range(self.cudaDevicesFound):
                     deviceHandle = self.deviceGetHandleByIndex(deviceIndex)
 
-                    gpuName = self.deviceGetName(deviceHandle, deviceIndex)
+                    try:
+                        gpuName = self.deviceGetName(deviceHandle, deviceIndex)
+                    except pynvml.NVMLError_NotSupported:
+                        logger.warning(f"GPU {deviceIndex} is not supported.")
+                        continue
 
                     logger.info(f"{deviceIndex}) {gpuName}")
 
@@ -112,8 +116,12 @@ class CGPUInfo:
 
                 self.cuda = True
                 logger.info(self.systemGetDriverVersion())
+                if not self.gpus:
+                    logger.warning('No supported GPU detected.')
+                    self.cuda = False
             else:
                 logger.warning('No GPU with CUDA detected.')
+
         else:
             logger.warning('No GPU monitoring libraries available.')
 

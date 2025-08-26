@@ -71,7 +71,7 @@ export class MonitorUI extends ProgressBarUIBase {
     this.updateMonitor(this.monitorHDDElement, data.hdd_used_percent, data.hdd_used, data.hdd_total);
 
     if (data.gpus === undefined || data.gpus.length === 0) {
-      console.warn('UpdateAllMonitors: no GPU data');
+      // console.warn('UpdateAllMonitors: no GPU data');
       return;
     }
 
