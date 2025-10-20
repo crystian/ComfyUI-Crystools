@@ -1,8 +1,17 @@
 import os
 import json
 import torch
-from deepdiff import DeepDiff
 from ..core import CONFIG, logger
+
+# Try to import DeepDiff, but handle illegal instruction errors
+DeepDiff = None
+try:
+    from deepdiff import DeepDiff
+except (ImportError, OSError) as e:
+    logger.warning(f'deepdiff could not be loaded: {e}. JSON comparison will use fallback implementation.')
+except Exception as e:
+    # Catch illegal instruction and other runtime errors
+    logger.warning(f'deepdiff failed to load (possibly illegal instruction): {e}. JSON comparison will use fallback implementation.')
 
 
 # just a helper function to set the widget values (or clear them)
@@ -35,15 +44,67 @@ def findJsonStrDiff(json1, json2):
     return returnJson
 
 
+def _simple_json_diff(obj1, obj2, path="root"):
+    """
+    Simple fallback JSON diff implementation when DeepDiff is not available.
+    Returns a dictionary with added, removed, and changed items.
+    """
+    result = {
+        'dictionary_item_added': [],
+        'dictionary_item_removed': [],
+        'values_changed': {}
+    }
+    
+    if type(obj1) != type(obj2):
+        result['values_changed'][path] = {'new_value': obj2, 'old_value': obj1}
+        return result
+    
+    if isinstance(obj1, dict):
+        keys1 = set(obj1.keys())
+        keys2 = set(obj2.keys())
+        
+        # Added keys
+        for key in keys2 - keys1:
+            result['dictionary_item_added'].append(f"{path}['{key}']")
+        
+        # Removed keys
+        for key in keys1 - keys2:
+            result['dictionary_item_removed'].append(f"{path}['{key}']")
+        
+        # Changed values
+        for key in keys1 & keys2:
+            new_path = f"{path}['{key}']"
+            sub_diff = _simple_json_diff(obj1[key], obj2[key], new_path)
+            result['dictionary_item_added'].extend(sub_diff['dictionary_item_added'])
+            result['dictionary_item_removed'].extend(sub_diff['dictionary_item_removed'])
+            result['values_changed'].update(sub_diff['values_changed'])
+    
+    elif isinstance(obj1, list):
+        if obj1 != obj2:
+            result['values_changed'][path] = {'new_value': obj2, 'old_value': obj1}
+    
+    else:
+        if obj1 != obj2:
+            result['values_changed'][path] = {'new_value': obj2, 'old_value': obj1}
+    
+    # Clean up empty entries
+    result = {k: v for k, v in result.items() if v}
+    return result
+
+
 def findJsonsDiff(json1, json2):
     msgError = "Could not compare jsons"
     returnJson = {"error": msgError}
 
     try:
-        diff = DeepDiff(json1, json2, ignore_order=True, verbose_level=2)
-
-        returnJson = {k: v for k, v in diff.items() if
-                   k in ('dictionary_item_added', 'dictionary_item_removed', 'values_changed')}
+        if DeepDiff is not None:
+            # Use DeepDiff if available
+            diff = DeepDiff(json1, json2, ignore_order=True, verbose_level=2)
+            returnJson = {k: v for k, v in diff.items() if
+                       k in ('dictionary_item_added', 'dictionary_item_removed', 'values_changed')}
+        else:
+            # Use simple fallback implementation
+            returnJson = _simple_json_diff(json1, json2)
 
         # just for print "values_changed" at first
         returnJson = dict(reversed(returnJson.items()))
