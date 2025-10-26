@@ -1,7 +1,7 @@
 [project]
 name = "ComfyUI-Crystools"
 description = "With this suit, you can see the resources monitor, progress bar & time elapsed, metadata and compare between two images, compare between two JSONs, show any value to console/display, pipes, and more!\nThis provides better nodes to load/save images, previews, etc, and see \"hidden\" data without loading a new workflow."
-version = "1.27.3"
+version = "1.27.4"
 license = { file = "LICENSE" }
 dependencies = ["deepdiff", "torch", "numpy", "Pillow", "pynvml", "py-cpuinfo"]
 

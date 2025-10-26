@@ -276,7 +276,7 @@ export class MonitorUI extends ProgressBarUIBase {
             configurable: true,
             writable: true,
             value: (width, height) => {
-                this.styleSheet.innerText = `.comfyui-menu #crystools-monitors-root .crystools-monitor .crystools-content {height: ${height}px; width: ${width}px;}`;
+                this.styleSheet.innerText = `#crystools-monitors-root .crystools-monitor .crystools-content {height: ${height}px; width: ${width}px;}`;
             }
         });
         Object.defineProperty(this, "showMonitor", {

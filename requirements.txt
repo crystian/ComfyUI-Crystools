@@ -1,7 +1,7 @@
 deepdiff
 torch
 numpy
-Pillow>=9.5.0
+Pillow
 pynvml; platform_machine != 'aarch64'
 py-cpuinfo
 piexif

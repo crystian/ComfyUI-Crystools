@@ -105,7 +105,7 @@
 }
 
 /* Horizontal UI */
-.comfyui-menu #crystools-monitors-root {
+#crystools-monitors-root {
   /*background-color: red;*/
   /*display: none;*/
   flex-direction: row;

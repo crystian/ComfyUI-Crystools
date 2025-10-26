@@ -235,7 +235,7 @@ export class MonitorUI extends ProgressBarUIBase {
 
   updateMonitorSize = (width: number, height: number): void => {
     // eslint-disable-next-line max-len
-    this.styleSheet.innerText = `.comfyui-menu #crystools-monitors-root .crystools-monitor .crystools-content {height: ${height}px; width: ${width}px;}`;
+    this.styleSheet.innerText = `#crystools-monitors-root .crystools-monitor .crystools-content {height: ${height}px; width: ${width}px;}`;
   };
 
   showMonitor = (monitorSettings: TMonitorSettings, value: boolean): void => {
