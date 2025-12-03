@@ -47,6 +47,7 @@ class CGPUInfo:
     gpusUtilization = []
     gpusVRAM = []
     gpusTemperature = []
+    visibleDeviceIndices = []  # Store indices of visible devices
 
     def __init__(self):
         if IS_JETSON:
@@ -93,7 +94,19 @@ class CGPUInfo:
 
                 logger.info(f"GPU/s:")
 
-                for deviceIndex in range(self.cudaDevicesFound):
+                # Determine visible devices
+                if cuda_visible_devices := os.getenv("CUDA_VISIBLE_DEVICES", None):
+                    logger.info(f"CUDA_VISIBLE_DEVICES: {cuda_visible_devices}")
+                    visible_list = [int(x) for x in cuda_visible_devices.split(',') if x.strip() != ""]
+                else:
+                    # If not set, all devices are visible
+                    visible_list = list(range(self.cudaDevicesFound))
+
+                for deviceIndex in visible_list:
+                    if deviceIndex >= self.cudaDevicesFound:
+                        logger.warning(f"Device index {deviceIndex} in CUDA_VISIBLE_DEVICES exceeds available device count {self.cudaDevicesFound}")
+                        continue
+
                     deviceHandle = self.deviceGetHandleByIndex(deviceIndex)
 
                     gpuName = self.deviceGetName(deviceHandle, deviceIndex)
@@ -104,6 +117,9 @@ class CGPUInfo:
                         'index': deviceIndex,
                         'name': gpuName,
                     })
+
+                    # Store the physical device index for later use
+                    self.visibleDeviceIndices.append(deviceIndex)
 
                     # Same index as gpus, with default values
                     self.gpusUtilization.append(True)
@@ -150,7 +166,8 @@ class CGPUInfo:
             gpuType = self.cudaDevice
 
             if self.anygpuLoaded and self.cuda and self.cudaAvailable:
-                for deviceIndex in range(self.cudaDevicesFound):
+                # Iterate over visible devices using their stored indices
+                for listIndex, deviceIndex in enumerate(self.visibleDeviceIndices):
                     deviceHandle = self.deviceGetHandleByIndex(deviceIndex)
 
                     gpuUtilization = -1
@@ -160,16 +177,16 @@ class CGPUInfo:
                     gpuTemperature = -1
 
                     # GPU Utilization
-                    if self.switchGPU and self.gpusUtilization[deviceIndex]:
-                        try:
+                    try:
+                        if self.switchGPU and self.gpusUtilization[listIndex]:
                             gpuUtilization = self.deviceGetUtilizationRates(deviceHandle)
-                        except Exception as e:
-                            logger.error('Could not get GPU utilization. ' + str(e))
-                            logger.error('Monitor of GPU is turning off.')
-                            self.switchGPU = False
+                    except Exception as e:
+                        logger.error('Could not get GPU utilization. ' + str(e))
+                        logger.error('Monitor of GPU is turning off.')
+                        self.switchGPU = False
 
-                    if self.switchVRAM and self.gpusVRAM[deviceIndex]:
-                        try:
+                    try:
+                        if self.switchVRAM and self.gpusVRAM[listIndex]:
                             memory = self.deviceGetMemoryInfo(deviceHandle)
                             vramUsed = memory['used']
                             vramTotal = memory['total']
@@ -177,17 +194,17 @@ class CGPUInfo:
                             # Check if vramTotal is not zero or None
                             if vramTotal and vramTotal != 0:
                                 vramPercent = vramUsed / vramTotal * 100
-                        except Exception as e:
-                            logger.error('Could not get GPU memory info. ' + str(e))
-                            self.switchVRAM = False
+                    except Exception as e:
+                        logger.error('Could not get GPU memory info. ' + str(e))
+                        self.switchVRAM = False
 
                     # Temperature
-                    if self.switchTemperature and self.gpusTemperature[deviceIndex]:
-                        try:
+                    try:
+                        if self.switchTemperature and self.gpusTemperature[listIndex]:
                             gpuTemperature = self.deviceGetTemperature(deviceHandle)
-                        except Exception as e:
-                            logger.error('Could not get GPU temperature. Turning off this feature. ' + str(e))
-                            self.switchTemperature = False
+                    except Exception as e:
+                        logger.error('Could not get GPU temperature. Turning off this feature. ' + str(e))
+                        self.switchTemperature = False
 
                     gpus.append({
                         'gpu_utilization': gpuUtilization,
