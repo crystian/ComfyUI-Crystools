@@ -7,7 +7,6 @@ dependencies = ["deepdiff", "torch", "numpy", "Pillow", "pynvml", "py-cpuinfo"]
 
 classifiers = [
   "Operating System :: OS Independent",
-  "Environment :: GPU :: NVIDIA CUDA",
 ]
 
 [project.urls]
