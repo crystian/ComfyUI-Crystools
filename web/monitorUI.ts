@@ -5,6 +5,9 @@ export class MonitorUI extends ProgressBarUIBase {
   lastMonitor = 1; // just for order on monitors section
   styleSheet: HTMLStyleElement;
   maxVRAMUsed: Record<number, number> = {}; // Add this to track max VRAM per GPU
+  private monitorWidth = 60;
+  private monitorHeight = 30;
+  private readonly maxMonitorFontSize = 9;
 
   constructor(
     public override rootElement: HTMLElement,
@@ -20,6 +23,8 @@ export class MonitorUI extends ProgressBarUIBase {
     this.createDOM();
 
     this.styleSheet = createStyleSheet('crystools-monitors-size');
+    this.updateMonitorLayout();
+    window.addEventListener('resize', this.updateMonitorLayout);
   }
 
   createDOM = (): void => {
@@ -41,6 +46,7 @@ export class MonitorUI extends ProgressBarUIBase {
 
     this.rootElement.appendChild(this.createMonitor(monitorSettings));
     this.updateAllAnimationDuration(this.currentRate);
+    this.updateMonitorLayout();
   };
 
   orderMonitors = (): void => {
@@ -234,13 +240,63 @@ export class MonitorUI extends ProgressBarUIBase {
   };
 
   updateMonitorSize = (width: number, height: number): void => {
+    const nextWidth = Number(width);
+    const nextHeight = Number(height);
+
+    this.monitorWidth = Number.isFinite(nextWidth) ? Math.max(30, nextWidth) : this.monitorWidth;
+    this.monitorHeight = Number.isFinite(nextHeight) ? Math.max(16, nextHeight) : this.monitorHeight;
+
     // eslint-disable-next-line max-len
-    this.styleSheet.innerText = `#crystools-monitors-root .crystools-monitor .crystools-content {height: ${height}px; width: ${width}px;}`;
+    this.styleSheet.innerText = '#crystools-monitors-root .crystools-monitor {flex: 1 1 var(--crystools-monitor-width); width: auto; max-width: var(--crystools-monitor-width); min-width: 0; min-height: var(--crystools-monitor-height);} #crystools-monitors-root .crystools-monitor .crystools-content {height: var(--crystools-monitor-height); min-height: var(--crystools-monitor-height); width: 100%; max-width: 100%; min-width: 0;}';
+    this.updateMonitorLayout();
+  };
+
+  updateMonitorLayout = (): void => {
+    if (!this.rootElement) {
+      return;
+    }
+
+    const monitors = Array
+      .from(this.rootElement.querySelectorAll<HTMLElement>('.crystools-monitor'))
+      .filter((element) => element.style.display !== 'none');
+    const style = getComputedStyle(this.rootElement);
+    const gap = parseFloat(style.columnGap || style.gap || '0') || 0;
+    const monitorWidth = this.getResponsiveMonitorWidth(monitors);
+    const monitorsWidth = monitors.length * monitorWidth + Math.max(0, monitors.length - 1) * gap;
+
+    this.rootElement.style.setProperty('--crystools-monitor-width', `${monitorWidth}px`);
+    this.rootElement.style.setProperty('--crystools-monitor-height', `${this.monitorHeight}px`);
+    this.rootElement.style.setProperty('--crystools-monitors-width', `${monitorsWidth}px`);
+
+    this.rootElement.style.display = 'flex';
+    this.rootElement.style.flex = `0 1 ${monitorsWidth}px`;
+    this.rootElement.style.width = `${monitorsWidth}px`;
+    this.rootElement.style.maxWidth = '100%';
+    this.rootElement.style.minWidth = '0';
+    this.rootElement.style.flexWrap = 'nowrap';
+
+    monitors.forEach((element) => {
+      element.style.flex = `1 1 ${monitorWidth}px`;
+      element.style.width = 'auto';
+      element.style.maxWidth = `${monitorWidth}px`;
+      element.style.minWidth = '0';
+      element.style.minHeight = `${this.monitorHeight}px`;
+    });
+  };
+
+  getResponsiveMonitorWidth = (monitors: HTMLElement[]): number => {
+    const textElement = monitors[0]?.querySelector<HTMLElement>('.crystools-text');
+    const fontSize = textElement ? parseFloat(getComputedStyle(textElement).fontSize) : this.maxMonitorFontSize;
+    const minWidth = Math.min(30, this.monitorWidth);
+    const scale = Math.min(1, Math.max(minWidth / this.monitorWidth, fontSize / this.maxMonitorFontSize));
+
+    return Math.round(this.monitorWidth * scale);
   };
 
   showMonitor = (monitorSettings: TMonitorSettings, value: boolean): void => {
     if (monitorSettings.htmlMonitorRef) {
       monitorSettings.htmlMonitorRef.style.display = value ? 'flex' : 'none';
+      this.updateMonitorLayout();
     }
   };
 

@@ -32,9 +32,12 @@ class CMonitor:
 
     async def MonitorLoop(self):
         while self.rate > 0 and not self.threadController.is_set():
-            data = self.hardwareInfo.getStatus()
-            # logger.debug('data to send' + str(data))
-            await self.send_message(data)
+            try:
+                data = self.hardwareInfo.getStatus()
+                # logger.debug('data to send' + str(data))
+                await self.send_message(data)
+            except Exception as e:
+                logger.error('Monitor loop error, keeping monitor alive. ' + str(e))
             await asyncio.sleep(self.rate)
 
     def startMonitor(self):

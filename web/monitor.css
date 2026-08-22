@@ -1,3 +1,83 @@
+/* Base monitor styles must work regardless of where ComfyUI mounts the menu. */
+#crystools-monitors-root {
+  --crystools-monitor-width: 60px;
+  --crystools-monitor-height: 30px;
+  --crystools-monitors-width: 190px;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: min(100%, 30px);
+}
+
+#crystools-monitors-root .crystools-monitor {
+  display: flex;
+  align-items: center;
+  flex: 1 1 var(--crystools-monitor-width);
+  width: auto;
+  max-width: var(--crystools-monitor-width);
+  min-width: 0;
+  min-height: var(--crystools-monitor-height);
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+#crystools-monitors-root .crystools-content {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: var(--crystools-monitor-height);
+  min-height: var(--crystools-monitor-height);
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--content-hover-bg, var(--comfy-input-bg));
+}
+
+#crystools-monitors-root .crystools-text {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  top: 2%;
+  height: 48%;
+  z-index: 2;
+  width: auto;
+  margin: 0;
+  font-size: clamp(6px, 1.4vw, 13px);
+  line-height: 1;
+  text-align: left;
+  overflow: hidden;
+  pointer-events: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#crystools-monitors-root .crystools-slider {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 0;
+  box-shadow: inset 2px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+#crystools-monitors-root .crystools-label {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 2%;
+  height: 48%;
+  z-index: 1;
+  color: var(--input-text);
+  font-size: clamp(6px, 1.2vw, 12px);
+  line-height: 1;
+  text-align: left;
+  overflow: hidden;
+  pointer-events: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Vertical UI */
 .comfy-menu, .side-bar-panel {
   #crystools-monitors-root {
@@ -8,6 +88,9 @@
     border: 1px solid var(--border-color);
     display: flex;
     width: 100%;
+    max-width: calc(100% - 14px);
+    min-width: 0;
+    box-sizing: border-box;
     flex-direction: column;
     margin: 7px;
     padding: 5px 0;
@@ -17,15 +100,18 @@
 
     .crystools-monitor {
       margin: 1px 10px;
-      height: 12px;
+      width: calc(100% - 20px);
+      max-width: var(--crystools-monitor-width);
+      min-width: 0;
+      min-height: var(--crystools-monitor-height);
       display: flex;
       align-items: center;
 
       .crystools-text {
-        width: 40px;
-        font-size: 10px;
-        text-align: right;
-        margin-right: 3px;
+        width: auto;
+        font-size: clamp(6px, 0.75vw, 9px);
+        text-align: left;
+        margin-right: 0;
 
         &:hover {
           font-weight: 600;
@@ -43,6 +129,10 @@
 
     .crystools-content {
       flex-grow: 1;
+      max-width: 100%;
+      min-width: 0;
+      height: var(--crystools-monitor-height);
+      min-height: var(--crystools-monitor-height);
       position: relative;
       background-color: var(--content-hover-bg)
     }
@@ -55,9 +145,9 @@
     }
 
     .crystools-label {
-      position: relative;
+      position: absolute;
       color: var(--input-text);
-      font-size: 10px;
+      font-size: clamp(6px, 0.75vw, 9px);
     }
   }
 
@@ -94,7 +184,8 @@
 /* side-bar-panel */
 .side-bar-panel {
   #crystools-monitors-root {
-    width: 230px;
+    width: min(100%, 230px);
+    max-width: calc(100% - 14px);
     margin-left: auto;
     margin-right: auto;
   }
@@ -111,8 +202,11 @@
   flex-direction: row;
   /*flex-grow: 5;*/
   justify-content: flex-end;
-  /*flex: auto;*/
+  flex: 0 1 var(--crystools-monitors-width);
+  width: var(--crystools-monitors-width);
   flex-shrink: 1;
+  min-width: 0;
+  max-width: 100%;
   /*min-width: max-content;*/
   /*height: 100%;*/
   /*  max-width: 40vw;*/
@@ -126,7 +220,7 @@
   cursor: crosshair;
   /*margin: 4px 0;*/
   display: flex; /* by progress bar base */
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   /*flex-direction: row;*/
   /*justify-content: flex-end;*/
   /*align-items: center;*/
@@ -135,6 +229,12 @@
 
   .crystools-monitor {
     background-color: var(--comfy-input-bg);
+    flex: 1 1 var(--crystools-monitor-width);
+    width: auto;
+    max-width: var(--crystools-monitor-width);
+    min-width: 0;
+    min-height: var(--crystools-monitor-height);
+    overflow: hidden;
     position: relative;
     align-items: center;
     flex-direction: row;
@@ -142,12 +242,17 @@
     /*height: 100%;*/
 
     .crystools-text {
-      font-size: 10px;
-      text-align: right;
-      margin-left: 3px;
+      font-size: clamp(6px, 0.75vw, 9px);
+      text-align: left;
+      margin-left: 0;
       position: absolute;
       font-weight: 100;
-      bottom: 2px;
+      left: 2px;
+      right: 2px;
+      top: 2%;
+      bottom: auto;
+      height: 48%;
+      transform: none;
       z-index: 10;
 
       /*&:hover {*/
@@ -165,6 +270,11 @@
   }
 
   .crystools-content {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: var(--crystools-monitor-height);
+    min-height: var(--crystools-monitor-height);
     position: relative;
   }
 
@@ -176,13 +286,17 @@
   }
 
   .crystools-label {
-    position: relative;
-    width: 100%;
+    position: absolute;
+    width: auto;
     color: var(--input-text);
     font-weight: 500;
-    font-size: 11px;
+    font-size: clamp(6px, 0.75vw, 9px);
+    left: 2px;
     right: 2px;
-    top: 2px;
-    text-align: right;
+    top: auto;
+    bottom: 2%;
+    height: 48%;
+    transform: none;
+    text-align: left;
   }
 }
