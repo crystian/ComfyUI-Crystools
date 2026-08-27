@@ -47,6 +47,7 @@ class CGPUInfo:
     gpusUtilization = []
     gpusVRAM = []
     gpusTemperature = []
+    gpusVRAMSource = []
 
     def __init__(self):
         if IS_JETSON:
@@ -109,6 +110,7 @@ class CGPUInfo:
                     self.gpusUtilization.append(True)
                     self.gpusVRAM.append(True)
                     self.gpusTemperature.append(True)
+                    self.gpusVRAMSource.append(self.probeMemoryInfoSource(deviceHandle, deviceIndex))
 
                 self.cuda = True
                 logger.info(self.systemGetDriverVersion())
@@ -170,7 +172,7 @@ class CGPUInfo:
 
                     if self.switchVRAM and self.gpusVRAM[deviceIndex]:
                         try:
-                            memory = self.deviceGetMemoryInfo(deviceHandle)
+                            memory = self.deviceGetMemoryInfo(deviceHandle, deviceIndex)
                             vramUsed = memory['used']
                             vramTotal = memory['total']
 
@@ -270,11 +272,56 @@ class CGPUInfo:
         else:
             return 0
 
-    def deviceGetMemoryInfo(self, deviceHandle):
+    def probeMemoryInfoSource(self, deviceHandle, deviceIndex):
+        """
+        Determine which API can actually report memory info for this device.
+
+        NVML's dedicated-VRAM counters (nvmlDeviceGetMemoryInfo) are unpopulated
+        on some architectures -- unified-memory SoCs such as NVIDIA GB10 raise
+        NVMLError_NotSupported here even though the driver and pynvml are both
+        loaded and working for utilization/temperature. In that case the CUDA
+        runtime's own mem_get_info (torch.cuda.mem_get_info) reports real numbers
+        against the same coherent memory pool, so fall back to it. Probed once
+        per device at startup rather than assumed from GPU name/arch, so this
+        keeps working correctly if a future driver adds NVML support, or if a
+        machine mixes a discrete GPU with a unified-memory one.
+        """
         if self.pynvmlLoaded:
+            try:
+                self.pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
+                return 'nvml'
+            except self.pynvml.NVMLError_NotSupported:
+                logger.warning(
+                    f"GPU {deviceIndex}: NVML memory info not supported by this "
+                    "driver/architecture, trying CUDA runtime fallback."
+                )
+            except Exception as e:
+                logger.error(f"GPU {deviceIndex}: Could not query NVML memory info. {e}")
+
+            if torch.cuda.is_available():
+                try:
+                    torch.cuda.mem_get_info(deviceIndex)
+                    logger.info(f"GPU {deviceIndex}: using CUDA runtime memory info (torch.cuda.mem_get_info).")
+                    return 'torch'
+                except Exception as e:
+                    logger.error(f"GPU {deviceIndex}: CUDA runtime memory info also unavailable. {e}")
+
+            return 'unsupported'
+        elif self.jtopLoaded:
+            return 'jtop'
+        else:
+            return 'unsupported'
+
+    def deviceGetMemoryInfo(self, deviceHandle, deviceIndex):
+        source = self.gpusVRAMSource[deviceIndex] if deviceIndex < len(self.gpusVRAMSource) else 'unsupported'
+
+        if source == 'nvml':
             mem = self.pynvml.nvmlDeviceGetMemoryInfo(deviceHandle)
             return {'total': mem.total, 'used': mem.used}
-        elif self.jtopLoaded:
+        elif source == 'torch':
+            free, total = torch.cuda.mem_get_info(deviceIndex)
+            return {'total': total, 'used': total - free}
+        elif source == 'jtop':
             mem_data = self.jtopInstance.memory['RAM']
             total = mem_data['tot']
             used = mem_data['used']
