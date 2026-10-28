@@ -40,7 +40,9 @@ You can configure the refresh rate which resources to show:
 ![Monitors](./docs/monitor-settings.png)
 
 > **Notes:**
-> - The GPU data is only available when you use CUDA (only NVIDIA cards, sorry AMD users).
+> - GPU monitoring requires a supported NVIDIA GPU and its monitoring library (NVML, or jtop on Jetson). This is an optional feature, not a requirement for the whole node pack; CPU/RAM monitoring and the general-purpose nodes do not require NVIDIA GPU monitoring.
+> - The package deliberately does not declare a pack-wide NVIDIA CUDA classifier. Some ComfyUI-Manager versions compare `CUDA` against the Registry's `GPU :: NVIDIA CUDA` value and report a false incompatibility even on NVIDIA systems ([upstream issue](https://github.com/Comfy-Org/ComfyUI_frontend/issues/15364)). Removing the classifier does not add GPU monitoring support for other vendors.
+> - Manager checks metadata for the installed version from the Comfy Registry. Editing a local `pyproject.toml` does not replace that published metadata; existing Registry installations need a newly published version with the corrected classifiers.
 > - This extension needs ComfyUI 1915 (or higher).
 > - The cost of the monitor is low (0.1 to 0.5% of utilization), you can disable it from settings (`Refres rate` to `0`).
 > - Data comes from these libraries:

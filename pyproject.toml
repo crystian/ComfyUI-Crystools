@@ -7,7 +7,8 @@ dependencies = ["deepdiff", "torch", "numpy", "Pillow", "pynvml", "py-cpuinfo"]
 
 classifiers = [
   "Operating System :: OS Independent",
-  "Environment :: GPU :: NVIDIA CUDA",
+  # NVIDIA GPU monitoring is optional, not a requirement for the whole pack.
+  # Keep hardware-specific limitations documented in README.md instead.
 ]
 
 [project.urls]
